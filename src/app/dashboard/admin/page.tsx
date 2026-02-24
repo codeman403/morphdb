@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Database, ArrowLeft, Users, LogIn, CreditCard, Clock,
-  Globe, Monitor, Mail, Building2, Shield, RefreshCw, Headphones, RotateCcw,
+  Globe, Monitor, Mail, Building2, Shield, RefreshCw, Headphones, RotateCcw, X, AlertTriangle,
 } from 'lucide-react';
 
 interface WaitlistEntry {
@@ -78,6 +79,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'waitlist' | 'logins' | 'signups' | 'support'>('waitlist');
   const [resetting, setResetting] = useState(false);
+  const [showResetModal, setShowResetModal] = useState(false);
 
   const fetchStats = async () => {
     setLoading(true);
@@ -165,28 +167,7 @@ export default function AdminDashboard() {
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={async () => {
-                if (!confirm('Are you sure you want to reset all users\' usage for this month? This cannot be undone.')) return;
-                setResetting(true);
-                try {
-                  const res = await fetch('/api/admin/reset-usage', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({}),
-                  });
-                  if (res.ok) {
-                    alert('Usage reset successfully!');
-                    fetchStats();
-                  } else {
-                    const data = await res.json();
-                    alert(data.error || 'Failed to reset usage');
-                  }
-                } catch {
-                  alert('Failed to reset usage');
-                } finally {
-                  setResetting(false);
-                }
-              }}
+              onClick={() => setShowResetModal(true)}
               disabled={resetting}
               className="flex items-center gap-2 px-4 py-2 text-sm text-amber-400 hover:text-amber-300 border border-amber-500/20 rounded-full hover:bg-amber-500/10 transition-colors disabled:opacity-50"
             >
@@ -413,6 +394,107 @@ export default function AdminDashboard() {
           )}
         </div>
       </div>
+
+      <AnimatePresence>
+        {showResetModal && (
+          <ResetUsageModal
+            onClose={() => setShowResetModal(false)}
+            onReset={async (userId) => {
+              setResetting(true);
+              try {
+                const res = await fetch('/api/admin/reset-usage', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ userId: userId || null }),
+                });
+                if (res.ok) {
+                  setShowResetModal(false);
+                  fetchStats();
+                }
+              } finally {
+                setResetting(false);
+              }
+            }}
+            users={stats?.recentSignups || []}
+            loading={resetting}
+          />
+        )}
+      </AnimatePresence>
     </div>
+  );
+}
+
+function ResetUsageModal({ onClose, onReset, users, loading }: { onClose: () => void; onReset: (userId: string | null) => void; users: Profile[]; loading: boolean }) {
+  const [selectedUser, setSelectedUser] = useState<string>('');
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.4 }}
+        className="w-full max-w-md bg-[#0f0f0f] border border-white/10 rounded-3xl p-8 relative shadow-2xl"
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 p-2 rounded-full text-zinc-500 hover:text-white hover:bg-white/5 transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-3 rounded-full bg-amber-500/10 border border-amber-500/20">
+            <RotateCcw className="w-6 h-6 text-amber-400" />
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-white">Reset Usage</h3>
+            <p className="text-sm text-zinc-400">Reset monthly usage limits for users</p>
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-zinc-300 mb-2">Select User (optional)</label>
+          <select
+            value={selectedUser}
+            onChange={(e) => setSelectedUser(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-amber-500/50 transition-colors"
+          >
+            <option value="">Reset all users</option>
+            {users.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.name || user.email}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-zinc-500 mt-2">
+            {selectedUser ? 'Will reset usage for selected user only' : 'Will reset usage for all users'}
+          </p>
+        </div>
+
+        <div className="flex gap-3">
+          <button
+            onClick={onClose}
+            className="flex-1 py-3 rounded-full font-medium text-zinc-400 hover:text-white border border-white/10 hover:bg-white/5 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => onReset(selectedUser || null)}
+            disabled={loading}
+            className="flex-1 py-3 rounded-full font-semibold bg-amber-500 text-black hover:bg-amber-400 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {loading ? <RotateCcw className="w-4 h-4 animate-spin" /> : null}
+            {loading ? 'Resetting...' : 'Reset Usage'}
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }

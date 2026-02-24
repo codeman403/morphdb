@@ -219,6 +219,7 @@ export default function Pricing() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+  const [trialSuccess, setTrialSuccess] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -238,10 +239,10 @@ export default function Pricing() {
         const res = await fetch('/api/trial', { method: 'POST' });
         const data = await res.json();
         if (res.ok) {
-          alert(data.message);
-          router.refresh();
-        } else {
-          alert(data.error);
+          setTrialSuccess(true);
+          setTimeout(() => {
+            router.refresh();
+          }, 2000);
         }
       } else {
         const res = await fetch('/api/stripe/checkout', {
@@ -263,6 +264,14 @@ export default function Pricing() {
 
   return (
     <>
+      {trialSuccess && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 px-6 py-4 bg-green-500/10 border border-green-500/20 rounded-2xl backdrop-blur-xl shadow-2xl">
+          <div className="flex items-center gap-3">
+            <CheckCircle2 className="w-6 h-6 text-green-400" />
+            <span className="text-green-400 font-medium">3-Day Pro Trial activated! Redirecting to dashboard...</span>
+          </div>
+        </div>
+      )}
       <section id="pricing" className="py-24 relative overflow-hidden bg-[#050505]">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none" />
 
