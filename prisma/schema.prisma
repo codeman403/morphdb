@@ -43,15 +43,15 @@ model LoginLog {
 }
 
 model Subscription {
-  id                   String   @id @default(cuid())
-  userId               String   @unique @map("user_id")
-  stripeCustomerId     String?  @unique @map("stripe_customer_id")
-  stripeSubscriptionId String?  @unique @map("stripe_subscription_id")
-  plan                 String   @default("free")
-  status               String   @default("inactive")
+  id                   String    @id @default(cuid())
+  userId               String    @unique @map("user_id")
+  stripeCustomerId     String?   @unique @map("stripe_customer_id")
+  stripeSubscriptionId String?   @unique @map("stripe_subscription_id")
+  plan                 String    @default("free")
+  status               String    @default("inactive")
   currentPeriodEnd     DateTime? @map("current_period_end")
-  createdAt            DateTime @default(now()) @map("created_at")
-  updatedAt            DateTime @updatedAt @map("updated_at")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
 
   @@map("subscriptions")
 }
