@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Database, Github, Twitter, Linkedin } from 'lucide-react';
+import { Database } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -28,6 +28,7 @@ export default function Footer() {
               <li><Link href="#how-it-works" className="hover:text-white transition-colors">How it Works</Link></li>
               <li><Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link></li>
               <li><Link href="/waitlist" className="hover:text-white transition-colors">Waitlist</Link></li>
+              <li><Link href="/support" className="hover:text-white transition-colors">Support</Link></li>
             </ul>
           </div>
 
@@ -45,11 +46,6 @@ export default function Footer() {
           <p className="text-sm text-zinc-500">
             © {new Date().getFullYear()} MorphDB. All rights reserved.
           </p>
-          <div className="flex items-center gap-4 text-zinc-500">
-            <a href="#" className="hover:text-white transition-colors"><Twitter className="w-5 h-5" /></a>
-            <a href="#" className="hover:text-white transition-colors"><Github className="w-5 h-5" /></a>
-            <a href="#" className="hover:text-white transition-colors"><Linkedin className="w-5 h-5" /></a>
-          </div>
         </div>
       </div>
     </footer>

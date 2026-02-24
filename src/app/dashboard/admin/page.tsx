@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Database, ArrowLeft, Users, LogIn, CreditCard, Clock,
-  Globe, Monitor, Mail, Building2, Shield, RefreshCw,
+  Globe, Monitor, Mail, Building2, Shield, RefreshCw, Headphones, RotateCcw,
 } from 'lucide-react';
 
 interface WaitlistEntry {
@@ -34,11 +34,25 @@ interface Profile {
   createdAt: string;
 }
 
+interface SupportTicket {
+  id: string;
+  userId: string | null;
+  name: string;
+  email: string;
+  subject: string;
+  description: string;
+  status: string;
+  priority: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface Stats {
   waitlist: { count: number; entries: WaitlistEntry[] };
   logins: LoginLog[];
   subscriptions: { plan: string; _count: { plan: number } }[];
   recentSignups: Profile[];
+  supportTickets: SupportTicket[];
 }
 
 function timeAgo(date: string) {
@@ -62,7 +76,8 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'waitlist' | 'logins' | 'signups'>('waitlist');
+  const [activeTab, setActiveTab] = useState<'waitlist' | 'logins' | 'signups' | 'support'>('waitlist');
+  const [resetting, setResetting] = useState(false);
 
   const fetchStats = async () => {
     setLoading(true);
@@ -116,6 +131,7 @@ export default function AdminDashboard() {
     { label: 'Login Events', value: stats.logins.length, icon: LogIn, color: 'green' },
     { label: 'Total Users', value: stats.recentSignups.length, icon: Mail, color: 'purple' },
     { label: 'Subscriptions', value: stats.subscriptions.reduce((a, s) => a + s._count.plan, 0), icon: CreditCard, color: 'amber' },
+    { label: 'Support Tickets', value: stats.supportTickets.length, icon: Headphones, color: 'cyan' },
   ];
 
   const colorMap: Record<string, string> = {
@@ -123,12 +139,14 @@ export default function AdminDashboard() {
     green: 'text-green-400 bg-green-500/10 border-green-500/20',
     purple: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
     amber: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+    cyan: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
   };
 
   const tabs = [
     { key: 'waitlist' as const, label: 'Waitlist', icon: Users, count: stats.waitlist.count },
     { key: 'logins' as const, label: 'Login Logs', icon: LogIn, count: stats.logins.length },
     { key: 'signups' as const, label: 'Users', icon: Mail, count: stats.recentSignups.length },
+    { key: 'support' as const, label: 'Support Tickets', icon: Headphones, count: stats.supportTickets.length },
   ];
 
   return (
@@ -145,17 +163,47 @@ export default function AdminDashboard() {
               <span className="text-xs px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 font-medium">Admin</span>
             </div>
           </div>
-          <button
-            onClick={fetchStats}
-            className="flex items-center gap-2 px-4 py-2 text-sm text-zinc-400 hover:text-white border border-white/10 rounded-full hover:bg-white/5 transition-colors"
-          >
-            <RefreshCw className="w-4 h-4" /> Refresh
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={async () => {
+                if (!confirm('Are you sure you want to reset all users\' usage for this month? This cannot be undone.')) return;
+                setResetting(true);
+                try {
+                  const res = await fetch('/api/admin/reset-usage', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({}),
+                  });
+                  if (res.ok) {
+                    alert('Usage reset successfully!');
+                    fetchStats();
+                  } else {
+                    const data = await res.json();
+                    alert(data.error || 'Failed to reset usage');
+                  }
+                } catch {
+                  alert('Failed to reset usage');
+                } finally {
+                  setResetting(false);
+                }
+              }}
+              disabled={resetting}
+              className="flex items-center gap-2 px-4 py-2 text-sm text-amber-400 hover:text-amber-300 border border-amber-500/20 rounded-full hover:bg-amber-500/10 transition-colors disabled:opacity-50"
+            >
+              <RotateCcw className={`w-4 h-4 ${resetting ? 'animate-spin' : ''}`} /> {resetting ? 'Resetting...' : 'Reset Usage'}
+            </button>
+            <button
+              onClick={fetchStats}
+              className="flex items-center gap-2 px-4 py-2 text-sm text-zinc-400 hover:text-white border border-white/10 rounded-full hover:bg-white/5 transition-colors"
+            >
+              <RefreshCw className="w-4 h-4" /> Refresh
+            </button>
+          </div>
         </div>
       </nav>
 
       <div className="max-w-7xl mx-auto px-6 pt-28 pb-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
           {statCards.map((card) => (
             <div key={card.label} className="bg-white/5 border border-white/10 rounded-2xl p-5">
               <div className="flex items-center justify-between mb-3">
@@ -313,6 +361,51 @@ export default function AdminDashboard() {
                   ))}
                   {stats.recentSignups.length === 0 && (
                     <tr><td colSpan={4} className="p-8 text-center text-zinc-500">No users yet</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {activeTab === 'support' && (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-white/10">
+                    <th className="text-left p-4 text-zinc-400 font-medium">Name</th>
+                    <th className="text-left p-4 text-zinc-400 font-medium">Email</th>
+                    <th className="text-left p-4 text-zinc-400 font-medium">Subject</th>
+                    <th className="text-left p-4 text-zinc-400 font-medium">Description</th>
+                    <th className="text-left p-4 text-zinc-400 font-medium">Status</th>
+                    <th className="text-left p-4 text-zinc-400 font-medium">Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stats.supportTickets.map((ticket) => (
+                    <tr key={ticket.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                      <td className="p-4 text-zinc-300">{ticket.name}</td>
+                      <td className="p-4 font-mono text-blue-400">{ticket.email}</td>
+                      <td className="p-4 text-zinc-300 max-w-xs truncate">{ticket.subject}</td>
+                      <td className="p-4 text-zinc-400 max-w-md truncate">{ticket.description}</td>
+                      <td className="p-4">
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                          ticket.status === 'open' ? 'bg-green-500/10 border border-green-500/20 text-green-400' :
+                          ticket.status === 'in_progress' ? 'bg-amber-500/10 border border-amber-500/20 text-amber-400' :
+                          'bg-zinc-500/10 border border-zinc-500/20 text-zinc-400'
+                        }`}>
+                          {ticket.status}
+                        </span>
+                      </td>
+                      <td className="p-4 text-zinc-500">
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5" />
+                          {timeAgo(ticket.createdAt)}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                  {stats.supportTickets.length === 0 && (
+                    <tr><td colSpan={6} className="p-8 text-center text-zinc-500">No support tickets yet</td></tr>
                   )}
                 </tbody>
               </table>

@@ -63,6 +63,20 @@ const TYPE_COLORS: Record<string, string> = {
   OTHER: 'text-zinc-400 bg-zinc-500/10 border-zinc-500/20',
 };
 
+const ALL_DIALECTS: Record<string, string> = {
+  sql_server: 'SQL Server',
+  oracle: 'Oracle',
+  mysql: 'MySQL',
+  postgresql: 'PostgreSQL',
+  snowflake_dbt: 'Snowflake (dbt)',
+  bigquery: 'BigQuery',
+  redshift: 'Redshift',
+};
+
+function getDialectLabel(dialect: string): string {
+  return ALL_DIALECTS[dialect] ?? dialect;
+}
+
 export default function MigratePage() {
   const [sourceDialect, setSourceDialect] = useState<SourceDialect>('sql_server');
   const [targetDialect, setTargetDialect] = useState<TargetDialect>('snowflake_dbt');
@@ -363,6 +377,7 @@ export default function MigratePage() {
               <div>
                 <h1 className="text-3xl font-bold mb-2">Translation Results</h1>
                 <p className="text-zinc-400">
+                  {getDialectLabel(sourceDialect)} → {getDialectLabel(targetDialect)} •{' '}
                   {response.summary.success}/{response.summary.total} statements translated •{' '}
                   {(response.summary.totalDuration / 1000).toFixed(1)}s total •{' '}
                   {response.summary.totalTokens.toLocaleString()} tokens
