@@ -6,9 +6,32 @@
 
 ---
 
-## TL;DR
+## Product Overview
 
-MorphDB is an AI-powered database migration co-pilot that translates SQL between dialects (SQL Server, Oracle, MySQL, PostgreSQL → Snowflake/dbt, PostgreSQL, BigQuery, Redshift). Built as a SaaS with Next.js 16, Supabase Auth, Prisma 7, Stripe, and OpenAI GPT-4o-mini / Claude 3.5 Sonnet.
+MorphDB is an advanced, AI-powered database migration co-pilot engineered to accelerate and de-risk the transition from legacy relational database management systems (RDBMS) to modern cloud-native data warehouses.
+
+### The Problem: The Migration Bottleneck
+Historically, migrating enterprise data stacks (e.g., from SQL Server or Oracle to Snowflake or BigQuery) has been a highly manual, error-prone, and capital-intensive process. Data engineering teams spend thousands of hours rewriting proprietary SQL dialects, untangling complex stored procedures, and resolving dialect-specific syntax mismatches. This manual translation creates a severe bottleneck, delaying digital transformation initiatives and introducing significant operational risk due to potential business logic deviations.
+
+### Core Capabilities
+MorphDB leverages advanced Large Language Models (OpenAI GPT-4o-mini and Anthropic Claude 3.5 Sonnet) to serve as a semantic translation engine rather than a rigid, regex-based parser. Its current capabilities include:
+- **Intelligent Dialect Translation**: Translates complex SQL Server (T-SQL), Oracle (PL/SQL), MySQL, and PostgreSQL queries into highly optimized Snowflake (dbt Jinja), PostgreSQL, BigQuery, and Redshift dialects.
+- **Context-Aware Logic Preservation**: Understands and maps proprietary functions, varying data types, and implicit execution behaviors (such as date arithmetic or null handling) to their exact modern equivalents.
+- **Batch Processing Engine**: Ingests massive, multi-statement SQL dumps, automatically tokenizing, classifying, and translating hundreds of tables, views, and procedures concurrently.
+- **Developer-Centric Tooling**: Provides side-by-side AST-aware diffing, actionable warnings for manual review constraints, and downloadable artifacts ready for immediate CI/CD deployment.
+
+### Target Audience
+- **Data & Analytics Engineers**: Automates the tedious syntax conversion process, allowing engineers to focus on architectural optimization, data modeling, and pipeline reliability.
+- **Database Administrators (DBAs)**: Empowers traditional DBAs to safely port schemas to unfamiliar cloud environments without requiring deep, pre-existing expertise in the target dialect.
+- **Migration Consultants & System Integrators**: Drastically reduces the time-to-value for client cloud migration projects, increasing margins and accelerating project throughput.
+- **CTOs & Data Leaders**: De-risks massive cloud migration initiatives, reduces the dual-running costs of maintaining legacy on-premise systems, and accelerates the return on investment for cloud infrastructure.
+
+### Future Potential & Unlocked Features
+By parsing and understanding the semantic intent of database schemas, MorphDB serves as a foundational layer for a fully automated data modernization suite. As the product matures, it possesses the potential to unlock:
+- **Automated dbt Project Scaffolding**: Direct generation of `schema.yml`, staging models, testing configurations, and lineage graphs natively derived from legacy DDL.
+- **Automated Data Validation & Testing**: Generation of parity-checking scripts to mathematically prove that the source legacy system and the target cloud system produce identical outputs.
+- **Intelligent Schema Optimization**: AI-driven architectural suggestions to automatically convert highly normalized operational schemas (3NF) into denormalized, analytical star schemas optimized for modern columnar data warehouses.
+- **Continuous Integration (CI/CD) Hooks**: Automated, pipeline-driven translations that hook into GitHub Actions, automatically converting legacy queries pushed to a repository into modern pull requests on the target data stack.
 
 ---
 
