@@ -24,6 +24,7 @@ export async function POST(req: NextRequest) {
       update: {
         plan: 'pro',
         status: 'active',
+        trialEndsAt: null,
       },
       create: {
         userId,

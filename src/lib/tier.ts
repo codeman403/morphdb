@@ -95,14 +95,14 @@ export async function getUserTierLabel(userId: string): Promise<string> {
   try {
     const sub = await prisma.subscription.findUnique({ where: { userId } });
     
-    // If they have a stripe subscription, they're a paid user
-    if (sub?.stripeSubscriptionId) {
+    // If subscription is active (either via Stripe or manual admin grant)
+    if (sub?.status === 'active') {
       if (sub.plan === 'design_partner') return 'Design Partner';
       if (sub.plan === 'enterprise') return 'Enterprise';
       return 'Pro';
     }
     
-    // If on trial without stripe subscription
+    // If on trial (trialEndsAt is set and in the future)
     const isOnTrial = sub?.trialEndsAt && new Date(sub.trialEndsAt) > new Date();
     if (isOnTrial) {
       return 'Pro Trial';
