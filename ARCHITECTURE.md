@@ -3,6 +3,7 @@
 > **Last Updated**: 2026-02-24
 > **Version**: 1.1.0 (Developer Beta)
 > **Maintainer**: codeman403
+> **Context**: Built as part of the AI Vibe Coding Hackathon
 
 ---
 
