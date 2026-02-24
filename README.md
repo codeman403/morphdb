@@ -1,45 +1,70 @@
-# MorphDB
+# MorphDB 🦋
 
-> AI Co-Pilot for Database Migrations
+> **The AI Co-Pilot for Database Migrations**  
+> *Built for the AI Vibe Coding Hackathon 2026*
 
-Transform legacy SQL Server and Oracle code into modern, cloud-native SQL — automatically.
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
+[![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-black?logo=vercel)](https://vercel.com/)
+[![Supabase](https://img.shields.io/badge/Database-Supabase-3ECF8E?logo=supabase)](https://supabase.com/)
+[![OpenAI](https://img.shields.io/badge/AI-OpenAI%20%7C%20Anthropic-412991)](https://openai.com/)
 
-## Quick Start
+MorphDB is an advanced, AI-powered semantic translation engine that automatically converts legacy relational database schemas (SQL Server, Oracle, MySQL) into modern cloud-native SQL (Snowflake/dbt, BigQuery, PostgreSQL). 
 
-```bash
-npm install
-npm run dev
-```
+It eliminates the manual, error-prone bottlenecks of enterprise digital transformation by precisely preserving business logic across varying SQL dialects.
 
-Open [http://localhost:3000](http://localhost:3000)
+---
 
-## Features
+## 🚀 Live Production URL
+**Deployed on Vercel**: *[Add your Vercel URL here]*
 
-- 🤖 **AI-Powered Translation** — GPT-4o-mini translates SQL between 4 source and 4 target dialects
-- 🔐 **Auth** — Email/password via Supabase (sign up, sign in, sign out, session persistence)
-- 📊 **Admin Dashboard** — Monitor waitlist, login logs, user stats
-- 💳 **Stripe Integration** — Checkout + webhooks for subscriptions
-- 🛡️ **Rate Limiting** — Per-IP limits on all mutation endpoints
-- 🎨 **Premium UI** — Dark mode, Framer Motion animations, responsive design
+---
 
-## Tech Stack
+## ✨ Key Features
 
-Next.js 16 • React 19 • Tailwind CSS 4 • Prisma 7 • Supabase • Stripe • OpenAI
+- 🤖 **Multi-LLM Translation Engine**: Intelligently routes translation requests to **OpenAI GPT-4o-mini** (for speed) or **Anthropic Claude 3.5 Sonnet** (for complex logic preservation).
+- 📦 **Batch Processing**: Upload entire schema dumps (.sql, .txt). The custom parser tokenizes and translates hundreds of tables, views, and procedures concurrently.
+- 🚦 **Tiered Access Control**: Full SaaS monetization setup with Free, Pro, Design Partner, and Enterprise tiers enforcing usage limits and model selection.
+- 📊 **Migration History**: Complete tracking of past migrations, displaying success/failure rates, tokens used, and translation times.
+- 💳 **Stripe Monetization**: Built-in Stripe checkout and webhook handling for automatic tier upgrades.
+- 🔐 **Secure Authentication**: Supabase Auth (SSR) with robust Next.js middleware session management and rate limiting.
 
-## Documentation
+---
 
-See **[ARCHITECTURE.md](./ARCHITECTURE.md)** for full details:
-- Architecture diagrams
-- API reference
-- Database schema
-- Deployment guide
-- Environment variables
-- Changelog & roadmap
+## 🏗️ Technical Architecture
 
-## Environment Variables
+This application is engineered specifically for Vercel's serverless edge environment:
+- **Framework**: Next.js 16.1.6 App Router
+- **UI**: React 19, Tailwind CSS v4, Framer Motion
+- **Database**: Supabase PostgreSQL + Prisma 7 ORM (utilizing Transaction Pooler on port 6543)
+- **Deployment**: Vercel auto-deploy pipeline
 
-Copy `.env.local.example` or see [ARCHITECTURE.md](./ARCHITECTURE.md#environment-variables) for the full list.
+👉 **For a deep dive into the architecture, database schema diagrams, and data flow, read the comprehensive [Architecture Documentation (ARCHITECTURE.md)](./ARCHITECTURE.md).**
 
-## License
+---
 
-Private — © 2026 MorphDB
+## 🛠️ Vercel Deployment Guide
+
+This repository is configured to deploy directly to Vercel. Local setup is not required.
+
+1. **Connect Repository**: In the Vercel Dashboard, import this GitHub repository.
+2. **Configure Environment Variables**: Add the following keys in Vercel settings:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=...
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+   DATABASE_URL=postgresql://postgres...aws-1-us-east-1.pooler.supabase.com:6543/postgres
+   OPENAI_API_KEY=...
+   ANTHROPIC_API_KEY=...
+   STRIPE_SECRET_KEY=...
+   STRIPE_WEBHOOK_SECRET=...
+   STRIPE_PRO_PRICE_ID=...
+   NEXT_PUBLIC_SITE_URL=https://your-vercel-domain.vercel.app
+   ADMIN_EMAILS=you@example.com
+   ```
+3. **Database Schema Setup**: 
+   Because `prisma db push` hangs on Vercel's serverless builds with connection poolers, execute the raw SQL found in `ARCHITECTURE.md` directly within the Supabase SQL Editor to construct the `migration_batches`, `migration_results`, and `monthly_usage` tables.
+4. **Deploy**: Vercel handles the Next.js build and Prisma client generation automatically.
+
+---
+
+## 📝 License
+Private Repository — Created for the AI Vibe Coding Hackathon.
