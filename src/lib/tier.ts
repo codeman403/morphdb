@@ -55,20 +55,14 @@ export async function getUserTier(userId: string): Promise<TierLimits> {
   try {
     const sub = await prisma.subscription.findUnique({ where: { userId } });
     
-    // Priority 1: If subscription is active or trialing (paid), use the plan
+    // Priority 1: If subscription is active, use the plan
     if (sub?.status === 'active' || sub?.status === 'trialing') {
-      // If they have a paid plan (not just trial), use that plan
-      if (sub.plan && sub.plan !== 'free' && sub.plan !== 'pro' && sub.plan !== 'trialing') {
-        const tier = sub.plan as UserTier;
-        return getTierLimits(tier);
-      }
-      // If plan is 'pro' or 'trialing', check if they have a stripe subscription (paid)
-      if (sub.stripeSubscriptionId) {
-        return getTierLimits('pro');
-      }
+      if (sub.plan === 'design_partner') return getTierLimits('design_partner');
+      if (sub.plan === 'enterprise') return getTierLimits('enterprise');
+      if (sub.plan === 'pro') return getTierLimits('pro');
     }
     
-    // Priority 2: If on trial and no active subscription, use trial
+    // Priority 2: If on trial, use Pro
     const isOnTrial = sub?.trialEndsAt && new Date(sub.trialEndsAt) > new Date();
     if (isOnTrial) {
       return getTierLimits('pro');
