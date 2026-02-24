@@ -97,7 +97,7 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {tierInfo.tier === 'free' && !trialStatus.isOnTrial && (
+        {tierLabel === 'Free' && (
           <div className="mb-6 sm:mb-10 p-4 sm:p-6 bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
             <div>
               <h3 className="text-base sm:text-lg font-bold text-white mb-1 flex items-center gap-2">
@@ -111,7 +111,7 @@ export default async function DashboardPage() {
           </div>
         )}
 
-        {trialStatus.isOnTrial && (
+        {trialStatus.isOnTrial && tierLabel !== 'Pro' && (
           <div className="mb-6 sm:mb-10 p-4 sm:p-6 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
             <div>
               <h3 className="text-base sm:text-lg font-bold text-white mb-1 flex items-center gap-2">
@@ -122,6 +122,22 @@ export default async function DashboardPage() {
             <Link href="/#pricing" className="px-5 py-2 bg-white text-black text-sm font-semibold rounded-full hover:bg-zinc-200 transition-colors whitespace-nowrap">
               Upgrade Now
             </Link>
+          </div>
+        )}
+
+        {trialStatus.isOnTrial && tierLabel !== 'Pro' && (
+          <div className="mb-6 sm:mb-10 p-4 sm:p-6 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+            <div>
+              <h3 className="text-base sm:text-lg font-bold text-white mb-1 flex items-center gap-2">
+                <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" /> Your Pro Trial Ends in {trialStatus.daysRemaining} Days
+              </h3>
+              <p className="text-xs sm:text-sm text-zinc-400">Upgrade now to continue using Pro features.</p>
+            </div>
+            <Link href="/#pricing" className="px-5 py-2 bg-white text-black text-sm font-semibold rounded-full hover:bg-zinc-200 transition-colors whitespace-nowrap">
+              Upgrade Now
+            </Link>
+          </div>
+        )}
           </div>
         )}
 
