@@ -205,11 +205,17 @@ export default function Pricing() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [trialSuccess, setTrialSuccess] = useState(false);
+  const [hasUsedTrial, setHasUsedTrial] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getSession().then(({ data: { session } }) => {
       setIsAuthenticated(!!session?.user);
+      if (session?.user) {
+        fetch('/api/auth/has-used-trial').then(r => r.json()).then(d => {
+          if (d.hasUsedTrial) setHasUsedTrial(true);
+        });
+      }
     });
   }, []);
 
@@ -323,19 +329,25 @@ export default function Pricing() {
 
                 {tier.ctaSecondary ? (
                   <div className="flex flex-col gap-3 mt-auto">
-                    <button 
-                      onClick={() => {
-                        if (tier.ctaAction === 'trial') handleCheckout('trial');
-                      }}
-                      disabled={checkoutLoading === 'trial'}
-                      className="w-full py-3 rounded-full font-semibold bg-white text-black hover:bg-zinc-200 transition-colors disabled:opacity-70"
-                    >
-                      {checkoutLoading === 'trial' ? (
-                        <span className="flex items-center justify-center gap-2">
-                          <Loader2 className="w-4 h-4 animate-spin" /> Starting...
-                        </span>
-                      ) : tier.cta}
-                    </button>
+                    {!hasUsedTrial ? (
+                      <button 
+                        onClick={() => {
+                          if (tier.ctaAction === 'trial') handleCheckout('trial');
+                        }}
+                        disabled={checkoutLoading === 'trial'}
+                        className="w-full py-3 rounded-full font-semibold bg-white text-black hover:bg-zinc-200 transition-colors disabled:opacity-70"
+                      >
+                        {checkoutLoading === 'trial' ? (
+                          <span className="flex items-center justify-center gap-2">
+                            <Loader2 className="w-4 h-4 animate-spin" /> Starting...
+                          </span>
+                        ) : tier.cta}
+                      </button>
+                    ) : (
+                      <div className="w-full py-3 text-center text-sm text-zinc-500 bg-white/5 rounded-full border border-white/10">
+                        Trial Used
+                      </div>
+                    )}
                     <button 
                       onClick={() => {
                         if (tier.ctaSecondaryAction === 'checkout') handleCheckout(tier.name.toLowerCase().replace(' ', '_'));

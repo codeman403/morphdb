@@ -86,3 +86,12 @@ export async function getTrialStatus(userId: string): Promise<{ isOnTrial: boole
     return { isOnTrial: false, daysRemaining: 0 };
   }
 }
+
+export async function hasUsedTrial(userId: string): Promise<boolean> {
+  try {
+    const sub = await prisma.subscription.findUnique({ where: { userId } });
+    return !!sub?.trialTakenAt;
+  } catch {
+    return false;
+  }
+}

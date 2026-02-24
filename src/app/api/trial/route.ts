@@ -19,6 +19,11 @@ export async function POST() {
       return NextResponse.json({ error: 'Trial only available for free users.' }, { status: 400 });
     }
 
+    const existingSub = await prisma.subscription.findUnique({ where: { userId: user.id } });
+    if (existingSub?.trialTakenAt) {
+      return NextResponse.json({ error: 'You have already used your free trial. Please upgrade to Pro.' }, { status: 400 });
+    }
+
     const trialEndDate = new Date();
     trialEndDate.setDate(trialEndDate.getDate() + TRIAL_DAYS);
 
@@ -28,12 +33,14 @@ export async function POST() {
         plan: 'pro',
         status: 'trialing',
         trialEndsAt: trialEndDate,
+        trialTakenAt: new Date(),
       },
       create: {
         userId: user.id,
         plan: 'pro',
         status: 'trialing',
         trialEndsAt: trialEndDate,
+        trialTakenAt: new Date(),
       },
     });
 
