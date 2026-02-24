@@ -9,6 +9,7 @@ import { createClient } from '@/lib/supabase/client';
 export default function Navbar() {
   const [user, setUser] = useState<{ email?: string } | null>(null);
   const [firstName, setFirstName] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const supabase = createClient();
@@ -17,6 +18,7 @@ export default function Navbar() {
       if (session?.user) {
         fetch('/api/auth/profile').then(r => r.json()).then(d => setFirstName(d.firstName));
       }
+      setLoading(false);
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
@@ -72,7 +74,9 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-4">
-          {user ? (
+          {loading ? (
+            <div className="w-20 h-8 bg-white/5 rounded-full animate-pulse" />
+          ) : user ? (
             <>
               <Link href="/dashboard" className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors">
                 <User className="w-4 h-4" />
