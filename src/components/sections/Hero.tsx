@@ -42,7 +42,7 @@ export default function Hero() {
           <Link href="/demo" className="w-full sm:w-auto px-8 py-3.5 bg-white text-black font-semibold rounded-full hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2 text-sm">
             Quick Demo <ArrowRight className="w-4 h-4" />
           </Link>
-          <a href="https://github.com/codeman403/morphdb" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto px-8 py-3.5 bg-white/5 border border-white/10 text-white font-semibold rounded-full hover:bg-white/10 transition-colors flex items-center justify-center gap-2 text-sm">
+          <a href="https://github.com/codeman403/morphdb/blob/main/ARCHITECTURE.md" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto px-8 py-3.5 bg-white/5 border border-white/10 text-white font-semibold rounded-full hover:bg-white/10 transition-colors flex items-center justify-center gap-2 text-sm">
             <Terminal className="w-4 h-4 text-zinc-400" /> Read the Docs
           </a>
         </div>
