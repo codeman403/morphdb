@@ -173,7 +173,7 @@ export default function AdminDashboard() {
               onClick={() => setShowGrantProModal(true)}
               className="flex items-center gap-2 px-4 py-2 text-sm text-green-400 hover:text-green-300 border border-green-500/20 rounded-full hover:bg-green-500/10 transition-colors"
             >
-              Grant Pro
+              Update Plan
             </button>
             <button
               onClick={() => setShowResetModal(true)}
@@ -539,6 +539,7 @@ function GrantProModal({ onClose, users, onGrant }: { onClose: () => void; users
   const [selectedPlan, setSelectedPlan] = useState<string>('pro');
 
   const plans = [
+    { value: 'free', label: 'Free' },
     { value: 'pro', label: 'Pro' },
     { value: 'design_partner', label: 'Design Partner' },
     { value: 'enterprise', label: 'Enterprise' },
@@ -571,8 +572,8 @@ function GrantProModal({ onClose, users, onGrant }: { onClose: () => void; users
             <Shield className="w-6 h-6 text-green-400" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-white">Grant Plan Access</h3>
-            <p className="text-sm text-zinc-400">Manually grant access to a user</p>
+            <h3 className="text-xl font-bold text-white">Update User Plan</h3>
+            <p className="text-sm text-zinc-400">Grant or revoke plan access for a user</p>
           </div>
         </div>
 
@@ -619,7 +620,7 @@ function GrantProModal({ onClose, users, onGrant }: { onClose: () => void; users
             disabled={!selectedUser}
             className="flex-1 py-3 rounded-full font-semibold bg-green-500 text-black hover:bg-green-400 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            Grant Access
+            Update Plan
           </button>
         </div>
       </motion.div>

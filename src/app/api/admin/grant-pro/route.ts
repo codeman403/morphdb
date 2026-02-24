@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? '').split(',').map(e => e.trim()).filter(Boolean);
-const VALID_PLANS = ['pro', 'design_partner', 'enterprise'];
+const VALID_PLANS = ['free', 'pro', 'design_partner', 'enterprise'];
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,23 +24,44 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
     }
 
-    await prisma.subscription.upsert({
-      where: { userId },
-      update: {
-        plan,
-        status: 'active',
-        trialEndsAt: null,
-      },
-      create: {
-        userId,
-        plan,
-        status: 'active',
-      },
-    });
+    if (plan === 'free') {
+      // Revoke access - reset to free
+      await prisma.subscription.upsert({
+        where: { userId },
+        update: {
+          plan: 'free',
+          status: 'inactive',
+          trialEndsAt: null,
+          trialTakenAt: null,
+          stripeSubscriptionId: null,
+          stripeCustomerId: null,
+        },
+        create: {
+          userId,
+          plan: 'free',
+          status: 'inactive',
+        },
+      });
+    } else {
+      // Grant paid plan access
+      await prisma.subscription.upsert({
+        where: { userId },
+        update: {
+          plan,
+          status: 'active',
+          trialEndsAt: null,
+        },
+        create: {
+          userId,
+          plan,
+          status: 'active',
+        },
+      });
+    }
 
     return NextResponse.json({ success: true });
   } catch (e) {
     console.error('[Grant Pro Error]', e);
-    return NextResponse.json({ error: 'Failed to grant access' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to update plan' }, { status: 500 });
   }
 }
