@@ -201,6 +201,7 @@ export default function Pricing() {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
@@ -208,6 +209,29 @@ export default function Pricing() {
       setIsAuthenticated(!!session?.user);
     });
   }, []);
+
+  const handleCheckout = async (plan: string) => {
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
+    }
+    setCheckoutLoading(plan);
+    try {
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch {
+      // silently fail - user stays on page
+    } finally {
+      setCheckoutLoading(null);
+    }
+  };
 
   return (
     <>
@@ -279,15 +303,20 @@ export default function Pricing() {
                   onClick={() => {
                     if (tier.ctaAction === 'waitlist') setIsModalOpen(true);
                     else if (tier.ctaAction === 'beta') router.push(isAuthenticated ? '/dashboard/migrate' : '/login');
-                    else if (tier.ctaAction === 'checkout') router.push(isAuthenticated ? '/dashboard?upgrade=pro' : '/login');
+                    else if (tier.ctaAction === 'checkout') handleCheckout(tier.name.toLowerCase().replace(' ', '_'));
                   }}
-                  className={`w-full py-4 rounded-full font-semibold transition-colors ${
+                  disabled={checkoutLoading === tier.name.toLowerCase().replace(' ', '_')}
+                  className={`w-full py-4 rounded-full font-semibold transition-colors disabled:opacity-70 disabled:cursor-not-allowed ${
                     tier.highlighted
                       ? 'bg-white text-black hover:bg-zinc-200'
                       : 'bg-white/5 text-white border border-white/10 hover:bg-white/10'
                   }`}
                 >
-                  {tier.cta}
+                  {checkoutLoading === tier.name.toLowerCase().replace(' ', '_') ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin" /> Redirecting...
+                    </span>
+                  ) : tier.cta}
                 </button>
               </motion.div>
             ))}

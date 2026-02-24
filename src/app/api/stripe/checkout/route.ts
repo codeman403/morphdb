@@ -3,6 +3,10 @@ import Stripe from 'stripe';
 import { createClient } from '@/lib/supabase/server';
 
 const PLANS: Record<string, { priceId: string; name: string }> = {
+  pro: {
+    priceId: process.env.STRIPE_PRO_PRICE_ID ?? '',
+    name: 'Pro',
+  },
   design_partner: {
     priceId: process.env.STRIPE_DESIGN_PARTNER_PRICE_ID ?? '',
     name: 'Design Partner',
