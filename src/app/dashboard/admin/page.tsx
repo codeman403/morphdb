@@ -435,13 +435,13 @@ export default function AdminDashboard() {
           <GrantProModal
             onClose={() => setShowGrantProModal(false)}
             users={stats?.recentSignups || []}
-            onGrant={async (userId) => {
+            onGrant={async (userId, plan) => {
               setGrantingPro(true);
               try {
                 const res = await fetch('/api/admin/grant-pro', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ userId }),
+                  body: JSON.stringify({ userId, plan }),
                 });
                 if (res.ok) {
                   setShowGrantProModal(false);
@@ -534,8 +534,15 @@ function ResetUsageModal({ onClose, onReset, users, loading }: { onClose: () => 
   );
 }
 
-function GrantProModal({ onClose, users, onGrant }: { onClose: () => void; users: Profile[]; onGrant: (userId: string) => void; loading: boolean }) {
+function GrantProModal({ onClose, users, onGrant }: { onClose: () => void; users: Profile[]; onGrant: (userId: string, plan: string) => void; loading: boolean }) {
   const [selectedUser, setSelectedUser] = useState<string>('');
+  const [selectedPlan, setSelectedPlan] = useState<string>('pro');
+
+  const plans = [
+    { value: 'pro', label: 'Pro' },
+    { value: 'design_partner', label: 'Design Partner' },
+    { value: 'enterprise', label: 'Enterprise' },
+  ];
 
   return (
     <motion.div
@@ -564,12 +571,12 @@ function GrantProModal({ onClose, users, onGrant }: { onClose: () => void; users
             <Shield className="w-6 h-6 text-green-400" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-white">Grant Pro Access</h3>
-            <p className="text-sm text-zinc-400">Manually grant Pro access to a user</p>
+            <h3 className="text-xl font-bold text-white">Grant Plan Access</h3>
+            <p className="text-sm text-zinc-400">Manually grant access to a user</p>
           </div>
         </div>
 
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="block text-sm font-medium text-zinc-300 mb-2">Select User</label>
           <select
             value={selectedUser}
@@ -585,6 +592,21 @@ function GrantProModal({ onClose, users, onGrant }: { onClose: () => void; users
           </select>
         </div>
 
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-zinc-300 mb-2">Select Plan</label>
+          <select
+            value={selectedPlan}
+            onChange={(e) => setSelectedPlan(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-green-500/50 transition-colors"
+          >
+            {plans.map((plan) => (
+              <option key={plan.value} value={plan.value}>
+                {plan.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div className="flex gap-3">
           <button
             onClick={onClose}
@@ -593,11 +615,11 @@ function GrantProModal({ onClose, users, onGrant }: { onClose: () => void; users
             Cancel
           </button>
           <button
-            onClick={() => onGrant(selectedUser)}
+            onClick={() => onGrant(selectedUser, selectedPlan)}
             disabled={!selectedUser}
             className="flex-1 py-3 rounded-full font-semibold bg-green-500 text-black hover:bg-green-400 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            Grant Pro
+            Grant Access
           </button>
         </div>
       </motion.div>
