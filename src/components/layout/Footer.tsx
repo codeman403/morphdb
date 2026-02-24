@@ -11,9 +11,14 @@ export default function Footer() {
               <Database className="w-6 h-6 text-blue-500" />
               <span className="font-bold text-xl tracking-tight">MorphDB</span>
             </Link>
-            <p className="text-zinc-400 max-w-sm leading-relaxed">
+            <p className="text-zinc-400 max-w-sm leading-relaxed mb-6">
               The AI Co-Pilot for Data Engineers. Flawless database migrations from legacy systems to modern cloud data warehouses.
             </p>
+            <div className="bg-blue-500/5 border border-blue-500/10 rounded-lg p-4 max-w-md">
+              <p className="text-xs text-zinc-500 leading-relaxed">
+                <strong className="text-zinc-300 font-medium">Developer Beta Disclaimer:</strong> MorphDB is currently in active development. While fully functional, you may encounter occasional bugs or feature limitations. We are continuously deploying fixes, optimizations, and new capabilities in upcoming releases.
+              </p>
+            </div>
           </div>
           
           <div>
