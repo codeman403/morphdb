@@ -5,8 +5,10 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Database, ArrowRight, Sparkles, CheckCircle2, Clock, Loader2,
-  AlertTriangle, Zap, ChevronDown, Copy, Check,
+  AlertTriangle, Zap, ChevronDown, Copy, Check, Lock,
 } from 'lucide-react';
+
+const DEMO_MAX_CHARS = 2_000;
 
 const EXAMPLES = [
   {
@@ -86,11 +88,13 @@ export default function DemoPage() {
   const [isTranslating, setIsTranslating] = useState(false);
   const [result, setResult] = useState<TranslationResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [model, setModel] = useState('gpt-4o-mini');
   const [copied, setCopied] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
+  const isOverLimit = sql.length > DEMO_MAX_CHARS;
+
   const handleTranslate = async () => {
+    if (isOverLimit) return;
     setIsTranslating(true);
     setResult(null);
     setError(null);
@@ -98,7 +102,7 @@ export default function DemoPage() {
       const res = await fetch('/api/migrate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sql, sourceDialect, targetDialect, model }),
+        body: JSON.stringify({ sql, sourceDialect, targetDialect, mode: 'demo' }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Translation failed');
@@ -135,17 +139,32 @@ export default function DemoPage() {
             <span className="font-bold text-lg tracking-tight">MorphDB</span>
           </Link>
           <div className="flex items-center gap-4">
-            <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 font-medium">
-              AI-Powered • Developer Beta
+            <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 font-medium">
+              Demo Mode • GPT-4o Mini
             </span>
-            <Link href="/waitlist" className="px-4 py-2 text-sm font-medium text-white bg-white/10 border border-white/20 rounded-full hover:bg-white/20 transition-colors">
-              Get Early Access
+            <Link href="/login" className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-500 rounded-full hover:bg-blue-500 transition-colors">
+              Sign In for Full Access
             </Link>
           </div>
         </div>
       </nav>
 
       <div className="max-w-7xl mx-auto px-6 pt-28 pb-16">
+        <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 border border-white/10">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <Lock className="w-5 h-5 text-amber-400" />
+              <div>
+                <p className="text-sm font-medium text-white">You&apos;re using Demo Mode</p>
+                <p className="text-xs text-zinc-400">GPT-4o Mini only • {DEMO_MAX_CHARS.toLocaleString()} char limit • No file upload or batch</p>
+              </div>
+            </div>
+            <Link href="/login" className="px-4 py-2 text-sm font-semibold text-black bg-white rounded-full hover:bg-zinc-200 transition-colors flex items-center gap-2">
+              Unlock Full Access <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+
         <div className="mb-12 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -153,7 +172,7 @@ export default function DemoPage() {
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-sm text-blue-400 mb-6"
           >
             <Sparkles className="w-4 h-4 animate-pulse" />
-            Real AI Migration Engine
+            Try the AI Migration Engine
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -212,17 +231,11 @@ export default function DemoPage() {
             </select>
           </div>
           <div className="w-px h-6 bg-white/10 self-center mx-1" />
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 opacity-50 cursor-not-allowed" title="Sign in to unlock Claude models">
             <span className="text-xs text-zinc-500 uppercase tracking-wider">AI Model</span>
-            <select
-              value={model}
-              onChange={(e) => setModel(e.target.value)}
-              className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500/50 appearance-none cursor-pointer"
-            >
-              <option value="gpt-4o-mini" className="bg-zinc-900">GPT-4o Mini</option>
-              <option value="claude-haiku" className="bg-zinc-900">Claude Haiku</option>
-              <option value="claude-sonnet" className="bg-zinc-900">Claude Sonnet</option>
-            </select>
+            <div className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-zinc-500 flex items-center gap-1.5">
+              <Lock className="w-3 h-3" /> GPT-4o Mini
+            </div>
           </div>
         </div>
 
@@ -233,7 +246,9 @@ export default function DemoPage() {
               <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
               <div className="w-3 h-3 rounded-full bg-green-500/70" />
               <span className="ml-2 text-xs text-zinc-500 font-mono">source.sql</span>
-              <span className="ml-auto text-xs text-zinc-600">{sql.length.toLocaleString()} chars</span>
+              <span className={`ml-auto text-xs ${isOverLimit ? 'text-red-400' : 'text-zinc-600'}`}>
+                {sql.length.toLocaleString()}/{DEMO_MAX_CHARS.toLocaleString()} chars
+              </span>
             </div>
             <textarea
               value={sql}
@@ -242,6 +257,12 @@ export default function DemoPage() {
               className="w-full p-6 text-sm font-mono text-red-400/80 leading-relaxed bg-transparent resize-none focus:outline-none min-h-[280px]"
               spellCheck={false}
             />
+            {isOverLimit && (
+              <div className="px-6 pb-4 flex items-center gap-2 text-xs text-red-400">
+                <AlertTriangle className="w-3.5 h-3.5" />
+                Exceeds demo limit. <Link href="/login" className="underline hover:text-red-300">Sign in</Link> for 10,000 char limit.
+              </div>
+            )}
           </div>
 
           <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden">
@@ -287,7 +308,7 @@ export default function DemoPage() {
                 ) : (
                   <motion.div key="placeholder" className="text-zinc-600 text-sm font-mono flex flex-col gap-2">
                     <p>← Click &quot;Translate&quot; to see the magic ✨</p>
-                    <p className="text-xs text-zinc-700">Powered by {model === 'gpt-4o-mini' ? 'GPT-4o Mini' : model === 'claude-haiku' ? 'Claude Haiku' : 'Claude Sonnet'} • Real AI translation</p>
+                    <p className="text-xs text-zinc-700">Powered by GPT-4o Mini • Demo Mode</p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -296,7 +317,7 @@ export default function DemoPage() {
         </div>
 
         <div className="flex justify-center mb-8">
-          <button onClick={handleTranslate} disabled={isTranslating || !sql.trim()}
+          <button onClick={handleTranslate} disabled={isTranslating || !sql.trim() || isOverLimit}
             className="flex items-center gap-2 px-8 py-4 bg-white text-black font-semibold rounded-2xl hover:bg-zinc-200 transition-colors disabled:opacity-50 shadow-lg"
           >
             {isTranslating ? (
@@ -386,17 +407,22 @@ export default function DemoPage() {
             <Clock className="w-4 h-4" />
             Full schema migration estimated: <strong className="text-white">~8 minutes for 500 tables</strong>
           </div>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/waitlist"
-              className="px-8 py-4 bg-white text-black font-semibold rounded-full hover:bg-zinc-200 transition-colors flex items-center gap-2"
-            >
-              Get Early Access <ArrowRight className="w-5 h-5" />
-            </Link>
-            <Link href="/"
-              className="px-8 py-4 bg-white/5 border border-white/10 text-white font-semibold rounded-full hover:bg-white/10 transition-colors"
-            >
-              Learn More
-            </Link>
+
+          <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-white/10 mb-8">
+            <h3 className="text-lg font-bold text-white mb-2">Unlock Developer Beta</h3>
+            <p className="text-sm text-zinc-400 mb-4">Get Claude models, 10K char limit, batch migration, file upload, and ZIP download.</p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link href="/login"
+                className="px-6 py-3 bg-white text-black font-semibold rounded-full hover:bg-zinc-200 transition-colors flex items-center gap-2"
+              >
+                Sign In <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link href="/waitlist"
+                className="px-6 py-3 bg-white/5 border border-white/10 text-white font-semibold rounded-full hover:bg-white/10 transition-colors"
+              >
+                Join Waitlist
+              </Link>
+            </div>
           </div>
         </div>
       </div>

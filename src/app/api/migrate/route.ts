@@ -1,14 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { translateSql, SourceDialect, TargetDialect, AIModel } from '@/lib/ai/migrate';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
+import { createClient } from '@/lib/supabase/server';
 
 const VALID_SOURCES: SourceDialect[] = ['sql_server', 'oracle', 'mysql', 'postgresql'];
 const VALID_TARGETS: TargetDialect[] = ['snowflake_dbt', 'postgresql', 'bigquery', 'redshift'];
 
+const DEMO_MAX_CHARS = 2_000;
+const BETA_MAX_CHARS = 10_000;
+const DEMO_RATE_LIMIT = 5;
+const BETA_RATE_LIMIT = 10;
+
 export async function POST(req: NextRequest) {
   try {
     const ip = getClientIp(req.headers);
-    const { ok } = rateLimit(`migrate:${ip}`, 10, 60_000);
+    const body = await req.json();
+    const { sql, sourceDialect, targetDialect, model, mode } = body;
+
+    const isDemo = mode === 'demo';
+
+    const limit = isDemo ? DEMO_RATE_LIMIT : BETA_RATE_LIMIT;
+    const { ok } = rateLimit(`migrate:${ip}`, limit, 60_000);
     if (!ok) {
       return NextResponse.json(
         { error: 'Rate limit reached. Please wait a minute.' },
@@ -16,15 +28,24 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const body = await req.json();
-    const { sql, sourceDialect, targetDialect, model } = body;
+    if (!isDemo) {
+      const supabase = await createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        return NextResponse.json({ error: 'Sign in required for Developer Beta.' }, { status: 401 });
+      }
+    }
 
     if (!sql || typeof sql !== 'string' || sql.trim().length === 0) {
       return NextResponse.json({ error: 'SQL input is required.' }, { status: 400 });
     }
 
-    if (sql.length > 10_000) {
-      return NextResponse.json({ error: 'SQL input too long (max 10,000 chars).' }, { status: 400 });
+    const maxChars = isDemo ? DEMO_MAX_CHARS : BETA_MAX_CHARS;
+    if (sql.length > maxChars) {
+      return NextResponse.json(
+        { error: `SQL input too long (max ${maxChars.toLocaleString()} chars).${isDemo ? ' Sign up for 10,000 char limit.' : ''}` },
+        { status: 400 }
+      );
     }
 
     if (!VALID_SOURCES.includes(sourceDialect)) {
@@ -36,7 +57,7 @@ export async function POST(req: NextRequest) {
     }
 
     const validModels: AIModel[] = ['gpt-4o-mini', 'claude-haiku', 'claude-sonnet'];
-    const selectedModel = validModels.includes(model) ? model : undefined;
+    const selectedModel = isDemo ? 'gpt-4o-mini' : (validModels.includes(model) ? model : undefined);
     const result = await translateSql(sql, sourceDialect, targetDialect, selectedModel);
 
     return NextResponse.json(result);
