@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
 import { Database, LogOut, Sparkles, ArrowRight, User, Zap, Clock } from 'lucide-react';
-import { getUserTier, getTierLabel } from '@/lib/tier';
+import { getUserTier, getTierLabel, getTrialStatus } from '@/lib/tier';
 import { getMonthlyUsage } from '@/lib/usage';
 
 export default async function DashboardPage() {
@@ -12,7 +12,7 @@ export default async function DashboardPage() {
 
   if (!user) redirect('/login');
 
-  const [profile, tierInfo, usage, recentBatches] = await Promise.all([
+  const [profile, tierInfo, usage, recentBatches, trialStatus] = await Promise.all([
     prisma.profile.findUnique({ where: { id: user.id } }),
     getUserTier(user.id),
     getMonthlyUsage(user.id),
@@ -21,6 +21,7 @@ export default async function DashboardPage() {
       orderBy: { createdAt: 'desc' },
       take: 5,
     }),
+    getTrialStatus(user.id),
   ]);
 
   const tierLabel = getTierLabel(tierInfo.tier);
@@ -69,8 +70,12 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-10">
           <div className="bg-white/5 border border-purple-500/20 rounded-2xl p-4 sm:p-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 blur-2xl rounded-full translate-x-1/2 -translate-y-1/2" />
-            <div className="text-xl sm:text-3xl font-bold text-white mb-1">{tierLabel}</div>
-            <div className="text-xs sm:text-sm font-medium text-zinc-300 mb-1">Current Plan</div>
+            <div className="text-xl sm:text-3xl font-bold text-white mb-1">
+              {trialStatus.isOnTrial ? 'Pro Trial' : tierLabel}
+            </div>
+            <div className="text-xs sm:text-sm font-medium text-zinc-300 mb-1">
+              {trialStatus.isOnTrial ? `${trialStatus.daysRemaining} days remaining` : 'Current Plan'}
+            </div>
             <div className="text-xs text-zinc-500">{batchLimit} batches/mo</div>
           </div>
           <div className="bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-6">
@@ -92,16 +97,30 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {tierInfo.tier === 'free' && (
+        {tierInfo.tier === 'free' && !trialStatus.isOnTrial && (
           <div className="mb-6 sm:mb-10 p-4 sm:p-6 bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
             <div>
               <h3 className="text-base sm:text-lg font-bold text-white mb-1 flex items-center gap-2">
-                <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" /> Upgrade to Pro
+                <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" /> Start Your 3-Day Free Pro Trial
               </h3>
-              <p className="text-xs sm:text-sm text-zinc-400">Unlock Claude Sonnet, {tierInfo.filesPerBatch === Infinity ? 'Unlimited' : tierInfo.filesPerBatch} files per batch, and priority support.</p>
+              <p className="text-xs sm:text-sm text-zinc-400">Unlock Claude Sonnet, 50 files per batch, and priority support.</p>
             </div>
             <Link href="/#pricing" className="px-5 py-2 bg-white text-black text-sm font-semibold rounded-full hover:bg-zinc-200 transition-colors whitespace-nowrap">
-              View Plans
+              Start Free Trial
+            </Link>
+          </div>
+        )}
+
+        {trialStatus.isOnTrial && (
+          <div className="mb-6 sm:mb-10 p-4 sm:p-6 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+            <div>
+              <h3 className="text-base sm:text-lg font-bold text-white mb-1 flex items-center gap-2">
+                <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" /> Your Pro Trial Ends in {trialStatus.daysRemaining} Days
+              </h3>
+              <p className="text-xs sm:text-sm text-zinc-400">Upgrade now to continue using Pro features.</p>
+            </div>
+            <Link href="/#pricing" className="px-5 py-2 bg-white text-black text-sm font-semibold rounded-full hover:bg-zinc-200 transition-colors whitespace-nowrap">
+              Upgrade Now
             </Link>
           </div>
         )}

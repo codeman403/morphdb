@@ -49,6 +49,7 @@ model Subscription {
   stripeSubscriptionId String?   @unique @map("stripe_subscription_id")
   plan                 String    @default("free")
   status               String    @default("inactive")
+  trialEndsAt          DateTime? @map("trial_ends_at")
   currentPeriodEnd     DateTime? @map("current_period_end")
   createdAt            DateTime  @default(now()) @map("created_at")
   updatedAt            DateTime  @updatedAt @map("updated_at")

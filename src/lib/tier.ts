@@ -54,7 +54,8 @@ export function getTierLimits(tier: UserTier): TierLimits {
 export async function getUserTier(userId: string): Promise<TierLimits> {
   try {
     const sub = await prisma.subscription.findUnique({ where: { userId } });
-    const tier = (sub?.status === 'active' ? sub.plan : 'free') as UserTier;
+    const isOnTrial = sub?.trialEndsAt && new Date(sub.trialEndsAt) > new Date();
+    const tier = (isOnTrial ? 'pro' : (sub?.status === 'active' ? sub.plan : 'free')) as UserTier;
     return getTierLimits(tier);
   } catch {
     return getTierLimits('free');
@@ -69,4 +70,19 @@ export function getTierLabel(tier: UserTier): string {
     enterprise: 'Enterprise',
   };
   return labels[tier];
+}
+
+export async function getTrialStatus(userId: string): Promise<{ isOnTrial: boolean; daysRemaining: number }> {
+  try {
+    const sub = await prisma.subscription.findUnique({ where: { userId } });
+    if (sub?.trialEndsAt && new Date(sub.trialEndsAt) > new Date()) {
+      const now = new Date();
+      const trialEnd = new Date(sub.trialEndsAt);
+      const daysRemaining = Math.ceil((trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+      return { isOnTrial: true, daysRemaining: Math.max(0, daysRemaining) };
+    }
+    return { isOnTrial: false, daysRemaining: 0 };
+  } catch {
+    return { isOnTrial: false, daysRemaining: 0 };
+  }
 }

@@ -24,6 +24,23 @@ const tiers = [
   },
   {
     name: 'Pro',
+    price: '$0',
+    period: 'first 3 days',
+    description: 'For developers migrating real production schemas.',
+    features: [
+      '50 batches per month',
+      'Up to 50 files per batch',
+      '500 translations per month',
+      'All AI models (GPT-4o Mini, Claude Haiku & Sonnet)',
+      'File upload & ZIP download',
+      'Priority email support',
+    ],
+    cta: 'Start Free Trial',
+    ctaAction: 'trial',
+    highlighted: true,
+  },
+  {
+    name: 'Pro',
     price: '$15',
     period: '/mo',
     description: 'For developers migrating real production schemas.',
@@ -37,7 +54,7 @@ const tiers = [
     ],
     cta: 'Upgrade to Pro',
     ctaAction: 'checkout',
-    highlighted: true,
+    highlighted: false,
   },
   {
     name: 'Design Partner',
@@ -217,14 +234,25 @@ export default function Pricing() {
     }
     setCheckoutLoading(plan);
     try {
-      const res = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan }),
-      });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
+      if (plan === 'trial') {
+        const res = await fetch('/api/trial', { method: 'POST' });
+        const data = await res.json();
+        if (res.ok) {
+          alert(data.message);
+          router.refresh();
+        } else {
+          alert(data.error);
+        }
+      } else {
+        const res = await fetch('/api/stripe/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan }),
+        });
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
+        }
       }
     } catch {
       // silently fail - user stays on page
@@ -303,6 +331,7 @@ export default function Pricing() {
                   onClick={() => {
                     if (tier.ctaAction === 'waitlist') setIsModalOpen(true);
                     else if (tier.ctaAction === 'beta') router.push(isAuthenticated ? '/dashboard/migrate' : '/login');
+                    else if (tier.ctaAction === 'trial') handleCheckout('trial');
                     else if (tier.ctaAction === 'checkout') handleCheckout(tier.name.toLowerCase().replace(' ', '_'));
                   }}
                   disabled={checkoutLoading === tier.name.toLowerCase().replace(' ', '_')}
