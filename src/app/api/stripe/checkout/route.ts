@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@/lib/supabase/server';
-import { prisma } from '@/lib/prisma';
 
 const PLANS: Record<string, { priceId: string; name: string }> = {
   pro: {
@@ -33,20 +32,6 @@ export async function POST(req: NextRequest) {
     if (!planConfig) {
       return NextResponse.json({ error: 'Invalid plan.' }, { status: 400 });
     }
-
-    // Immediately grant Pro access so user doesn't have to wait for webhook
-    await prisma.subscription.upsert({
-      where: { userId: user.id },
-      update: {
-        plan,
-        status: 'active',
-      },
-      create: {
-        userId: user.id,
-        plan,
-        status: 'active',
-      },
-    });
 
     const origin = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 

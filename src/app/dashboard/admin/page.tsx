@@ -167,6 +167,27 @@ export default function AdminDashboard() {
           </div>
           <div className="flex items-center gap-2">
             <button
+              onClick={async () => {
+                const userId = prompt('Enter user ID to grant Pro access:');
+                if (!userId) return;
+                const res = await fetch('/api/admin/grant-pro', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ userId }),
+                });
+                if (res.ok) {
+                  alert('User granted Pro access!');
+                  fetchStats();
+                } else {
+                  const data = await res.json();
+                  alert(data.error || 'Failed to grant Pro');
+                }
+              }}
+              className="flex items-center gap-2 px-4 py-2 text-sm text-green-400 hover:text-green-300 border border-green-500/20 rounded-full hover:bg-green-500/10 transition-colors"
+            >
+              Grant Pro
+            </button>
+            <button
               onClick={() => setShowResetModal(true)}
               disabled={resetting}
               className="flex items-center gap-2 px-4 py-2 text-sm text-amber-400 hover:text-amber-300 border border-amber-500/20 rounded-full hover:bg-amber-500/10 transition-colors disabled:opacity-50"
