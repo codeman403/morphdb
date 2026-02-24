@@ -80,6 +80,9 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<'waitlist' | 'logins' | 'signups' | 'support'>('waitlist');
   const [resetting, setResetting] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
+  const [showGrantProModal, setShowGrantProModal] = useState(false);
+  const [grantProUserId, setGrantProUserId] = useState('');
+  const [grantingPro, setGrantingPro] = useState(false);
 
   const fetchStats = async () => {
     setLoading(true);
@@ -167,22 +170,7 @@ export default function AdminDashboard() {
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={async () => {
-                const userId = prompt('Enter user ID to grant Pro access:');
-                if (!userId) return;
-                const res = await fetch('/api/admin/grant-pro', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ userId }),
-                });
-                if (res.ok) {
-                  alert('User granted Pro access!');
-                  fetchStats();
-                } else {
-                  const data = await res.json();
-                  alert(data.error || 'Failed to grant Pro');
-                }
-              }}
+              onClick={() => setShowGrantProModal(true)}
               className="flex items-center gap-2 px-4 py-2 text-sm text-green-400 hover:text-green-300 border border-green-500/20 rounded-full hover:bg-green-500/10 transition-colors"
             >
               Grant Pro
@@ -441,6 +429,32 @@ export default function AdminDashboard() {
           />
         )}
       </AnimatePresence>
+
+      <AnimatePresence>
+        {showGrantProModal && (
+          <GrantProModal
+            onClose={() => setShowGrantProModal(false)}
+            users={stats?.recentSignups || []}
+            onGrant={async (userId) => {
+              setGrantingPro(true);
+              try {
+                const res = await fetch('/api/admin/grant-pro', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ userId }),
+                });
+                if (res.ok) {
+                  setShowGrantProModal(false);
+                  fetchStats();
+                }
+              } finally {
+                setGrantingPro(false);
+              }
+            }}
+            loading={grantingPro}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -513,6 +527,77 @@ function ResetUsageModal({ onClose, onReset, users, loading }: { onClose: () => 
           >
             {loading ? <RotateCcw className="w-4 h-4 animate-spin" /> : null}
             {loading ? 'Resetting...' : 'Reset Usage'}
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function GrantProModal({ onClose, users, onGrant }: { onClose: () => void; users: Profile[]; onGrant: (userId: string) => void; loading: boolean }) {
+  const [selectedUser, setSelectedUser] = useState<string>('');
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.4 }}
+        className="w-full max-w-md bg-[#0f0f0f] border border-white/10 rounded-3xl p-8 relative shadow-2xl"
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 p-2 rounded-full text-zinc-500 hover:text-white hover:bg-white/5 transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-3 rounded-full bg-green-500/10 border border-green-500/20">
+            <Shield className="w-6 h-6 text-green-400" />
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-white">Grant Pro Access</h3>
+            <p className="text-sm text-zinc-400">Manually grant Pro access to a user</p>
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-zinc-300 mb-2">Select User</label>
+          <select
+            value={selectedUser}
+            onChange={(e) => setSelectedUser(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-green-500/50 transition-colors"
+          >
+            <option value="">Select a user...</option>
+            {users.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.name || user.email}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex gap-3">
+          <button
+            onClick={onClose}
+            className="flex-1 py-3 rounded-full font-medium text-zinc-400 hover:text-white border border-white/10 hover:bg-white/5 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => onGrant(selectedUser)}
+            disabled={!selectedUser}
+            className="flex-1 py-3 rounded-full font-semibold bg-green-500 text-black hover:bg-green-400 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            Grant Pro
           </button>
         </div>
       </motion.div>
