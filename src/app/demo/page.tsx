@@ -409,8 +409,8 @@ export default function DemoPage() {
           </div>
 
           <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-white/10 mb-8">
-            <h3 className="text-lg font-bold text-white mb-2">Unlock Developer Beta</h3>
-            <p className="text-sm text-zinc-400 mb-4">Get Claude models, 10K char limit, batch migration, file upload, and ZIP download.</p>
+            <h3 className="text-lg font-bold text-white mb-2">Unlock Developer Beta — Free</h3>
+            <p className="text-sm text-zinc-400 mb-4">Sign in to get Claude models, 10K char limit, batch migration, file upload, and ZIP download.</p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link href="/login"
                 className="px-6 py-3 bg-white text-black font-semibold rounded-full hover:bg-zinc-200 transition-colors flex items-center gap-2"
@@ -420,7 +420,7 @@ export default function DemoPage() {
               <Link href="/waitlist"
                 className="px-6 py-3 bg-white/5 border border-white/10 text-white font-semibold rounded-full hover:bg-white/10 transition-colors"
               >
-                Join Waitlist
+                Join Design Partner Waitlist
               </Link>
             </div>
           </div>

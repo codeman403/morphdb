@@ -40,7 +40,7 @@ export default function Hero() {
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
           <Link href="/demo" className="w-full sm:w-auto px-8 py-4 bg-white text-black font-semibold rounded-full hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2">
-            Start Migrating <ArrowRight className="w-5 h-5" />
+            Quick Demo <ArrowRight className="w-5 h-5" />
           </Link>
           <button className="w-full sm:w-auto px-8 py-4 bg-white/5 border border-white/10 text-white font-semibold rounded-full hover:bg-white/10 transition-colors flex items-center justify-center gap-2">
             <Terminal className="w-5 h-5 text-zinc-400" /> Read the Docs
