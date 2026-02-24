@@ -18,7 +18,7 @@ const tiers = [
       'GPT-4o Mini only',
       'Community Discord support',
     ],
-    cta: 'Start Free',
+    cta: 'Get Started',
     ctaAction: 'beta',
     highlighted: false,
   },
