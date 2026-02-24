@@ -54,9 +54,21 @@ export function getTierLimits(tier: UserTier): TierLimits {
 export async function getUserTier(userId: string): Promise<TierLimits> {
   try {
     const sub = await prisma.subscription.findUnique({ where: { userId } });
+    
+    // Priority 1: If subscription is active, use the plan (not trial)
+    if (sub?.status === 'active') {
+      const tier = sub.plan as UserTier;
+      return getTierLimits(tier);
+    }
+    
+    // Priority 2: If on trial and no active subscription, use trial
     const isOnTrial = sub?.trialEndsAt && new Date(sub.trialEndsAt) > new Date();
-    const tier = (isOnTrial ? 'pro' : (sub?.status === 'active' ? sub.plan : 'free')) as UserTier;
-    return getTierLimits(tier);
+    if (isOnTrial) {
+      return getTierLimits('pro');
+    }
+    
+    // Priority 3: Default to free
+    return getTierLimits('free');
   } catch {
     return getTierLimits('free');
   }
