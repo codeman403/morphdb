@@ -1,14 +1,14 @@
 # MorphDB — Architecture & Product Documentation
 
 > **Last Updated**: 2026-02-24
-> **Version**: 1.0.0 (Developer Beta)
+> **Version**: 1.1.0 (Developer Beta)
 > **Maintainer**: codeman403
 
 ---
 
 ## TL;DR
 
-MorphDB is an AI-powered database migration co-pilot that translates SQL between dialects (SQL Server, Oracle, MySQL, PostgreSQL → Snowflake/dbt, PostgreSQL, BigQuery, Redshift). Built as a SaaS with Next.js 16, Supabase Auth, Prisma 7, Stripe, and OpenAI GPT-4o-mini.
+MorphDB is an AI-powered database migration co-pilot that translates SQL between dialects (SQL Server, Oracle, MySQL, PostgreSQL → Snowflake/dbt, PostgreSQL, BigQuery, Redshift). Built as a SaaS with Next.js 16, Supabase Auth, Prisma 7, Stripe, and OpenAI GPT-4o-mini / Claude 3.5 Sonnet.
 
 ---
 
@@ -16,467 +16,125 @@ MorphDB is an AI-powered database migration co-pilot that translates SQL between
 
 1. [Architecture Overview](#architecture-overview)
 2. [Tech Stack](#tech-stack)
-3. [Directory Structure](#directory-structure)
-4. [Features](#features)
-5. [API Reference](#api-reference)
-6. [Database Schema](#database-schema)
-7. [Authentication Flow](#authentication-flow)
-8. [AI Migration Engine](#ai-migration-engine)
-9. [Security](#security)
-10. [Deployment](#deployment)
-11. [Environment Variables](#environment-variables)
-12. [Upcoming Updates](#upcoming-updates)
-13. [Changelog](#changelog)
+3. [Features Implemented](#features-implemented)
+4. [Upcoming Features](#upcoming-features)
+5. [Database Schema](#database-schema)
+6. [Security & Authentication](#security--authentication)
+7. [Deployment](#deployment)
 
 ---
 
 ## Architecture Overview
 
-```
-┌─────────────────────────────────────────────────────┐
-│                    Client (Browser)                  │
-│  Next.js 16 App Router • React 19 • Framer Motion   │
-└──────────────────────┬──────────────────────────────┘
-                       │
-              ┌────────▼────────┐
-              │   Vercel Edge    │
-              │   (Middleware)   │
-              │  Session Refresh │
-              └────────┬────────┘
-                       │
-        ┌──────────────┼──────────────┐
-        │              │              │
-  ┌─────▼─────┐ ┌─────▼─────┐ ┌─────▼─────┐
-  │  Auth API  │ │ Migrate   │ │  Admin    │
-  │  Routes    │ │ API       │ │  API      │
-  │ /api/auth  │ │ /api/     │ │ /api/     │
-  │            │ │ migrate   │ │ admin     │
-  └─────┬─────┘ └─────┬─────┘ └─────┬─────┘
-        │              │              │
-  ┌─────▼─────┐  ┌────▼────┐  ┌─────▼─────┐
-  │ Supabase   │  │ OpenAI  │  │  Prisma   │
-  │ Auth       │  │ GPT-4o  │  │  + Pool   │
-  │ (SSR)      │  │ -mini   │  │           │
-  └─────┬─────┘  └─────────┘  └─────┬─────┘
-        │                            │
-        └────────────┬───────────────┘
-                     │
-            ┌────────▼────────┐
-            │   Supabase      │
-            │   PostgreSQL    │
-            │  (via Pooler)   │
-            └─────────────────┘
-```
+MorphDB utilizes a modern, serverless architecture centered around Next.js App Router, deployed on Vercel. 
+
+- **Frontend**: React 19, Tailwind CSS v4, Framer Motion for animations.
+- **Backend**: Next.js API Routes handle AI translation, rate limiting, and Stripe webhooks.
+- **Database**: Supabase PostgreSQL accessed via Prisma ORM. Uses connection pooling (port 6543) for application queries and direct connection for migrations.
+- **Authentication**: Supabase Auth with server-side rendering (SSR) and middleware session management.
+- **AI Translation**: Intelligent routing between OpenAI (GPT-4o-mini for Free tier) and Anthropic (Claude 3.5 Sonnet for Pro tier).
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology | Version |
-|-------|-----------|---------|
-| **Framework** | Next.js (App Router) | 16.1.6 |
-| **UI** | React | 19.2.3 |
-| **Styling** | Tailwind CSS | 4.x |
-| **Animations** | Framer Motion | 12.x |
-| **Icons** | Lucide React | 0.575.x |
-| **ORM** | Prisma (with pg adapter) | 7.4.1 |
-| **Database** | Supabase PostgreSQL | - |
-| **Auth** | Supabase SSR | 0.8.x |
-| **Payments** | Stripe | 20.x |
-| **AI** | OpenAI (GPT-4o-mini) | latest |
-| **Hosting** | Vercel | - |
+- **Framework**: Next.js 16.1.6 (App Router)
+- **UI**: React 19.2.3, Tailwind CSS 4.x
+- **Animations**: Framer Motion 12.x
+- **Icons**: Lucide React
+- **ORM**: Prisma 7.4.1 (with pg adapter)
+- **Database**: Supabase PostgreSQL
+- **Auth**: Supabase SSR
+- **Payments**: Stripe 20.x
+- **AI**: OpenAI SDK, Anthropic SDK
+- **Toast Notifications**: Sonner
+- **Hosting**: Vercel
 
 ---
 
-## Directory Structure
+## Features Implemented
 
-```
-hackathon-proj/
-├── prisma/
-│   └── schema.prisma          # Database models
-├── prisma.config.ts            # Prisma 7 config (connection URL)
-├── src/
-│   ├── app/
-│   │   ├── page.tsx            # Landing page (Hero, Features, How It Works, Pricing, Footer)
-│   │   ├── layout.tsx          # Root layout
-│   │   ├── login/page.tsx      # Sign In / Sign Up page
-│   │   ├── waitlist/page.tsx   # Waitlist signup page
-│   │   ├── demo/page.tsx       # AI Migration Demo (interactive)
-│   │   ├── dashboard/
-│   │   │   ├── page.tsx        # User dashboard
-│   │   │   └── admin/page.tsx  # Admin dashboard (protected)
-│   │   └── api/
-│   │       ├── auth/
-│   │       │   ├── signin/route.ts
-│   │       │   ├── signup/route.ts
-│   │       │   └── signout/route.ts
-│   │       ├── migrate/route.ts      # AI SQL translation endpoint
-│   │       ├── waitlist/route.ts
-│   │       ├── admin/stats/route.ts  # Admin data endpoint
-│   │       └── stripe/
-│   │           ├── checkout/route.ts
-│   │           └── webhook/route.ts
-│   ├── lib/
-│   │   ├── prisma.ts           # Prisma client (serverless-optimized)
-│   │   ├── rate-limit.ts       # In-memory rate limiter
-│   │   ├── ai/
-│   │   │   └── migrate.ts      # AI translation engine (OpenAI)
-│   │   └── supabase/
-│   │       └── server.ts       # Supabase server client
-│   ├── proxy.ts                # Middleware (session refresh + route protection)
-│   └── generated/prisma/       # Auto-generated Prisma client (gitignored)
-├── ARCHITECTURE.md             # This file
-├── ARCHITECTURE.md             # This file (architecture, features, API, deployment)
-└── package.json
-```
+### 1. Tier-Based Pricing & Access Control
+A robust 4-tier pricing system (Free, Pro, Design Partner, Enterprise).
+- **Free Tier**: 5 batches/month, 10 files/batch, 50 translations/month. Limited to GPT-4o-mini.
+- **Pro Tier**: 50 batches/month, 50 files/batch, 500 translations/month. Unlocks Claude models.
+- **Enforcement**: Middleware and API routes strictly enforce quotas and model access based on the user's active Stripe subscription.
+
+### 2. Batch Migration Engine
+- **File Upload**: Drag & drop support for `.sql` and `.txt` files (max 500KB per file).
+- **Multi-Statement Parsing**: Custom SQL parser splits large files into individual logical statements (tables, views, procedures).
+- **AI Translation**: Translates source dialects to target dialects while preserving business logic and generating dbt syntax where applicable.
+- **Progress Tracking**: Real-time visual progress bar during batch processing.
+
+### 3. Migration History & Usage Tracking
+- **Persistence**: Every batch migration and its individual statement results are stored in the database.
+- **History Dashboard**: Users can view past migrations, success/failure rates, and token usage at `/dashboard/history`.
+- **Usage Quotas**: Live tracking of monthly translation counts, batch counts, and token usage displayed on the user dashboard.
+
+### 4. Interactive Results & Export
+- **Diff View**: Side-by-side comparison of original vs. translated SQL.
+- **Categorization**: Color-coded badges for statement types (CREATE_TABLE, PROCEDURE, etc.).
+- **Export**: Download individual translations or full batches as ZIP archives (via `jszip`).
+- **Feedback**: Global toast notifications for success, errors, and clipboard actions.
+
+### 5. Authentication & User Management
+- Secure email/password login and registration via Supabase.
+- Session persistence via Next.js middleware.
+- Admin dashboard (`/dashboard/admin`) for viewing system-wide stats (waitlist, active users, login logs).
+
+### 6. Stripe Monetization
+- Integrated checkout flow for upgrading to Pro/Design Partner tiers.
+- Robust webhook handler (`/api/stripe/webhook`) processing `checkout.session.completed`, `customer.subscription.updated`, and `customer.subscription.deleted` events to manage access tiers automatically.
 
 ---
 
-## Features
+## Upcoming Features
 
-### 🏠 Landing Page
-- Hero section with gradient text and CTA
-- Features grid (AI Translation, Logic Preservation, dbt Output)
-- "How It Works" pipeline visualization
-- Pricing tiers (Design Partner / Pro / Enterprise)
-- Footer with links
-- Smooth scroll navigation with Framer Motion animations
+The following features are slated for future iterations:
 
-### 🤖 AI Migration Engine (Phase 3)
-- **Real AI-powered** SQL dialect translation via OpenAI GPT-4o-mini
-- **Source dialects**: SQL Server (T-SQL), Oracle (PL/SQL), MySQL, PostgreSQL
-- **Target dialects**: Snowflake (dbt Jinja), PostgreSQL, BigQuery, Redshift
-
-#### Quick Demo (`/demo` — Unauthenticated)
-- Single SQL paste input with editable textarea
-- Preset examples (NULL Handling, Date Functions, TOP→LIMIT, Oracle→Postgres)
-- Translation stats: duration, transformations count, tokens used, warnings
-- Copy-to-clipboard for output
-- Rate limited: 10 translations/min per IP
-
-#### Batch Migration (`/dashboard/migrate` — Authenticated)
-- **File upload**: Drag & drop or browse for .sql/.txt files (max 500KB each)
-- **Paste input**: Multi-statement SQL directly in textarea
-- **SQL parser**: Splits multi-statement files into individual CREATE TABLE/VIEW/SELECT/etc.
-- **Batch processing**: Up to 50 tables/views per batch (Developer Beta limit)
-- **Progress bar**: Real-time progress with animated gradient
-- **Results view**: Side-by-side original vs translated with statement list sidebar
-- **Statement types**: Color-coded badges (CREATE_TABLE, VIEW, PROCEDURE, etc.)
-- **Download**: Single .sql file or full .zip bundle with summary
-- **Copy**: Per-statement copy-to-clipboard
-- Rate limited: 5 batch requests/min per IP
-
-### 🔐 Authentication
-- Email/password auth via Supabase Auth (SSR)
-- Sign Up with name + company fields
-- Sign In with login logging (IP, Country, User-Agent, Browser)
-- Sign Out (supports both GET and POST)
-- Middleware session refresh on all routes (prevents silent sign-outs)
-- Protected `/dashboard` routes (redirect to `/login` if unauthenticated)
-
-### 📊 Admin Dashboard
-- Stat cards: Waitlist count, Login events, Total users, Subscriptions
-- Tabbed data tables: Waitlist entries, Login logs, User profiles
-- Protected by `ADMIN_EMAILS` environment variable
-- Refresh button for live data
-- Accessible at `/dashboard/admin`
-
-### 📝 Waitlist
-- Email + Name + Company capture
-- Duplicate detection (409 if already on waitlist)
-- Stored in `waitlist_entries` table
-
-### 💳 Stripe Integration
-- Checkout session creation
-- Webhook handler for subscription events
-- Lazy Stripe initialization (Vercel-compatible)
-
-### 🛡️ Security
-- **Rate Limiting**: Per-IP sliding window on all mutation endpoints
-  - Sign In: 5 req/min
-  - Sign Up: 3 req/min
-  - Waitlist: 3 req/min
-  - AI Migrate: 10 req/min
-- Input validation on all API routes
-- SQL input length cap (10,000 chars)
-- Admin panel email-gated access
-
----
-
-## API Reference
-
-### `POST /api/migrate`
-Translate SQL between dialects using AI.
-
-**Request:**
-```json
-{
-  "sql": "SELECT ISNULL(name, 'Unknown') FROM [dbo].[Users]",
-  "sourceDialect": "sql_server",
-  "targetDialect": "snowflake_dbt"
-}
-```
-
-**Response (200):**
-```json
-{
-  "translatedSql": "select coalesce(name, 'Unknown') from {{ source('dbo', 'users') }}",
-  "changes": ["ISNULL → COALESCE", "Bracket notation → dbt source()"],
-  "warnings": [],
-  "tokensUsed": 245,
-  "durationMs": 1423
-}
-```
-
-### `POST /api/auth/signup`
-Register a new user.
-
-**Request:** `{ "email", "password", "name?", "company?" }`
-**Response:** `{ "success": true, "user": {...} }`
-
-### `POST /api/auth/signin`
-Sign in and log the event.
-
-**Request:** `{ "email", "password" }`
-**Response:** `{ "success": true, "user": {...} }`
-
-### `POST /api/auth/signout` | `GET /api/auth/signout`
-Sign out and redirect to home.
-
-### `POST /api/waitlist`
-Join the waitlist.
-
-**Request:** `{ "email", "name?", "company?", "tier?" }`
-**Response:** `{ "success": true, "id": "..." }`
-
-### `GET /api/admin/stats`
-Fetch admin dashboard data (requires `ADMIN_EMAILS` auth).
-
-### `POST /api/migrate/batch`
-Batch translate multiple SQL statements (authenticated).
-
-**Request:** `FormData` with `sourceDialect`, `targetDialect`, `files[]` (.sql), optional `sql` (pasted text)
-**Response:**
-```json
-{
-  "results": [{ "name", "type", "originalSql", "translatedSql", "changes", "warnings", "status" }],
-  "summary": { "total", "success", "failed", "totalTokens", "totalDuration" }
-}
-```
-
-### `POST /api/migrate/download`
-Generate downloadable .sql or .zip from translation results.
-
-**Request:** `{ "results": [...], "targetDialect": "..." }`
-**Response:** Binary file (`.sql` for single, `.zip` for multiple)
-
-### `POST /api/stripe/checkout`
-Create a Stripe checkout session.
-
-### `POST /api/stripe/webhook`
-Handle Stripe subscription events.
+1. **dbt Project Generation (P3)**: Automatically scaffold a complete dbt project directory structure, including `models/`, `sources.yml`, and `schema.yml` test definitions directly from the translated SQL.
+2. **Advanced Diff Viewer (P3)**: Implement a granular, line-by-line highlighted diff viewer (similar to GitHub pull requests) for easier review of SQL changes.
+3. **Multi-file Schema Context**: Allow the AI to understand relationships between multiple uploaded files simultaneously (e.g., resolving foreign keys across separate table definition files).
+4. **Team Workspaces**: Shared migration history and centralized billing for organizational teams.
+5. **Migration Validation Engine**: Built-in syntax checking against target data warehouse dialects before export.
 
 ---
 
 ## Database Schema
 
-```sql
--- Waitlist entries
-waitlist_entries (
-  id          TEXT PRIMARY KEY,
-  email       TEXT UNIQUE NOT NULL,
-  name        TEXT,
-  company     TEXT,
-  tier        TEXT DEFAULT 'design_partner',
-  created_at  TIMESTAMPTZ DEFAULT NOW()
-)
-
--- User profiles (linked to auth.users)
-profiles (
-  id          TEXT PRIMARY KEY → auth.users(id),
-  email       TEXT UNIQUE NOT NULL,
-  name        TEXT,
-  company     TEXT,
-  avatar_url  TEXT,
-  created_at  TIMESTAMPTZ DEFAULT NOW(),
-  updated_at  TIMESTAMPTZ DEFAULT NOW()
-)
-
--- Login audit log
-login_logs (
-  id          TEXT PRIMARY KEY,
-  user_id     TEXT NOT NULL,
-  email       TEXT,
-  ip          TEXT,
-  country     TEXT,
-  user_agent  TEXT,
-  created_at  TIMESTAMPTZ DEFAULT NOW()
-)
-
--- Subscriptions
-subscriptions (
-  id                      TEXT PRIMARY KEY,
-  user_id                 TEXT UNIQUE NOT NULL,
-  stripe_customer_id      TEXT UNIQUE,
-  stripe_subscription_id  TEXT UNIQUE,
-  plan                    TEXT DEFAULT 'free',
-  status                  TEXT DEFAULT 'inactive',
-  current_period_end      TIMESTAMPTZ,
-  created_at              TIMESTAMPTZ DEFAULT NOW(),
-  updated_at              TIMESTAMPTZ DEFAULT NOW()
-)
-```
+The core schema includes:
+- `Profile`: User metadata linked to Supabase Auth.
+- `Subscription`: Tracks Stripe customer and active plan details.
+- `MigrationBatch`: High-level summary of a migration run (source, target, total tokens).
+- `MigrationResult`: Individual SQL statement translations linked to a batch.
+- `MonthlyUsage`: Tracks rolling monthly quotas for rate limiting.
+- `LoginLog`: Security audit trail.
+- `WaitlistEntry`: Pre-launch lead capture.
 
 ---
 
-## Authentication Flow
+## Security & Authentication
 
-```
-User clicks Sign Up → POST /api/auth/signup
-  → Supabase creates auth.users entry
-  → Prisma creates profiles entry
-  → Returns user object
-
-User clicks Sign In → POST /api/auth/signin
-  → Supabase validates credentials
-  → Prisma logs login (IP, country, UA)
-  → Returns user + sets session cookies
-
-Every page load → Middleware (proxy.ts)
-  → Refreshes Supabase session cookies
-  → Redirects /dashboard/* to /login if unauthenticated
-```
-
----
-
-## AI Migration Engine
-
-### How It Works
-
-1. User pastes SQL and selects source/target dialects
-2. Frontend sends `POST /api/migrate`
-3. Backend builds a specialized system prompt for the dialect pair
-4. OpenAI GPT-4o-mini translates the SQL
-5. Response is parsed into: translated SQL, changes list, warnings list
-6. Frontend displays result with stats and transformation details
-
-### System Prompt Strategy
-
-The AI is instructed to:
-- Translate ALL dialect-specific syntax (functions, types, keywords)
-- Convert naming conventions (PascalCase → snake_case)
-- Use dbt Jinja syntax for Snowflake targets
-- Preserve business logic exactly
-- Report all transformations and potential warnings
-
-### Cost Estimate
-
-- **GPT-4o-mini**: ~$0.15/1M input tokens, ~$0.60/1M output tokens
-- **Average translation**: ~500 tokens → **~$0.0003 per translation**
-- **1,000 translations/day** → ~$0.30/day
+- **Rate Limiting**: Sliding window rate limits on auth and AI endpoints (e.g., 5 batch requests/minute).
+- **Environment Management**: Strict separation of database credentials. `DATABASE_URL` uses port 6543 (transaction pooler) for secure scalable app queries.
+- **Data Protection**: Prepared statements via Prisma prevent SQL injection.
+- **Admin Access**: Gated via explicit email allowlists in environment variables.
 
 ---
 
 ## Deployment
 
-- **Platform**: Vercel
-- **Repository**: [github.com/codeman403/morphdb](https://github.com/codeman403/morphdb) (private)
-- **Branch**: `main` (auto-deploy on push)
-- **Database**: Supabase PostgreSQL (connection pooler on port 6543)
-- **Build**: `next build` with `postinstall: prisma generate`
+Deployed exclusively via Vercel connecting to a Supabase backend.
 
-### Deployment Steps
+**Key Environment Variables required for production:**
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `DATABASE_URL` (Supabase Pooler)
+- `OPENAI_API_KEY`
+- `ANTHROPIC_API_KEY`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `STRIPE_PRO_PRICE_ID`
+- `NEXT_PUBLIC_SITE_URL`
 
-1. Push to `main` → Vercel auto-deploys
-2. Set all environment variables in Vercel Dashboard (see table above)
-3. `postinstall` auto-runs `prisma generate` during build
-4. Update `NEXT_PUBLIC_SITE_URL` to your live domain after first deploy
-
-### Stripe Setup (Before Monetization Goes Live)
-
-1. Create a Stripe account → Create Products:
-   - "MorphDB Pro" ($15/mo)
-   - "MorphDB Design Partner" ($50/mo)
-2. Copy **Price IDs** → set as `STRIPE_PRO_PRICE_ID` and `STRIPE_DESIGN_PARTNER_PRICE_ID`
-3. Add Webhook endpoint: `https://your-domain.vercel.app/api/stripe/webhook`
-4. Events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`
-5. Copy **Webhook Signing Secret** → set as `STRIPE_WEBHOOK_SECRET`
-
-### Post-Deploy Smoke Tests
-
-- [ ] Landing page loads correctly
-- [ ] Sign Up creates user + profile
-- [ ] Sign In works, login logs appear
-- [ ] Sign Out redirects to homepage
-- [ ] Waitlist form submits
-- [ ] `/dashboard` redirects to `/login` if unauthenticated
-- [ ] AI Demo translates SQL correctly
-- [ ] Admin panel shows stats (after adding `ADMIN_EMAILS`)
-
----
-
-## Environment Variables
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `NEXT_PUBLIC_SUPABASE_URL` | ✅ | Supabase project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ | Supabase anonymous key |
-| `DATABASE_URL` | ✅ | Supabase Pooler URL (port 6543) |
-| `DIRECT_URL` | ⚡ | Direct connection (port 5432, migrations only) |
-| `OPENAI_API_KEY` | ✅ | OpenAI API key for AI translations |
-| `ADMIN_EMAILS` | ✅ | Comma-separated admin emails |
-| `NEXT_PUBLIC_SITE_URL` | ✅ | Production URL (e.g., https://morphdb.vercel.app) |
-| `STRIPE_SECRET_KEY` | 💳 | Stripe secret key |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | 💳 | Stripe publishable key |
-| `STRIPE_WEBHOOK_SECRET` | 💳 | Stripe webhook signing secret |
-| `STRIPE_PRO_PRICE_ID` | 💳 | Stripe price ID for Pro tier ($15/mo) |
-| `STRIPE_DESIGN_PARTNER_PRICE_ID` | 💳 | Stripe price ID for Design Partner tier ($50/mo) |
-| `ANTHROPIC_API_KEY` | ✅ | Anthropic API key for Claude models |
-
----
-
-## Upcoming Updates
-
-### 🔜 Next Up
-- [ ] Stripe production setup (real products/prices)
-- [ ] UI polish: loading skeletons, toast notifications, mobile responsiveness
-- [ ] Migration history: save past translations per user
-- [ ] Bulk migration: upload .sql files for batch processing
-
-### 🗺️ Roadmap
-- [ ] Multi-file schema migration (entire database at once)
-- [ ] Side-by-side diff view for source vs translated SQL
-- [ ] Export to dbt project structure (models/, sources.yml)
-- [ ] Team workspaces with shared migration history
-- [ ] Self-hosted option with custom LLM backends
-- [ ] Support for stored procedures, triggers, and views
-- [ ] Migration validation (syntax checking + test execution)
-
----
-
-## Changelog
-
-### v1.1.0 — Batch Migration & File Upload (2026-02-24)
-- 📁 File upload with drag & drop (.sql, .txt)
-- 🔄 Batch processing up to 50 statements per job
-- 📥 ZIP download for translated files with summary
-- 🧩 SQL parser: splits multi-statement files into individual objects
-- 📊 Side-by-side original vs translated view
-- 🏷️ Color-coded statement type badges
-- 📝 Consolidated docs (README.md + ARCHITECTURE.md only)
-
-### v1.0.0 — Developer Beta (2026-02-24)
-- 🤖 Real AI migration engine (GPT-4o-mini)
-- 📊 Admin dashboard with waitlist, login logs, user stats
-- 🛡️ Rate limiting on all mutation endpoints
-- 🔐 Full auth flow (sign up, sign in, sign out, session persistence)
-- 💳 Stripe checkout + webhook integration
-- 🏠 Landing page with animations (Hero, Features, How It Works, Pricing, Footer)
-- 📝 Waitlist capture with duplicate detection
-- 🚀 Deployed on Vercel with Supabase Pooler connection
-
-### v0.1.0 — Landing Page (2026-02-23)
-- Initial Next.js 16 scaffold
-- Landing page with all sections
-- Basic auth setup
-- Supabase + Prisma 7 integration
+*(Schema migrations are handled manually via Supabase SQL Editor to bypass pooler limitations during Vercel builds.)*
