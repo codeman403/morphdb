@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Sparkles, X, Loader2, CheckCircle2 } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 const tiers = [
   {
@@ -178,6 +179,14 @@ function WaitlistModal({ onClose }: { onClose: () => void }) {
 export default function Pricing() {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsAuthenticated(!!session?.user);
+    });
+  }, []);
 
   return (
     <>
@@ -246,7 +255,7 @@ export default function Pricing() {
                 </ul>
 
                 <button 
-                  onClick={() => tier.ctaAction === 'waitlist' ? setIsModalOpen(true) : tier.ctaAction === 'beta' && router.push('/demo')}
+                  onClick={() => tier.ctaAction === 'waitlist' ? setIsModalOpen(true) : tier.ctaAction === 'beta' && router.push(isAuthenticated ? '/dashboard/migrate' : '/login')}
                   className={`w-full py-4 rounded-full font-semibold transition-colors ${
                     tier.highlighted
                       ? 'bg-white text-black hover:bg-zinc-200'
