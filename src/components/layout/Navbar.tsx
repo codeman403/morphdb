@@ -13,13 +13,27 @@ export default function Navbar() {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetch('/api/auth/profile').then(r => r.json()).then(d => setFirstName(d.firstName));
+    
+    const initAuth = async () => {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (!error && session?.user) {
+        setUser(session.user);
+        const { data } = await supabase.auth.getUser();
+        if (data.user) {
+          fetch('/api/auth/profile').then(r => r.json()).then(d => setFirstName(d.firstName));
+        }
+      } else {
+        const { data: { session: refreshSession } } = await supabase.auth.refreshSession();
+        if (refreshSession?.user) {
+          setUser(refreshSession.user);
+          fetch('/api/auth/profile').then(r => r.json()).then(d => setFirstName(d.firstName));
+        }
       }
       setLoading(false);
-    });
+    };
+    
+    initAuth();
+    
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
