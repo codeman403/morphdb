@@ -47,39 +47,17 @@ export default function Hero() {
           </a>
         </div>
 
-        {/* Mock Terminal/Code Snippet */}
-        <div className="mt-20 w-full max-w-4xl bg-black/40 border border-white/10 rounded-2xl p-4 backdrop-blur-xl shadow-2xl overflow-hidden relative">
-          <div className="flex items-center gap-2 mb-4 px-2">
-            <div className="w-3 h-3 rounded-full bg-red-500/80" />
-            <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-            <div className="w-3 h-3 rounded-full bg-green-500/80" />
-            <div className="ml-2 text-xs text-zinc-500 font-mono">migration.ts</div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left font-mono text-sm">
-            <div className="bg-white/5 p-4 rounded-xl border border-white/5">
-              <div className="text-zinc-500 mb-2">-- Source: SQL Server</div>
-              <pre className="text-red-400/80 overflow-x-auto">
-                <code>
-{`SELECT TOP 10 
-  ISNULL(CustomerName, 'Unknown'),
-  GETDATE() as ExportDate
-FROM [LegacyDB].[dbo].[Users] WITH (NOLOCK)`}
-                </code>
-              </pre>
-            </div>
-            <div className="bg-blue-500/10 p-4 rounded-xl border border-blue-500/20">
-              <div className="text-blue-400 mb-2">-- Target: Snowflake (dbt)</div>
-              <pre className="text-green-400/80 overflow-x-auto">
-                <code>
-{`select
-  coalesce(customer_name, 'Unknown') as customer_name,
-  current_timestamp() as export_date
-from {{ source('legacy', 'users') }}
-limit 10;`}
-                </code>
-              </pre>
-            </div>
-          </div>
+        {/* Demo Video */}
+        <div className="mt-20 w-full max-w-4xl rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-auto"
+          >
+            <source src="/demo.mp4" type="video/mp4" />
+          </video>
         </div>
       </div>
     </section>
