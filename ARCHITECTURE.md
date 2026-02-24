@@ -55,35 +55,40 @@ MorphDB utilizes a modern, serverless architecture centered around Next.js App R
 
 ```mermaid
 flowchart TD
-    Client[Browser Client\nNext.js React 19] -->|HTTPS| Middleware[Vercel Edge Middleware\nSession Refresh]
+    Client["Browser Client\nNext.js React 19"] -->|"HTTPS"| Middleware["Vercel Edge Middleware\nSession Refresh"]
     
-    subgraph Vercel[Vercel Production Environment]
-        Middleware --> Page[Page Routes\nSSR & React Server Components]
-        Middleware --> API_Migrate[/api/migrate & /api/migrate/batch/]
-        Middleware --> API_Auth[/api/auth/*]
-        Middleware --> API_Stripe[/api/stripe/webhook/]
+    subgraph Vercel["Vercel Production Environment"]
+        Page["Page Routes\nSSR & React Server Components"]
+        API_Migrate["/api/migrate & /api/migrate/batch/"]
+        API_Auth["/api/auth/*"]
+        API_Stripe["/api/stripe/webhook/"]
+        
+        Middleware --> Page
+        Middleware --> API_Migrate
+        Middleware --> API_Auth
+        Middleware --> API_Stripe
     end
     
-    subgraph External[External Services]
-        OpenAI[OpenAI API\nGPT-4o-mini]
-        Anthropic[Anthropic API\nClaude 3.5 Sonnet]
-        Stripe[Stripe API\nPayments & Subscriptions]
+    subgraph External["External Services"]
+        OpenAI["OpenAI API\nGPT-4o-mini"]
+        Anthropic["Anthropic API\nClaude 3.5 Sonnet"]
+        Stripe["Stripe API\nPayments & Subscriptions"]
     end
     
-    subgraph Supabase[Supabase Platform]
-        Auth[Supabase Auth]
-        Pooler[Transaction Pooler\nPort 6543]
-        DB[(PostgreSQL DB)]
+    subgraph Supabase["Supabase Platform"]
+        Auth["Supabase Auth"]
+        Pooler["Transaction Pooler\nPort 6543"]
+        DB[("PostgreSQL DB")]
     end
     
-    API_Migrate -->|Prompts| OpenAI
-    API_Migrate -->|Prompts| Anthropic
-    API_Stripe <-->|Webhooks| Stripe
+    API_Migrate -->|"Prompts"| OpenAI
+    API_Migrate -->|"Prompts"| Anthropic
+    API_Stripe <-->|"Webhooks"| Stripe
     
-    Page -->|SSR Session Check| Auth
-    API_Auth -->|Sign In / Up| Auth
+    Page -->|"SSR Session Check"| Auth
+    API_Auth -->|"Sign In / Up"| Auth
     
-    API_Migrate -->|Prisma Queries| Pooler
+    API_Migrate -->|"Prisma Queries"| Pooler
     API_Stripe -->|Prisma Queries| Pooler
     Page -->|Prisma Queries| Pooler
     
