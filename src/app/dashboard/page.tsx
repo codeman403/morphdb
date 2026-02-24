@@ -46,6 +46,8 @@ export default async function DashboardPage() {
             Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">{profile?.name?.split(' ')[0] ?? 'there'}</span> 👋
           </h1>
           <p className="text-zinc-400">Your MorphDB migration dashboard. More features coming soon.</p>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
           <div className="bg-white/5 border border-purple-500/20 rounded-2xl p-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 blur-2xl rounded-full translate-x-1/2 -translate-y-1/2" />
