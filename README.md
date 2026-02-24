@@ -23,10 +23,12 @@ It eliminates the manual, error-prone bottlenecks of enterprise digital transfor
 
 - 🤖 **Multi-LLM Translation Engine**: Intelligently routes translation requests to **OpenAI GPT-4o-mini** (for speed) or **Anthropic Claude 3.5 Sonnet** (for complex logic preservation).
 - 📦 **Batch Processing**: Upload entire schema dumps (.sql, .txt). The custom parser tokenizes and translates hundreds of tables, views, and procedures concurrently.
-- 🚦 **Tiered Access Control**: Full SaaS monetization setup with Free, Pro, Design Partner, and Enterprise tiers enforcing usage limits and model selection.
+- 🚦 **Tiered Access Control**: Full SaaS monetization setup with Free, Pro (3-day free trial available), Design Partner, and Enterprise tiers enforcing usage limits and model selection.
 - 📊 **Migration History**: Complete tracking of past migrations, displaying success/failure rates, tokens used, and translation times.
 - 💳 **Stripe Monetization**: Built-in Stripe checkout and webhook handling for automatic tier upgrades.
 - 🔐 **Secure Authentication**: Supabase Auth (SSR) with robust Next.js middleware session management and rate limiting.
+- 🎫 **Support System**: Built-in support ticket system for user inquiries.
+- ⚙️ **Admin Dashboard**: Comprehensive admin panel with user management, usage resets, and support ticket handling.
 
 ---
 
@@ -61,7 +63,7 @@ This repository is configured to deploy directly to Vercel. Local setup is not r
    ADMIN_EMAILS=you@example.com
    ```
 3. **Database Schema Setup**: 
-   Because `prisma db push` hangs on Vercel's serverless builds with connection poolers, execute the raw SQL found in `ARCHITECTURE.md` directly within the Supabase SQL Editor to construct the `migration_batches`, `migration_results`, and `monthly_usage` tables.
+   Because `prisma db push` hangs on Vercel's serverless builds with connection poolers, execute the raw SQL found in `ARCHITECTURE.md` directly within the Supabase SQL Editor to construct the `migration_batches`, `migration_results`, `monthly_usage`, and `support_tickets` tables.
 4. **Deploy**: Vercel handles the Next.js build and Prisma client generation automatically.
 
 ---

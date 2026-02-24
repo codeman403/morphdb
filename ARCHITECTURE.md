@@ -123,13 +123,27 @@ flowchart TD
 A robust 4-tier pricing system (Free, Pro, Design Partner, Enterprise).
 - **Free Tier**: 5 batches/month, 10 files/batch, 50 translations/month. Limited to GPT-4o-mini.
 - **Pro Tier**: 50 batches/month, 50 files/batch, 500 translations/month. Unlocks Claude models.
-- **Enforcement**: Middleware and API routes strictly enforce quotas and model access based on the user's active Stripe subscription.
+- **3-Day Free Trial**: New users can start a 3-day free Pro trial with full Pro features. Trial ends automatically after 3 days, reverting to Free tier.
+- **Enforcement**: Middleware and API routes strictly enforce quotas and model access based on the user's active Stripe subscription or trial status.
 
 ### 2. Batch Migration Engine
 - **File Upload**: Drag & drop support for `.sql` and `.txt` files (max 500KB per file).
 - **Multi-Statement Parsing**: Custom SQL parser splits large files into individual logical statements (tables, views, procedures).
 - **AI Translation**: Translates source dialects to target dialects while preserving business logic and generating dbt syntax where applicable.
 - **Progress Tracking**: Real-time visual progress bar during batch processing.
+- **Source/Target Display**: Translation results show source and target database names (e.g., "SQL Server → Snowflake (dbt)").
+
+### 3. Support System
+- **Support Page** (`/support`): Dedicated support page for users to submit inquiries.
+- **Ticket Management**: Support tickets are stored in the database with name, email, subject, and description fields.
+- **Status Tracking**: Tickets have status (open, in_progress, resolved) and priority (low, medium, high).
+- **Admin View**: Admin panel includes a "Support Tickets" tab to view and manage all support requests.
+
+### 4. Admin Dashboard
+- **User Management**: View waitlist entries, login logs, and user signups.
+- **Usage Reset**: Admin can reset any user's monthly usage limits.
+- **Support Ticket Management**: View and manage support tickets.
+- **Real-time Stats**: View system-wide statistics including active users, subscriptions, and support tickets.
 ## Database Schema
 
 ```mermaid
@@ -150,6 +164,7 @@ erDiagram
         string stripe_customer_id
         string plan
         string status
+        datetime trial_ends_at
         datetime current_period_end
     }
     
@@ -189,22 +204,42 @@ erDiagram
         string ip
         string country
     }
+    
+    SupportTicket ||--|| Profile : "optional link via userId"
+    SupportTicket {
+        string id PK
+        string user_id FK
+        string name
+        string email
+        string subject
+        string description
+        string status
+        string priority
+    }
 ```
 
 The core schema includes:
 - `Profile`: User metadata linked to Supabase Auth.
-- `Subscription`: Tracks Stripe customer and active plan details.
+- `Subscription`: Tracks Stripe customer, active plan details, and trial expiration (`trial_ends_at`).
 - `MigrationBatch`: High-level summary of a migration run (source, target, total tokens).
 - `MigrationResult`: Individual SQL statement translations linked to a batch.
 - `MonthlyUsage`: Tracks rolling monthly quotas for rate limiting.
 - `LoginLog`: Security audit trail.
 - `WaitlistEntry`: Pre-launch lead capture.
+- `SupportTicket`: User support inquiries with status and priority tracking.
+
 ### 5. Authentication & User Management
 - Secure email/password login and registration via Supabase.
 - Session persistence via Next.js middleware.
-- Admin dashboard (`/dashboard/admin`) for viewing system-wide stats (waitlist, active users, login logs).
+- Admin dashboard (`/dashboard/admin`) for viewing system-wide stats (waitlist, active users, login logs, support tickets).
 
-### 6. Stripe Monetization
+### 6. 3-Day Free Trial
+- New users can start a 3-day free Pro trial from the Pricing page.
+- Trial provides full Pro features immediately (no payment required).
+- Dashboard displays trial status and remaining days.
+- After 3 days, user automatically reverts to Free tier.
+
+### 7. Stripe Monetization
 - Integrated checkout flow for upgrading to Pro/Design Partner tiers.
 - Robust webhook handler (`/api/stripe/webhook`) processing `checkout.session.completed`, `customer.subscription.updated`, and `customer.subscription.deleted` events to manage access tiers automatically.
 
@@ -219,28 +254,6 @@ The following features are slated for future iterations:
 3. **Multi-file Schema Context**: Allow the AI to understand relationships between multiple uploaded files simultaneously (e.g., resolving foreign keys across separate table definition files).
 4. **Team Workspaces**: Shared migration history and centralized billing for organizational teams.
 5. **Migration Validation Engine**: Built-in syntax checking against target data warehouse dialects before export.
-
----
-
-## Database Schema
-
-The core schema includes:
-- `Profile`: User metadata linked to Supabase Auth.
-- `Subscription`: Tracks Stripe customer and active plan details.
-- `MigrationBatch`: High-level summary of a migration run (source, target, total tokens).
-- `MigrationResult`: Individual SQL statement translations linked to a batch.
-- `MonthlyUsage`: Tracks rolling monthly quotas for rate limiting.
-- `LoginLog`: Security audit trail.
-- `WaitlistEntry`: Pre-launch lead capture.
-
----
-
-## Security & Authentication
-
-- **Rate Limiting**: Sliding window rate limits on auth and AI endpoints (e.g., 5 batch requests/minute).
-- **Environment Management**: Strict separation of database credentials. `DATABASE_URL` uses port 6543 (transaction pooler) for secure scalable app queries.
-- **Data Protection**: Prepared statements via Prisma prevent SQL injection.
-- **Admin Access**: Gated via explicit email allowlists in environment variables.
 
 ---
 
@@ -260,3 +273,57 @@ Deployed exclusively via Vercel connecting to a Supabase backend.
 - `NEXT_PUBLIC_SITE_URL`
 
 *(Schema migrations are handled manually via Supabase SQL Editor to bypass pooler limitations during Vercel builds.)*
+
+---
+
+## API Routes
+
+### Core Routes
+- `POST /api/migrate` - Single SQL translation
+- `POST /api/migrate/batch` - Batch SQL translation with file upload support
+- `POST /api/auth/signup` - User registration
+- `POST /api/auth/signin` - User login
+- `POST /api/auth/signout` - User logout
+
+### Subscription & Payments
+- `POST /api/stripe/checkout` - Create Stripe checkout session
+- `POST /api/stripe/webhook` - Handle Stripe webhook events
+- `POST /api/trial` - Start 3-day free Pro trial
+
+### Support
+- `POST /api/support` - Submit support ticket
+
+### Admin Routes
+- `GET /api/admin/stats` - Fetch system-wide statistics
+- `GET /api/admin/support` - Fetch all support tickets
+- `PATCH /api/admin/support` - Update support ticket status
+- `POST /api/admin/reset-usage` - Reset user(s) monthly usage
+
+---
+
+## Database Setup SQL
+
+Execute the following SQL in Supabase SQL Editor to create the required tables:
+
+```sql
+-- Support Tickets Table
+CREATE TABLE IF NOT EXISTS support_tickets (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  description TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'open',
+  priority TEXT NOT NULL DEFAULT 'medium',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_support_tickets_user_id ON support_tickets(user_id);
+CREATE INDEX IF NOT EXISTS idx_support_tickets_status ON support_tickets(status);
+CREATE INDEX IF NOT EXISTS idx_support_tickets_created_at ON support_tickets(created_at DESC);
+
+-- Add trial_ends_at column to subscriptions
+ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS trial_ends_at TIMESTAMP WITH TIME ZONE;
+```
