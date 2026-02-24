@@ -75,13 +75,14 @@ export default function MigratePage() {
   const [copied, setCopied] = useState(false);
   const [model, setModel] = useState('gpt-4o-mini');
   const [isDragging, setIsDragging] = useState(false);
-  const [firstName, setFirstName] = useState<string | null>(null);
+  const [profile, setProfile] = useState<{ firstName?: string, tier?: string, tierLabel?: string, limits?: any } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    fetch('/api/auth/profile').then(r => r.json()).then(d => {
-      if (d.firstName) setFirstName(d.firstName);
-    }).catch(() => {});
+    fetch('/api/auth/profile')
+      .then(r => r.json())
+      .then(d => setProfile(d))
+      .catch(() => {});
   }, []);
 
   const handleFiles = useCallback((newFiles: FileList | File[]) => {
@@ -185,14 +186,21 @@ export default function MigratePage() {
               <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 font-medium">
                 Developer Beta
               </span>
+              {profile?.tierLabel && (
+                <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 font-medium">
+                  {profile.tierLabel}
+                </span>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-xs text-zinc-500">Up to 50 tables/views per batch</span>
-            {firstName && (
+            <span className="text-xs text-zinc-500">
+              Up to {profile?.limits?.filesPerBatch || 10} tables/views per batch
+            </span>
+            {profile?.firstName && (
               <div className="flex items-center gap-2 text-sm text-zinc-400">
                 <User className="w-4 h-4" />
-                {firstName}
+                {profile.firstName}
               </div>
             )}
             <form action="/api/auth/signout" method="POST">
@@ -231,12 +239,18 @@ export default function MigratePage() {
               <div className="w-px h-6 bg-white/10 self-center mx-1" />
               <div className="flex items-center gap-2">
                 <span className="text-xs text-zinc-500 uppercase tracking-wider">AI Model</span>
-                <select value={model} onChange={(e) => setModel(e.target.value)}
-                  className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500/50">
-                  <option value="gpt-4o-mini" className="bg-zinc-900">GPT-4o Mini</option>
-                  <option value="claude-haiku" className="bg-zinc-900">Claude Haiku</option>
-                  <option value="claude-sonnet" className="bg-zinc-900">Claude Sonnet</option>
-                </select>
+                {profile?.tier === 'free' ? (
+                  <Link href="/dashboard" className="flex items-center gap-1 bg-white/5 border border-purple-500/30 rounded-lg px-3 py-2 text-sm text-purple-400 hover:bg-purple-500/10 transition-colors">
+                    Upgrade to Pro <Zap className="w-3.5 h-3.5" />
+                  </Link>
+                ) : (
+                  <select value={model} onChange={(e) => setModel(e.target.value)}
+                    className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500/50">
+                    <option value="gpt-4o-mini" className="bg-zinc-900">GPT-4o Mini</option>
+                    <option value="claude-haiku" className="bg-zinc-900">Claude Haiku</option>
+                    <option value="claude-sonnet" className="bg-zinc-900">Claude Sonnet</option>
+                  </select>
+                )}
               </div>
             </div>
 

@@ -3,8 +3,8 @@ import { translateSql, SourceDialect, TargetDialect, AIModel } from '@/lib/ai/mi
 import { parseSqlFile } from '@/lib/ai/parser';
 import { createClient } from '@/lib/supabase/server';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
+import { getUserTier } from '@/lib/tier';
 
-const MAX_STATEMENTS = 50;
 const MAX_FILE_SIZE = 500_000;
 
 export async function POST(req: NextRequest) {
@@ -21,6 +21,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Authentication required for batch migration.' }, { status: 401 });
     }
 
+    const tierLimits = await getUserTier(user.id);
+
     const formData = await req.formData();
     const sourceDialect = formData.get('sourceDialect') as SourceDialect;
     const targetDialect = formData.get('targetDialect') as TargetDialect;
@@ -30,6 +32,20 @@ export async function POST(req: NextRequest) {
 
     if (!sourceDialect || !targetDialect) {
       return NextResponse.json({ error: 'Source and target dialects are required.' }, { status: 400 });
+    }
+
+    if (model && !tierLimits.allowedModels.includes(model)) {
+      return NextResponse.json(
+        { error: `Model "${model}" not available on ${tierLimits.tier} plan. Upgrade to Pro for all models.` },
+        { status: 403 }
+      );
+    }
+
+    if (files.length > tierLimits.filesPerBatch) {
+      return NextResponse.json(
+        { error: `${tierLimits.tier === 'free' ? 'Free' : tierLimits.tier} plan allows up to ${tierLimits.filesPerBatch} files per batch. Upgrade for more.` },
+        { status: 400 }
+      );
     }
 
     let allStatements: { fileName: string; sql: string; name: string; type: string }[] = [];
@@ -57,9 +73,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No SQL statements found.' }, { status: 400 });
     }
 
-    if (allStatements.length > MAX_STATEMENTS) {
+    const maxStatements = tierLimits.filesPerBatch === Infinity ? 500 : tierLimits.filesPerBatch * 5;
+    if (allStatements.length > maxStatements) {
       return NextResponse.json({
-        error: `Developer Beta supports up to ${MAX_STATEMENTS} statements. Found ${allStatements.length}.`,
+        error: `Your ${tierLimits.tier} plan supports up to ${maxStatements} statements per batch. Found ${allStatements.length}. Upgrade for more.`,
       }, { status: 400 });
     }
 

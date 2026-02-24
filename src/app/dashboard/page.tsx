@@ -2,7 +2,8 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
-import { Database, LogOut, Sparkles, ArrowRight, User } from 'lucide-react';
+import { Database, LogOut, Sparkles, ArrowRight, User, Zap } from 'lucide-react';
+import { getUserTier, getTierLabel } from '@/lib/tier';
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -11,7 +12,8 @@ export default async function DashboardPage() {
   if (!user) redirect('/login');
 
   const profile = await prisma.profile.findUnique({ where: { id: user.id } });
-
+  const tierInfo = await getUserTier(user.id);
+  const tierLabel = getTierLabel(tierInfo.tier);
   return (
     <div className="min-h-screen bg-[#050505] text-white">
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/50 backdrop-blur-md">
@@ -44,9 +46,13 @@ export default async function DashboardPage() {
             Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">{profile?.name?.split(' ')[0] ?? 'there'}</span> 👋
           </h1>
           <p className="text-zinc-400">Your MorphDB migration dashboard. More features coming soon.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+          <div className="bg-white/5 border border-purple-500/20 rounded-2xl p-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 blur-2xl rounded-full translate-x-1/2 -translate-y-1/2" />
+            <div className="text-3xl font-bold text-white mb-1">{tierLabel}</div>
+            <div className="text-sm font-medium text-zinc-300 mb-1">Current Plan</div>
+            <div className="text-xs text-zinc-500">{tierInfo.batchesPerMonth === Infinity ? 'Unlimited' : tierInfo.batchesPerMonth} batches/mo</div>
+          </div>
           {[
             { label: 'Migrations Run', value: '0', sub: 'Start your first below' },
             { label: 'Tables Processed', value: '0', sub: 'Ready to migrate' },
@@ -59,6 +65,20 @@ export default async function DashboardPage() {
             </div>
           ))}
         </div>
+
+        {tierInfo.tier === 'free' && (
+          <div className="mb-10 p-6 bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
+                <Zap className="w-5 h-5 text-purple-400" /> Upgrade to Pro
+              </h3>
+              <p className="text-sm text-zinc-400">Unlock Claude 3.5 Sonnet, {tierInfo.filesPerBatch === Infinity ? 'Unlimited' : tierInfo.filesPerBatch} files per batch, and priority support.</p>
+            </div>
+            <Link href="/#pricing" className="px-6 py-2.5 bg-white text-black font-semibold rounded-full hover:bg-zinc-200 transition-colors whitespace-nowrap">
+              View Plans
+            </Link>
+          </div>
+        )}
 
         <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
           <Sparkles className="w-12 h-12 text-blue-400 mx-auto mb-4 opacity-60" />
