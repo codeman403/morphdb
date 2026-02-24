@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { translateSql, SourceDialect, TargetDialect } from '@/lib/ai/migrate';
+import { translateSql, SourceDialect, TargetDialect, AIModel } from '@/lib/ai/migrate';
 import { parseSqlFile } from '@/lib/ai/parser';
 import { createClient } from '@/lib/supabase/server';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
@@ -24,6 +24,7 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
     const sourceDialect = formData.get('sourceDialect') as SourceDialect;
     const targetDialect = formData.get('targetDialect') as TargetDialect;
+    const model = formData.get('model') as AIModel | null;
     const files = formData.getAll('files') as File[];
     const rawSql = formData.get('sql') as string | null;
 
@@ -70,7 +71,7 @@ export async function POST(req: NextRequest) {
       const batchResults = await Promise.all(
         batch.map(async (stmt) => {
           try {
-            const result = await translateSql(stmt.sql, sourceDialect, targetDialect);
+            const result = await translateSql(stmt.sql, sourceDialect, targetDialect, model ?? undefined);
             return {
               fileName: stmt.fileName,
               name: stmt.name,

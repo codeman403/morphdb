@@ -86,6 +86,7 @@ export default function DemoPage() {
   const [isTranslating, setIsTranslating] = useState(false);
   const [result, setResult] = useState<TranslationResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [model, setModel] = useState('gpt-4o-mini');
   const [copied, setCopied] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
@@ -97,7 +98,7 @@ export default function DemoPage() {
       const res = await fetch('/api/migrate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sql, sourceDialect, targetDialect }),
+        body: JSON.stringify({ sql, sourceDialect, targetDialect, model }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Translation failed');
@@ -210,6 +211,19 @@ export default function DemoPage() {
               ))}
             </select>
           </div>
+          <div className="w-px h-6 bg-white/10 self-center mx-1" />
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-zinc-500 uppercase tracking-wider">AI Model</span>
+            <select
+              value={model}
+              onChange={(e) => setModel(e.target.value)}
+              className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500/50 appearance-none cursor-pointer"
+            >
+              <option value="gpt-4o-mini" className="bg-zinc-900">GPT-4o Mini</option>
+              <option value="claude-haiku" className="bg-zinc-900">Claude Haiku</option>
+              <option value="claude-sonnet" className="bg-zinc-900">Claude Sonnet</option>
+            </select>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
@@ -273,7 +287,7 @@ export default function DemoPage() {
                 ) : (
                   <motion.div key="placeholder" className="text-zinc-600 text-sm font-mono flex flex-col gap-2">
                     <p>← Click &quot;Translate&quot; to see the magic ✨</p>
-                    <p className="text-xs text-zinc-700">Powered by GPT-4o-mini • Real AI translation</p>
+                    <p className="text-xs text-zinc-700">Powered by {model === 'gpt-4o-mini' ? 'GPT-4o Mini' : model === 'claude-haiku' ? 'Claude Haiku' : 'Claude Sonnet'} • Real AI translation</p>
                   </motion.div>
                 )}
               </AnimatePresence>

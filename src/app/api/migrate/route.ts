@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { translateSql, SourceDialect, TargetDialect } from '@/lib/ai/migrate';
+import { translateSql, SourceDialect, TargetDialect, AIModel } from '@/lib/ai/migrate';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 const VALID_SOURCES: SourceDialect[] = ['sql_server', 'oracle', 'mysql', 'postgresql'];
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { sql, sourceDialect, targetDialect } = body;
+    const { sql, sourceDialect, targetDialect, model } = body;
 
     if (!sql || typeof sql !== 'string' || sql.trim().length === 0) {
       return NextResponse.json({ error: 'SQL input is required.' }, { status: 400 });
@@ -35,7 +35,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: `Invalid target dialect. Use: ${VALID_TARGETS.join(', ')}` }, { status: 400 });
     }
 
-    const result = await translateSql(sql, sourceDialect, targetDialect);
+    const validModels: AIModel[] = ['gpt-4o-mini', 'claude-haiku', 'claude-sonnet'];
+    const selectedModel = validModels.includes(model) ? model : undefined;
+    const result = await translateSql(sql, sourceDialect, targetDialect, selectedModel);
 
     return NextResponse.json(result);
   } catch (e) {

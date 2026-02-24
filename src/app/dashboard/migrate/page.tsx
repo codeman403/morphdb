@@ -72,6 +72,7 @@ export default function MigratePage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedResult, setSelectedResult] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [model, setModel] = useState('gpt-4o-mini');
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -110,6 +111,7 @@ export default function MigratePage() {
       const formData = new FormData();
       formData.append('sourceDialect', sourceDialect);
       formData.append('targetDialect', targetDialect);
+      formData.append('model', model);
       if (pastedSql.trim()) formData.append('sql', pastedSql);
       files.forEach(f => formData.append('files', f));
 
@@ -205,6 +207,16 @@ export default function MigratePage() {
                 <select value={targetDialect} onChange={(e) => setTargetDialect(e.target.value as TargetDialect)}
                   className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500/50">
                   {TARGET_DIALECTS.map(d => <option key={d.value} value={d.value} className="bg-zinc-900">{d.label}</option>)}
+                </select>
+              </div>
+              <div className="w-px h-6 bg-white/10 self-center mx-1" />
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-zinc-500 uppercase tracking-wider">AI Model</span>
+                <select value={model} onChange={(e) => setModel(e.target.value)}
+                  className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500/50">
+                  <option value="gpt-4o-mini" className="bg-zinc-900">GPT-4o Mini</option>
+                  <option value="claude-haiku" className="bg-zinc-900">Claude Haiku</option>
+                  <option value="claude-sonnet" className="bg-zinc-900">Claude Sonnet</option>
                 </select>
               </div>
             </div>

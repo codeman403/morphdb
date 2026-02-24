@@ -1,7 +1,10 @@
 import OpenAI from 'openai';
+import Anthropic from '@anthropic-ai/sdk';
 
 export type SourceDialect = 'sql_server' | 'oracle' | 'mysql' | 'postgresql';
 export type TargetDialect = 'snowflake_dbt' | 'postgresql' | 'bigquery' | 'redshift';
+export type AIProvider = 'openai' | 'anthropic';
+export type AIModel = 'gpt-4o-mini' | 'claude-haiku' | 'claude-sonnet';
 
 interface MigrationResult {
   translatedSql: string;
@@ -9,7 +12,14 @@ interface MigrationResult {
   warnings: string[];
   tokensUsed: number;
   durationMs: number;
+  model: string;
 }
+
+const MODEL_MAP: Record<AIModel, { provider: AIProvider; model: string }> = {
+  'gpt-4o-mini': { provider: 'openai', model: 'gpt-4o-mini' },
+  'claude-haiku': { provider: 'anthropic', model: 'claude-haiku-4-20250414' },
+  'claude-sonnet': { provider: 'anthropic', model: 'claude-sonnet-4-20250514' },
+};
 
 const DIALECT_LABELS: Record<string, string> = {
   sql_server: 'SQL Server (T-SQL)',
@@ -64,39 +74,76 @@ function parseResponse(raw: string): { sql: string; changes: string[]; warnings:
   };
 }
 
+function getDefaultModel(): AIModel {
+  if (process.env.ANTHROPIC_API_KEY) return 'claude-haiku';
+  if (process.env.OPENAI_API_KEY) return 'gpt-4o-mini';
+  throw new Error('No AI provider configured. Set ANTHROPIC_API_KEY or OPENAI_API_KEY.');
+}
+
+async function callOpenAI(systemPrompt: string, userContent: string, modelId: string): Promise<{ raw: string; tokens: number }> {
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
+  const completion = await openai.chat.completions.create({
+    model: modelId,
+    temperature: 0.1,
+    max_tokens: 4096,
+    messages: [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userContent },
+    ],
+  });
+  return {
+    raw: completion.choices[0]?.message?.content ?? '',
+    tokens: completion.usage?.total_tokens ?? 0,
+  };
+}
+
+async function callAnthropic(systemPrompt: string, userContent: string, modelId: string): Promise<{ raw: string; tokens: number }> {
+  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
+  const message = await anthropic.messages.create({
+    model: modelId,
+    max_tokens: 4096,
+    system: systemPrompt,
+    messages: [{ role: 'user', content: userContent }],
+  });
+  const textBlock = message.content.find(b => b.type === 'text');
+  return {
+    raw: textBlock?.text ?? '',
+    tokens: (message.usage?.input_tokens ?? 0) + (message.usage?.output_tokens ?? 0),
+  };
+}
+
 export async function translateSql(
   sourceSql: string,
   sourceDialect: SourceDialect,
   targetDialect: TargetDialect,
+  preferredModel?: AIModel,
 ): Promise<MigrationResult> {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
+  const aiModel = preferredModel ?? getDefaultModel();
+  const { provider, model } = MODEL_MAP[aiModel];
+
+  if (provider === 'anthropic' && !process.env.ANTHROPIC_API_KEY) {
+    throw new Error('ANTHROPIC_API_KEY is not configured');
+  }
+  if (provider === 'openai' && !process.env.OPENAI_API_KEY) {
     throw new Error('OPENAI_API_KEY is not configured');
   }
 
-  const openai = new OpenAI({ apiKey });
+  const systemPrompt = buildSystemPrompt(sourceDialect, targetDialect);
   const start = Date.now();
 
-  const completion = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
-    temperature: 0.1,
-    max_tokens: 4096,
-    messages: [
-      { role: 'system', content: buildSystemPrompt(sourceDialect, targetDialect) },
-      { role: 'user', content: sourceSql },
-    ],
-  });
+  const { raw, tokens } = provider === 'anthropic'
+    ? await callAnthropic(systemPrompt, sourceSql, model)
+    : await callOpenAI(systemPrompt, sourceSql, model);
 
   const durationMs = Date.now() - start;
-  const raw = completion.choices[0]?.message?.content ?? '';
-  const tokensUsed = completion.usage?.total_tokens ?? 0;
   const { sql, changes, warnings } = parseResponse(raw);
 
   return {
     translatedSql: sql,
     changes,
     warnings,
-    tokensUsed,
+    tokensUsed: tokens,
     durationMs,
+    model: aiModel,
   };
 }
