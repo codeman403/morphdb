@@ -24,23 +24,6 @@ const tiers = [
   },
   {
     name: 'Pro',
-    price: '$0',
-    period: 'first 3 days',
-    description: 'For developers migrating real production schemas.',
-    features: [
-      '50 batches per month',
-      'Up to 50 files per batch',
-      '500 translations per month',
-      'All AI models (GPT-4o Mini, Claude Haiku & Sonnet)',
-      'File upload & ZIP download',
-      'Priority email support',
-    ],
-    cta: 'Start Free Trial',
-    ctaAction: 'trial',
-    highlighted: true,
-  },
-  {
-    name: 'Pro',
     price: '$15',
     period: '/mo',
     description: 'For developers migrating real production schemas.',
@@ -52,9 +35,11 @@ const tiers = [
       'File upload & ZIP download',
       'Priority email support',
     ],
-    cta: 'Upgrade to Pro',
-    ctaAction: 'checkout',
-    highlighted: false,
+    cta: 'Start Free Trial',
+    ctaAction: 'trial',
+    ctaSecondary: 'Upgrade to Pro',
+    ctaSecondaryAction: 'checkout',
+    highlighted: true,
   },
   {
     name: 'Design Partner',
@@ -336,26 +321,57 @@ export default function Pricing() {
                   ))}
                 </ul>
 
-                <button 
-                  onClick={() => {
-                    if (tier.ctaAction === 'waitlist') setIsModalOpen(true);
-                    else if (tier.ctaAction === 'beta') router.push(isAuthenticated ? '/dashboard/migrate' : '/login');
-                    else if (tier.ctaAction === 'trial') handleCheckout('trial');
-                    else if (tier.ctaAction === 'checkout') handleCheckout(tier.name.toLowerCase().replace(' ', '_'));
-                  }}
-                  disabled={checkoutLoading === tier.name.toLowerCase().replace(' ', '_')}
-                  className={`w-full py-4 rounded-full font-semibold transition-colors disabled:opacity-70 disabled:cursor-not-allowed ${
-                    tier.highlighted
-                      ? 'bg-white text-black hover:bg-zinc-200'
-                      : 'bg-white/5 text-white border border-white/10 hover:bg-white/10'
-                  }`}
-                >
-                  {checkoutLoading === tier.name.toLowerCase().replace(' ', '_') ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <Loader2 className="w-4 h-4 animate-spin" /> Redirecting...
-                    </span>
-                  ) : tier.cta}
-                </button>
+                {tier.ctaSecondary ? (
+                  <div className="flex flex-col gap-3 mt-auto">
+                    <button 
+                      onClick={() => {
+                        if (tier.ctaAction === 'trial') handleCheckout('trial');
+                      }}
+                      disabled={checkoutLoading === 'trial'}
+                      className="w-full py-3 rounded-full font-semibold bg-white text-black hover:bg-zinc-200 transition-colors disabled:opacity-70"
+                    >
+                      {checkoutLoading === 'trial' ? (
+                        <span className="flex items-center justify-center gap-2">
+                          <Loader2 className="w-4 h-4 animate-spin" /> Starting...
+                        </span>
+                      ) : tier.cta}
+                    </button>
+                    <button 
+                      onClick={() => {
+                        if (tier.ctaSecondaryAction === 'checkout') handleCheckout(tier.name.toLowerCase().replace(' ', '_'));
+                      }}
+                      disabled={checkoutLoading === tier.name.toLowerCase().replace(' ', '_')}
+                      className="w-full py-3 rounded-full font-semibold bg-white/5 text-white border border-white/10 hover:bg-white/10 transition-colors disabled:opacity-70"
+                    >
+                      {checkoutLoading === tier.name.toLowerCase().replace(' ', '_') ? (
+                        <span className="flex items-center justify-center gap-2">
+                          <Loader2 className="w-4 h-4 animate-spin" /> Redirecting...
+                        </span>
+                      ) : tier.ctaSecondary}
+                    </button>
+                  </div>
+                ) : (
+                  <button 
+                    onClick={() => {
+                      if (tier.ctaAction === 'waitlist') setIsModalOpen(true);
+                      else if (tier.ctaAction === 'beta') router.push(isAuthenticated ? '/dashboard/migrate' : '/login');
+                      else if (tier.ctaAction === 'trial') handleCheckout('trial');
+                      else if (tier.ctaAction === 'checkout') handleCheckout(tier.name.toLowerCase().replace(' ', '_'));
+                    }}
+                    disabled={checkoutLoading === tier.name.toLowerCase().replace(' ', '_')}
+                    className={`w-full py-4 rounded-full font-semibold transition-colors disabled:opacity-70 disabled:cursor-not-allowed ${
+                      tier.highlighted
+                        ? 'bg-white text-black hover:bg-zinc-200'
+                        : 'bg-white/5 text-white border border-white/10 hover:bg-white/10'
+                    }`}
+                  >
+                    {checkoutLoading === tier.name.toLowerCase().replace(' ', '_') ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" /> Redirecting...
+                      </span>
+                    ) : tier.cta}
+                  </button>
+                )}
               </motion.div>
             ))}
           </div>
