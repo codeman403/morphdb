@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Database, ArrowRight, Sparkles, CheckCircle2, Clock, Loader2,
-  AlertTriangle, Zap, ChevronDown, Copy, Check, Lock,
+  AlertTriangle, Zap, ChevronDown, Copy, Check, Lock, User, LogOut,
 } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 const DEMO_MAX_CHARS = 2_000;
 
@@ -82,6 +83,9 @@ interface TranslationResult {
 }
 
 export default function DemoPage() {
+  const [user, setUser] = useState<{ email?: string } | null>(null);
+  const [firstName, setFirstName] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const [sql, setSql] = useState(EXAMPLES[0].sql);
   const [sourceDialect, setSourceDialect] = useState(EXAMPLES[0].source);
   const [targetDialect, setTargetDialect] = useState(EXAMPLES[0].target);
@@ -90,6 +94,28 @@ export default function DemoPage() {
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    const initAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setUser(session.user);
+        fetch('/api/auth/profile').then(r => r.json()).then(d => setFirstName(d.firstName));
+      }
+      setLoading(false);
+    };
+    initAuth();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        fetch('/api/auth/profile').then(r => r.json()).then(d => setFirstName(d.firstName));
+      } else {
+        setFirstName(null);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   const isOverLimit = sql.length > DEMO_MAX_CHARS;
 
@@ -144,9 +170,28 @@ export default function DemoPage() {
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/login" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
-              Sign In
-            </Link>
+            {loading ? (
+              <div className="w-16 h-6 bg-white/5 rounded-full animate-pulse" />
+            ) : user ? (
+              <>
+                <Link href="/dashboard" className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors">
+                  <User className="w-4 h-4" />
+                  {firstName ?? user.email?.split('@')[0]}
+                </Link>
+                <Link href="/dashboard" className="px-3 py-1.5 text-sm font-medium text-white bg-white/10 border border-white/20 rounded-full hover:bg-white/20 transition-all">
+                  Dashboard
+                </Link>
+                <form action="/api/auth/signout" method="POST">
+                  <button type="submit" className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-zinc-500 hover:text-white border border-white/10 rounded-full hover:bg-white/5 transition-colors">
+                    <LogOut className="w-3.5 h-3.5" />
+                  </button>
+                </form>
+              </>
+            ) : (
+              <Link href="/login" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+                Sign In
+              </Link>
+            )}
           </div>
         </div>
       </nav>
