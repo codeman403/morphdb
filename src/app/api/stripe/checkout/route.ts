@@ -2,18 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@/lib/supabase/server';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2026-01-28.clover',
-});
-
 const PLANS: Record<string, { priceId: string; name: string }> = {
   design_partner: {
-    priceId: process.env.STRIPE_DESIGN_PARTNER_PRICE_ID!,
+    priceId: process.env.STRIPE_DESIGN_PARTNER_PRICE_ID ?? '',
     name: 'Design Partner',
   },
 };
 
 export async function POST(req: NextRequest) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: '2026-01-28.clover',
+  });
+
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
