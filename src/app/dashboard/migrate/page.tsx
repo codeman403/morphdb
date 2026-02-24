@@ -6,9 +6,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Database, Upload, FileText, Zap, Loader2, CheckCircle2,
   AlertTriangle, Download, ArrowLeft, ArrowRight, Copy, Check,
-  X, ChevronDown, Trash2, User, LogOut,
+  X, Trash2, User, LogOut,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { toast } from 'sonner';
 
 type SourceDialect = 'sql_server' | 'oracle' | 'mysql' | 'postgresql';
 type TargetDialect = 'snowflake_dbt' | 'postgresql' | 'bigquery' | 'redshift';
@@ -126,11 +127,15 @@ export default function MigratePage() {
 
       const res = await fetch('/api/migrate/batch', { method: 'POST', body: formData });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Batch migration failed');
+      if (!res.ok) {
+        toast.error(data.error || 'Batch migration failed');
+        throw new Error(data.error || 'Batch migration failed');
+      }
 
       setProgress(100);
       setResponse(data);
       setSelectedResult(0);
+      toast.success(`Translated ${data.summary.success}/${data.summary.total} statements successfully`);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Something went wrong');
     } finally {
@@ -154,7 +159,9 @@ export default function MigratePage() {
       a.download = res.headers.get('Content-Disposition')?.split('filename=')[1]?.replace(/"/g, '') ?? 'morphdb_translated.zip';
       a.click();
       URL.revokeObjectURL(url);
+      toast.success('Download started');
     } catch (e) {
+      toast.error('Download failed');
       console.error('Download failed', e);
     }
   };
@@ -165,6 +172,7 @@ export default function MigratePage() {
     if (r) {
       await navigator.clipboard.writeText(r.translatedSql);
       setCopied(true);
+      toast.success('SQL copied to clipboard');
       setTimeout(() => setCopied(false), 2000);
     }
   };
@@ -175,15 +183,15 @@ export default function MigratePage() {
   return (
     <div className="min-h-screen bg-[#050505] text-white">
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/50 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
             <Link href="/dashboard" className="text-zinc-400 hover:text-white transition-colors">
               <ArrowLeft className="w-4 h-4" />
             </Link>
             <div className="flex items-center gap-2">
-              <Database className="w-6 h-6 text-blue-500" />
-              <span className="font-bold text-lg tracking-tight">MorphDB</span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 font-medium">
+              <Database className="w-5 h-5 text-blue-500" />
+              <span className="font-bold tracking-tight hidden sm:inline">MorphDB</span>
+              <span className="hidden sm:inline text-xs px-2 py-0.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 font-medium">
                 Developer Beta
               </span>
               {profile?.tierLabel && (
@@ -193,26 +201,27 @@ export default function MigratePage() {
               )}
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-zinc-500">
-              Up to {profile?.limits?.filesPerBatch || 10} tables/views per batch
+          <div className="flex items-center gap-2 sm:gap-3">
+            <span className="hidden md:inline text-xs text-zinc-500">
+              Up to {profile?.limits?.filesPerBatch || 10} files/batch
             </span>
             {profile?.firstName && (
-              <div className="flex items-center gap-2 text-sm text-zinc-400">
+              <div className="hidden sm:flex items-center gap-2 text-sm text-zinc-400">
                 <User className="w-4 h-4" />
                 {profile.firstName}
               </div>
             )}
             <form action="/api/auth/signout" method="POST">
               <button type="submit" className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-zinc-500 hover:text-white border border-white/10 rounded-full hover:bg-white/5 transition-colors">
-                <LogOut className="w-3.5 h-3.5" /> Sign Out
+                <LogOut className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Sign Out</span>
               </button>
             </form>
           </div>
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-6 pt-24 pb-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-16">
         {!response ? (
           <>
             <div className="mb-8">

@@ -4,6 +4,8 @@ import { parseSqlFile } from '@/lib/ai/parser';
 import { createClient } from '@/lib/supabase/server';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
 import { getUserTier } from '@/lib/tier';
+import { checkQuota, incrementUsage } from '@/lib/usage';
+import { prisma } from '@/lib/prisma';
 
 const MAX_FILE_SIZE = 500_000;
 
@@ -22,6 +24,11 @@ export async function POST(req: NextRequest) {
     }
 
     const tierLimits = await getUserTier(user.id);
+
+    const quota = await checkQuota(user.id, tierLimits.tier);
+    if (!quota.ok) {
+      return NextResponse.json({ error: quota.error }, { status: 403 });
+    }
 
     const formData = await req.formData();
     const sourceDialect = formData.get('sourceDialect') as SourceDialect;
@@ -124,6 +131,41 @@ export async function POST(req: NextRequest) {
     const totalTokens = results.reduce((a, r) => a + r.tokensUsed, 0);
     const totalDuration = results.reduce((a, r) => a + r.durationMs, 0);
     const successCount = results.filter(r => r.status === 'success').length;
+
+    try {
+      await prisma.migrationBatch.create({
+        data: {
+          userId: user.id,
+          sourceDialect,
+          targetDialect,
+          model: model ?? 'gpt-4o-mini',
+          totalStatements: results.length,
+          successCount,
+          failedCount: results.length - successCount,
+          totalTokens,
+          totalDurationMs: totalDuration,
+          results: {
+            create: results.map(r => ({
+              fileName: r.fileName,
+              statementName: r.name,
+              statementType: r.type,
+              originalSql: r.originalSql,
+              translatedSql: r.translatedSql || null,
+              changes: r.changes,
+              warnings: r.warnings,
+              tokensUsed: r.tokensUsed,
+              durationMs: r.durationMs,
+              status: r.status,
+              error: r.status === 'error' ? (r as { error?: string }).error ?? null : null,
+            })),
+          },
+        },
+      });
+    } catch (e) {
+      console.error('[Migration History Save Error]', e);
+    }
+
+    await incrementUsage(user.id, successCount, totalTokens);
 
     return NextResponse.json({
       results,

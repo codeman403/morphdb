@@ -55,3 +55,58 @@ model Subscription {
 
   @@map("subscriptions")
 }
+
+model MigrationBatch {
+  id              String            @id @default(cuid())
+  userId          String            @map("user_id")
+  sourceDialect   String            @map("source_dialect")
+  targetDialect   String            @map("target_dialect")
+  model           String
+  totalStatements Int               @map("total_statements")
+  successCount    Int               @map("success_count")
+  failedCount     Int               @map("failed_count")
+  totalTokens     Int               @map("total_tokens")
+  totalDurationMs Int               @map("total_duration_ms")
+  createdAt       DateTime          @default(now()) @map("created_at")
+  results         MigrationResult[]
+
+  @@index([userId])
+  @@map("migration_batches")
+}
+
+model MigrationResult {
+  id             String         @id @default(cuid())
+  batchId        String         @map("batch_id")
+  batch          MigrationBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  fileName       String         @map("file_name")
+  statementName  String         @map("statement_name")
+  statementType  String         @map("statement_type")
+  originalSql    String         @map("original_sql")
+  translatedSql  String?        @map("translated_sql")
+  changes        String[]
+  warnings       String[]
+  tokensUsed     Int            @map("tokens_used")
+  durationMs     Int            @map("duration_ms")
+  status         String
+  error          String?
+  createdAt      DateTime       @default(now()) @map("created_at")
+
+  @@index([batchId])
+  @@map("migration_results")
+}
+
+model MonthlyUsage {
+  id               String   @id @default(cuid())
+  userId           String   @map("user_id")
+  yearMonth        String   @map("year_month")
+  batchCount       Int      @default(0) @map("batch_count")
+  translationCount Int      @default(0) @map("translation_count")
+  tokenCount       Int      @default(0) @map("token_count")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, yearMonth])
+  @@index([userId])
+  @@map("monthly_usage")
+}
+
