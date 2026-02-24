@@ -232,8 +232,7 @@ export default function Pricing() {
         if (res.ok) {
           setTrialSuccess(true);
           setTimeout(() => {
-            setTrialSuccess(false);
-            router.refresh();
+            window.location.href = '/dashboard';
           }, 2000);
         } else {
           alert(data.error);
