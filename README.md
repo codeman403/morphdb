@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MorphDB
 
-## Getting Started
+> AI Co-Pilot for Database Migrations
 
-First, run the development server:
+Transform legacy SQL Server and Oracle code into modern, cloud-native SQL — automatically.
+
+## Quick Start
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- 🤖 **AI-Powered Translation** — GPT-4o-mini translates SQL between 4 source and 4 target dialects
+- 🔐 **Auth** — Email/password via Supabase (sign up, sign in, sign out, session persistence)
+- 📊 **Admin Dashboard** — Monitor waitlist, login logs, user stats
+- 💳 **Stripe Integration** — Checkout + webhooks for subscriptions
+- 🛡️ **Rate Limiting** — Per-IP limits on all mutation endpoints
+- 🎨 **Premium UI** — Dark mode, Framer Motion animations, responsive design
 
-## Learn More
+## Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+Next.js 16 • React 19 • Tailwind CSS 4 • Prisma 7 • Supabase • Stripe • OpenAI
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Documentation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+See **[ARCHITECTURE.md](./ARCHITECTURE.md)** for full details:
+- Architecture diagrams
+- API reference
+- Database schema
+- Deployment guide
+- Environment variables
+- Changelog & roadmap
 
-## Deploy on Vercel
+## Environment Variables
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Copy `.env.local.example` or see [ARCHITECTURE.md](./ARCHITECTURE.md#environment-variables) for the full list.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+Private — © 2026 MorphDB
