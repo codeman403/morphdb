@@ -69,6 +69,9 @@ export default async function DashboardPage() {
           <Link href="/demo" className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black font-semibold rounded-full hover:bg-zinc-200 transition-colors">
             Try the Demo <ArrowRight className="w-4 h-4" />
           </Link>
+          <Link href="/dashboard/admin" className="inline-flex items-center gap-2 px-6 py-3 ml-3 text-sm text-zinc-400 hover:text-white border border-white/10 rounded-full hover:bg-white/5 transition-colors">
+            Admin Panel
+          </Link>
         </div>
       </div>
     </div>

@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 export async function POST(req: NextRequest) {
   try {
+    const ip = getClientIp(req.headers);
+    const { ok } = rateLimit(`waitlist:${ip}`, 3, 60_000);
+    if (!ok) {
+      return NextResponse.json({ error: 'Too many attempts. Please wait a minute.' }, { status: 429 });
+    }
+
     const body = await req.json();
     const { email, name, company, tier = 'design_partner' } = body;
 
