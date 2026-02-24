@@ -146,11 +146,25 @@ hackathon-proj/
 - **Real AI-powered** SQL dialect translation via OpenAI GPT-4o-mini
 - **Source dialects**: SQL Server (T-SQL), Oracle (PL/SQL), MySQL, PostgreSQL
 - **Target dialects**: Snowflake (dbt Jinja), PostgreSQL, BigQuery, Redshift
-- Editable SQL input with character count
+
+#### Quick Demo (`/demo` — Unauthenticated)
+- Single SQL paste input with editable textarea
 - Preset examples (NULL Handling, Date Functions, TOP→LIMIT, Oracle→Postgres)
 - Translation stats: duration, transformations count, tokens used, warnings
 - Copy-to-clipboard for output
 - Rate limited: 10 translations/min per IP
+
+#### Batch Migration (`/dashboard/migrate` — Authenticated)
+- **File upload**: Drag & drop or browse for .sql/.txt files (max 500KB each)
+- **Paste input**: Multi-statement SQL directly in textarea
+- **SQL parser**: Splits multi-statement files into individual CREATE TABLE/VIEW/SELECT/etc.
+- **Batch processing**: Up to 50 tables/views per batch (Developer Beta limit)
+- **Progress bar**: Real-time progress with animated gradient
+- **Results view**: Side-by-side original vs translated with statement list sidebar
+- **Statement types**: Color-coded badges (CREATE_TABLE, VIEW, PROCEDURE, etc.)
+- **Download**: Single .sql file or full .zip bundle with summary
+- **Copy**: Per-statement copy-to-clipboard
+- Rate limited: 5 batch requests/min per IP
 
 ### 🔐 Authentication
 - Email/password auth via Supabase Auth (SSR)
@@ -237,6 +251,24 @@ Join the waitlist.
 
 ### `GET /api/admin/stats`
 Fetch admin dashboard data (requires `ADMIN_EMAILS` auth).
+
+### `POST /api/migrate/batch`
+Batch translate multiple SQL statements (authenticated).
+
+**Request:** `FormData` with `sourceDialect`, `targetDialect`, `files[]` (.sql), optional `sql` (pasted text)
+**Response:**
+```json
+{
+  "results": [{ "name", "type", "originalSql", "translatedSql", "changes", "warnings", "status" }],
+  "summary": { "total", "success", "failed", "totalTokens", "totalDuration" }
+}
+```
+
+### `POST /api/migrate/download`
+Generate downloadable .sql or .zip from translation results.
+
+**Request:** `{ "results": [...], "targetDialect": "..." }`
+**Response:** Binary file (`.sql` for single, `.zip` for multiple)
 
 ### `POST /api/stripe/checkout`
 Create a Stripe checkout session.
@@ -419,6 +451,15 @@ The AI is instructed to:
 ---
 
 ## Changelog
+
+### v1.1.0 — Batch Migration & File Upload (2026-02-24)
+- 📁 File upload with drag & drop (.sql, .txt)
+- 🔄 Batch processing up to 50 statements per job
+- 📥 ZIP download for translated files with summary
+- 🧩 SQL parser: splits multi-statement files into individual objects
+- 📊 Side-by-side original vs translated view
+- 🏷️ Color-coded statement type badges
+- 📝 Consolidated docs (README.md + ARCHITECTURE.md only)
 
 ### v1.0.0 — Developer Beta (2026-02-24)
 - 🤖 Real AI migration engine (GPT-4o-mini)

@@ -64,14 +64,19 @@ export default async function DashboardPage() {
           <Sparkles className="w-12 h-12 text-blue-400 mx-auto mb-4 opacity-60" />
           <h2 className="text-2xl font-bold text-white mb-2">Your Migration Workspace</h2>
           <p className="text-zinc-400 mb-6 max-w-md mx-auto">
-            The full migration engine is being built right now. As an early access member, you&apos;ll be the first to try it.
+            The AI migration engine is live! Upload SQL files or paste queries to translate between dialects.
           </p>
-          <Link href="/demo" className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black font-semibold rounded-full hover:bg-zinc-200 transition-colors">
-            Try the Demo <ArrowRight className="w-4 h-4" />
-          </Link>
-          <Link href="/dashboard/admin" className="inline-flex items-center gap-2 px-6 py-3 ml-3 text-sm text-zinc-400 hover:text-white border border-white/10 rounded-full hover:bg-white/5 transition-colors">
-            Admin Panel
-          </Link>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link href="/dashboard/migrate" className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black font-semibold rounded-full hover:bg-zinc-200 transition-colors">
+              Batch Migration <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link href="/demo" className="inline-flex items-center gap-2 px-6 py-3 text-sm text-zinc-300 border border-white/10 rounded-full hover:bg-white/5 transition-colors">
+              Quick Demo
+            </Link>
+            <Link href="/dashboard/admin" className="inline-flex items-center gap-2 px-6 py-3 text-sm text-zinc-400 hover:text-white border border-white/10 rounded-full hover:bg-white/5 transition-colors">
+              Admin Panel
+            </Link>
+          </div>
         </div>
       </div>
     </div>
