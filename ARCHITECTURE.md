@@ -4,6 +4,7 @@
 > **Version**: 1.1.0 (Developer Beta)
 > **Maintainer**: codeman403
 > **Context**: Built as part of the AI Vibe Coding Hackathon
+> **Live URL**: [https://morphdb.vercel.app/](https://morphdb.vercel.app/)
 
 ---
 
