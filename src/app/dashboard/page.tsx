@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
 import { Database, LogOut, Sparkles, ArrowRight, User, Zap, Clock } from 'lucide-react';
-import { getUserTier, getTierLabel, getTrialStatus } from '@/lib/tier';
+import { getUserTier, getTierLabel, getTrialStatus, getUserTierLabel } from '@/lib/tier';
 import { getMonthlyUsage } from '@/lib/usage';
 
 export default async function DashboardPage() {
@@ -12,7 +12,7 @@ export default async function DashboardPage() {
 
   if (!user) redirect('/login');
 
-  const [profile, tierInfo, usage, recentBatches, trialStatus] = await Promise.all([
+  const [profile, tierInfo, usage, recentBatches, trialStatus, tierLabel] = await Promise.all([
     prisma.profile.findUnique({ where: { id: user.id } }),
     getUserTier(user.id),
     getMonthlyUsage(user.id),
@@ -22,9 +22,9 @@ export default async function DashboardPage() {
       take: 5,
     }),
     getTrialStatus(user.id),
+    getUserTierLabel(user.id),
   ]);
 
-  const tierLabel = getTierLabel(tierInfo.tier);
   const batchLimit = tierInfo.batchesPerMonth === Infinity ? '∞' : tierInfo.batchesPerMonth;
 
   const DIALECT_LABELS: Record<string, string> = {

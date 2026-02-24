@@ -55,10 +55,17 @@ export async function getUserTier(userId: string): Promise<TierLimits> {
   try {
     const sub = await prisma.subscription.findUnique({ where: { userId } });
     
-    // Priority 1: If subscription is active, use the plan (not trial)
-    if (sub?.status === 'active') {
-      const tier = sub.plan as UserTier;
-      return getTierLimits(tier);
+    // Priority 1: If subscription is active or trialing (paid), use the plan
+    if (sub?.status === 'active' || sub?.status === 'trialing') {
+      // If they have a paid plan (not just trial), use that plan
+      if (sub.plan && sub.plan !== 'free' && sub.plan !== 'pro' && sub.plan !== 'trialing') {
+        const tier = sub.plan as UserTier;
+        return getTierLimits(tier);
+      }
+      // If plan is 'pro' or 'trialing', check if they have a stripe subscription (paid)
+      if (sub.stripeSubscriptionId) {
+        return getTierLimits('pro');
+      }
     }
     
     // Priority 2: If on trial and no active subscription, use trial
@@ -82,6 +89,29 @@ export function getTierLabel(tier: UserTier): string {
     enterprise: 'Enterprise',
   };
   return labels[tier];
+}
+
+export async function getUserTierLabel(userId: string): Promise<string> {
+  try {
+    const sub = await prisma.subscription.findUnique({ where: { userId } });
+    
+    // If they have a stripe subscription, they're a paid user
+    if (sub?.stripeSubscriptionId) {
+      if (sub.plan === 'design_partner') return 'Design Partner';
+      if (sub.plan === 'enterprise') return 'Enterprise';
+      return 'Pro';
+    }
+    
+    // If on trial without stripe subscription
+    const isOnTrial = sub?.trialEndsAt && new Date(sub.trialEndsAt) > new Date();
+    if (isOnTrial) {
+      return 'Pro Trial';
+    }
+    
+    return 'Free';
+  } catch {
+    return 'Free';
+  }
 }
 
 export async function getTrialStatus(userId: string): Promise<{ isOnTrial: boolean; daysRemaining: number }> {
