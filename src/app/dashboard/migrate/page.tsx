@@ -75,14 +75,13 @@ export default function MigratePage() {
   const [copied, setCopied] = useState(false);
   const [model, setModel] = useState('gpt-4o-mini');
   const [isDragging, setIsDragging] = useState(false);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [firstName, setFirstName] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUserEmail(session?.user?.email ?? null);
-    });
+    fetch('/api/auth/profile').then(r => r.json()).then(d => {
+      if (d.firstName) setFirstName(d.firstName);
+    }).catch(() => {});
   }, []);
 
   const handleFiles = useCallback((newFiles: FileList | File[]) => {
@@ -190,10 +189,10 @@ export default function MigratePage() {
           </div>
           <div className="flex items-center gap-3">
             <span className="text-xs text-zinc-500">Up to 50 tables/views per batch</span>
-            {userEmail && (
+            {firstName && (
               <div className="flex items-center gap-2 text-sm text-zinc-400">
                 <User className="w-4 h-4" />
-                {userEmail.split('@')[0]?.split('.')[0]}
+                {firstName}
               </div>
             )}
             <form action="/api/auth/signout" method="POST">

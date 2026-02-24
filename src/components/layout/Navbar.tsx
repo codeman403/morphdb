@@ -8,14 +8,23 @@ import { createClient } from '@/lib/supabase/client';
 
 export default function Navbar() {
   const [user, setUser] = useState<{ email?: string } | null>(null);
+  const [firstName, setFirstName] = useState<string | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        fetch('/api/auth/profile').then(r => r.json()).then(d => setFirstName(d.firstName));
+      }
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        fetch('/api/auth/profile').then(r => r.json()).then(d => setFirstName(d.firstName));
+      } else {
+        setFirstName(null);
+      }
     });
     return () => subscription.unsubscribe();
   }, []);
@@ -67,7 +76,7 @@ export default function Navbar() {
             <>
               <Link href="/dashboard" className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors">
                 <User className="w-4 h-4" />
-                {user.email?.split('@')[0]?.split('.')[0]}
+                {firstName ?? user.email?.split('@')[0]}
               </Link>
               <Link href="/dashboard" className="group relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-white/10 border border-white/20 rounded-full hover:bg-white/20 transition-all">
                 Dashboard <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
