@@ -1,19 +1,33 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Database, ChevronRight } from 'lucide-react';
+import { Database, ChevronRight, User, LogOut } from 'lucide-react';
 import { animate } from 'framer-motion';
+import { createClient } from '@/lib/supabase/client';
 
 export default function Navbar() {
+  const [user, setUser] = useState<{ email?: string } | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
     e.preventDefault();
     const target = document.getElementById(targetId);
     if (target) {
-      const navbarHeight = 64; // h-16 = 64px
+      const navbarHeight = 64;
       const elementPosition = target.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.scrollY - navbarHeight;
 
-      // Premium custom ease-out curve
       animate(window.scrollY, offsetPosition, {
         duration: 1.2,
         ease: [0.16, 1, 0.3, 1], 
@@ -49,14 +63,28 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-4">
-          <Link href="/login" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
-            Sign In
-          </Link>
-          <Link href="/waitlist" className="group relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-white/10 border border-white/20 rounded-full hover:bg-white/20 transition-all overflow-hidden">
-            <span className="relative z-10 flex items-center gap-1">
-              Get Early Access <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-            </span>
-          </Link>
+          {user ? (
+            <>
+              <Link href="/dashboard" className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors">
+                <User className="w-4 h-4" />
+                {user.email?.split('@')[0]}
+              </Link>
+              <Link href="/dashboard" className="group relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-white/10 border border-white/20 rounded-full hover:bg-white/20 transition-all">
+                Dashboard <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+                Sign In
+              </Link>
+              <Link href="/waitlist" className="group relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-white/10 border border-white/20 rounded-full hover:bg-white/20 transition-all overflow-hidden">
+                <span className="relative z-10 flex items-center gap-1">
+                  Get Early Access <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </span>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>

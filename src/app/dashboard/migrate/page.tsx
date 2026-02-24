@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Database, Upload, FileText, Zap, Loader2, CheckCircle2,
   AlertTriangle, Download, ArrowLeft, ArrowRight, Copy, Check,
-  X, ChevronDown, Trash2,
+  X, ChevronDown, Trash2, User, LogOut,
 } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 type SourceDialect = 'sql_server' | 'oracle' | 'mysql' | 'postgresql';
 type TargetDialect = 'snowflake_dbt' | 'postgresql' | 'bigquery' | 'redshift';
@@ -74,7 +75,15 @@ export default function MigratePage() {
   const [copied, setCopied] = useState(false);
   const [model, setModel] = useState('gpt-4o-mini');
   const [isDragging, setIsDragging] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUserEmail(session?.user?.email ?? null);
+    });
+  }, []);
 
   const handleFiles = useCallback((newFiles: FileList | File[]) => {
     const sqlFiles = Array.from(newFiles).filter(f =>
@@ -179,8 +188,19 @@ export default function MigratePage() {
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-3 text-xs text-zinc-500">
-            Up to 50 tables/views per batch
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-zinc-500">Up to 50 tables/views per batch</span>
+            {userEmail && (
+              <div className="flex items-center gap-2 text-sm text-zinc-400">
+                <User className="w-4 h-4" />
+                {userEmail.split('@')[0]}
+              </div>
+            )}
+            <form action="/api/auth/signout" method="POST">
+              <button type="submit" className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-zinc-500 hover:text-white border border-white/10 rounded-full hover:bg-white/5 transition-colors">
+                <LogOut className="w-3.5 h-3.5" /> Sign Out
+              </button>
+            </form>
           </div>
         </div>
       </nav>
