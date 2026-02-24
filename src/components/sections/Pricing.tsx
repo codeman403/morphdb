@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Sparkles, X, Loader2, CheckCircle2 } from 'lucide-react';
 
@@ -175,6 +176,7 @@ function WaitlistModal({ onClose }: { onClose: () => void }) {
 }
 
 export default function Pricing() {
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -244,7 +246,7 @@ export default function Pricing() {
                 </ul>
 
                 <button 
-                  onClick={() => tier.ctaAction === 'waitlist' && setIsModalOpen(true)}
+                  onClick={() => tier.ctaAction === 'waitlist' ? setIsModalOpen(true) : tier.ctaAction === 'beta' && router.push('/demo')}
                   className={`w-full py-4 rounded-full font-semibold transition-colors ${
                     tier.highlighted
                       ? 'bg-white text-black hover:bg-zinc-200'
