@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model WaitlistEntry {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  company   String?
+  tier      String   @default("design_partner")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("waitlist_entries")
+}
+
+model Profile {
+  id        String   @id
+  email     String   @unique
+  name      String?
+  company   String?
+  avatarUrl String?  @map("avatar_url")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("profiles")
+}
+
+model LoginLog {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  email     String?
+  ip        String?
+  country   String?
+  userAgent String?  @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("login_logs")
+}
+
+model Subscription {
+  id                   String   @id @default(cuid())
+  userId               String   @unique @map("user_id")
+  stripeCustomerId     String?  @unique @map("stripe_customer_id")
+  stripeSubscriptionId String?  @unique @map("stripe_subscription_id")
+  plan                 String   @default("free")
+  status               String   @default("inactive")
+  currentPeriodEnd     DateTime? @map("current_period_end")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  @@map("subscriptions")
+}
