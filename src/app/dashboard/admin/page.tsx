@@ -209,18 +209,22 @@ export default function AdminDashboard() {
                     <tr key={entry.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                       <td className="p-4 font-mono text-blue-400">{entry.email}</td>
                       <td className="p-4 text-zinc-300">{entry.name ?? '—'}</td>
-                      <td className="p-4 text-zinc-300 flex items-center gap-1.5">
-                        {entry.company && <Building2 className="w-3.5 h-3.5 text-zinc-500" />}
-                        {entry.company ?? '—'}
+                      <td className="p-4 text-zinc-300">
+                        <span className="flex items-center gap-1.5">
+                          {entry.company && <Building2 className="w-3.5 h-3.5 text-zinc-500" />}
+                          {entry.company ?? '—'}
+                        </span>
                       </td>
                       <td className="p-4">
                         <span className="px-2 py-0.5 rounded-full text-xs bg-blue-500/10 border border-blue-500/20 text-blue-400">
                           {entry.tier}
                         </span>
                       </td>
-                      <td className="p-4 text-zinc-500 flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5" />
-                        {timeAgo(entry.createdAt)}
+                      <td className="p-4 text-zinc-500">
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5" />
+                          {timeAgo(entry.createdAt)}
+                        </span>
                       </td>
                     </tr>
                   ))}
@@ -249,17 +253,23 @@ export default function AdminDashboard() {
                     <tr key={log.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                       <td className="p-4 font-mono text-green-400">{log.email ?? '—'}</td>
                       <td className="p-4 text-zinc-300 font-mono text-xs">{log.ip ?? '—'}</td>
-                      <td className="p-4 text-zinc-300 flex items-center gap-1.5">
-                        <Globe className="w-3.5 h-3.5 text-zinc-500" />
-                        {log.country ?? '—'}
+                      <td className="p-4 text-zinc-300">
+                        <span className="flex items-center gap-1.5">
+                          <Globe className="w-3.5 h-3.5 text-zinc-500" />
+                          {log.country ?? '—'}
+                        </span>
                       </td>
-                      <td className="p-4 text-zinc-300 flex items-center gap-1.5">
-                        <Monitor className="w-3.5 h-3.5 text-zinc-500" />
-                        {parseBrowser(log.userAgent)}
+                      <td className="p-4 text-zinc-300">
+                        <span className="flex items-center gap-1.5">
+                          <Monitor className="w-3.5 h-3.5 text-zinc-500" />
+                          {parseBrowser(log.userAgent)}
+                        </span>
                       </td>
-                      <td className="p-4 text-zinc-500 flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5" />
-                        {timeAgo(log.createdAt)}
+                      <td className="p-4 text-zinc-500">
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5" />
+                          {timeAgo(log.createdAt)}
+                        </span>
                       </td>
                     </tr>
                   ))}
@@ -287,13 +297,17 @@ export default function AdminDashboard() {
                     <tr key={profile.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                       <td className="p-4 font-mono text-purple-400">{profile.email}</td>
                       <td className="p-4 text-zinc-300">{profile.name ?? '—'}</td>
-                      <td className="p-4 text-zinc-300 flex items-center gap-1.5">
-                        {profile.company && <Building2 className="w-3.5 h-3.5 text-zinc-500" />}
-                        {profile.company ?? '—'}
+                      <td className="p-4 text-zinc-300">
+                        <span className="flex items-center gap-1.5">
+                          {profile.company && <Building2 className="w-3.5 h-3.5 text-zinc-500" />}
+                          {profile.company ?? '—'}
+                        </span>
                       </td>
-                      <td className="p-4 text-zinc-500 flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5" />
-                        {timeAgo(profile.createdAt)}
+                      <td className="p-4 text-zinc-500">
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5" />
+                          {timeAgo(profile.createdAt)}
+                        </span>
                       </td>
                     </tr>
                   ))}
