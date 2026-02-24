@@ -23,7 +23,7 @@ export default async function DashboardPage() {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 text-sm text-zinc-400">
               <User className="w-4 h-4" />
-              {profile?.name ?? user.email}
+              {profile?.name?.split(' ')[0] ?? user.email?.split('@')[0]}
             </div>
             <form action="/api/auth/signout" method="POST">
               <button type="submit" className="flex items-center gap-2 px-4 py-2 text-sm text-zinc-400 hover:text-white border border-white/10 rounded-full hover:bg-white/5 transition-colors">

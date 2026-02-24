@@ -193,7 +193,7 @@ export default function MigratePage() {
             {userEmail && (
               <div className="flex items-center gap-2 text-sm text-zinc-400">
                 <User className="w-4 h-4" />
-                {userEmail.split('@')[0]}
+                {userEmail.split('@')[0]?.split('.')[0]}
               </div>
             )}
             <form action="/api/auth/signout" method="POST">

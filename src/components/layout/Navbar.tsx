@@ -67,7 +67,7 @@ export default function Navbar() {
             <>
               <Link href="/dashboard" className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors">
                 <User className="w-4 h-4" />
-                {user.email?.split('@')[0]}
+                {user.email?.split('@')[0]?.split('.')[0]}
               </Link>
               <Link href="/dashboard" className="group relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-white/10 border border-white/20 rounded-full hover:bg-white/20 transition-all">
                 Dashboard <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
