@@ -232,8 +232,11 @@ export default function Pricing() {
         if (res.ok) {
           setTrialSuccess(true);
           setTimeout(() => {
+            setTrialSuccess(false);
             router.refresh();
           }, 2000);
+        } else {
+          alert(data.error);
         }
       } else {
         const res = await fetch('/api/stripe/checkout', {
