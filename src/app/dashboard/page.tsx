@@ -138,8 +138,6 @@ export default async function DashboardPage() {
             </Link>
           </div>
         )}
-          </div>
-        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-2xl p-6 sm:p-8 flex flex-col items-center text-center lg:items-start lg:text-left justify-center">
