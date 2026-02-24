@@ -8,39 +8,60 @@ import { createClient } from '@/lib/supabase/client';
 
 const tiers = [
   {
-    name: 'Developer Beta',
-    price: 'Free',
-    description: 'Perfect for testing the AI engine on small schemas.',
+    name: 'Free',
+    price: '$0',
+    description: 'Try the AI engine on small migrations.',
     features: [
-      'Up to 50 tables/views',
-      'Standard SQL dialect translation',
-      'Basic dbt model generation',
+      '5 batches per month',
+      'Up to 10 files per batch',
+      '50 translations per month',
+      'GPT-4o Mini only',
       'Community Discord support',
     ],
-    cta: 'Start Building',
+    cta: 'Start Free',
     ctaAction: 'beta',
     highlighted: false,
   },
   {
-    name: 'Design Partner',
-    price: '$499',
+    name: 'Pro',
+    price: '$15',
     period: '/mo',
-    description: 'For teams ready to migrate massive production workloads.',
+    description: 'For developers migrating real production schemas.',
     features: [
-      'Unlimited tables & stored procedures',
-      'Guaranteed 100% logic preservation',
+      '50 batches per month',
+      'Up to 50 files per batch',
+      '500 translations per month',
+      'All AI models (GPT-4o Mini, Claude Haiku & Sonnet)',
+      'File upload & ZIP download',
+      'Priority email support',
+    ],
+    cta: 'Upgrade to Pro',
+    ctaAction: 'checkout',
+    highlighted: true,
+  },
+  {
+    name: 'Design Partner',
+    price: '$50',
+    period: '/mo',
+    description: 'For teams migrating entire data warehouses.',
+    features: [
+      'Unlimited batches & translations',
+      'Unlimited files per batch',
+      'All AI models + early access to new models',
       'Advanced dbt project generation (tests & docs)',
       'Dedicated Slack channel with founders',
+      'Guaranteed 100% logic preservation',
     ],
-    cta: 'Join the Waitlist',
+    cta: 'Join Waitlist',
     ctaAction: 'waitlist',
-    highlighted: true,
+    highlighted: false,
   },
   {
     name: 'Enterprise',
     price: 'Custom',
-    description: 'For strict security and custom deployment requirements.',
+    description: 'For strict security and custom deployment needs.',
     features: [
+      'Everything in Design Partner',
       'VPC Peering & Single-Tenant deployment',
       'Custom AST rule generation',
       'SOC2 Type II compliance',
@@ -214,7 +235,7 @@ export default function Pricing() {
             </motion.p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
             {tiers.map((tier, index) => (
               <motion.div
                 key={tier.name}
@@ -255,7 +276,11 @@ export default function Pricing() {
                 </ul>
 
                 <button 
-                  onClick={() => tier.ctaAction === 'waitlist' ? setIsModalOpen(true) : tier.ctaAction === 'beta' && router.push(isAuthenticated ? '/dashboard/migrate' : '/login')}
+                  onClick={() => {
+                    if (tier.ctaAction === 'waitlist') setIsModalOpen(true);
+                    else if (tier.ctaAction === 'beta') router.push(isAuthenticated ? '/dashboard/migrate' : '/login');
+                    else if (tier.ctaAction === 'checkout') router.push(isAuthenticated ? '/dashboard?upgrade=pro' : '/login');
+                  }}
                   className={`w-full py-4 rounded-full font-semibold transition-colors ${
                     tier.highlighted
                       ? 'bg-white text-black hover:bg-zinc-200'

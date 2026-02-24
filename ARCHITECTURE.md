@@ -394,8 +394,10 @@ The AI is instructed to:
 
 ### Stripe Setup (Before Monetization Goes Live)
 
-1. Create a Stripe account → Create Product: "MorphDB Design Partner" ($499/mo)
-2. Copy **Price ID** → set as `STRIPE_DESIGN_PARTNER_PRICE_ID`
+1. Create a Stripe account → Create Products:
+   - "MorphDB Pro" ($15/mo)
+   - "MorphDB Design Partner" ($50/mo)
+2. Copy **Price IDs** → set as `STRIPE_PRO_PRICE_ID` and `STRIPE_DESIGN_PARTNER_PRICE_ID`
 3. Add Webhook endpoint: `https://your-domain.vercel.app/api/stripe/webhook`
 4. Events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`
 5. Copy **Webhook Signing Secret** → set as `STRIPE_WEBHOOK_SECRET`
@@ -427,7 +429,9 @@ The AI is instructed to:
 | `STRIPE_SECRET_KEY` | 💳 | Stripe secret key |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | 💳 | Stripe publishable key |
 | `STRIPE_WEBHOOK_SECRET` | 💳 | Stripe webhook signing secret |
-| `STRIPE_DESIGN_PARTNER_PRICE_ID` | 💳 | Stripe price ID for Design Partner tier |
+| `STRIPE_PRO_PRICE_ID` | 💳 | Stripe price ID for Pro tier ($15/mo) |
+| `STRIPE_DESIGN_PARTNER_PRICE_ID` | 💳 | Stripe price ID for Design Partner tier ($50/mo) |
+| `ANTHROPIC_API_KEY` | ✅ | Anthropic API key for Claude models |
 
 ---
 
