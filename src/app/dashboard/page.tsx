@@ -125,20 +125,6 @@ export default async function DashboardPage() {
           </div>
         )}
 
-        {trialStatus.isOnTrial && tierLabel !== 'Pro' && (
-          <div className="mb-6 sm:mb-10 p-4 sm:p-6 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
-            <div>
-              <h3 className="text-base sm:text-lg font-bold text-white mb-1 flex items-center gap-2">
-                <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" /> Your Pro Trial Ends in {trialStatus.daysRemaining} Days
-              </h3>
-              <p className="text-xs sm:text-sm text-zinc-400">Upgrade now to continue using Pro features.</p>
-            </div>
-            <Link href="/#pricing" className="px-5 py-2 bg-white text-black text-sm font-semibold rounded-full hover:bg-zinc-200 transition-colors whitespace-nowrap">
-              Upgrade Now
-            </Link>
-          </div>
-        )}
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-2xl p-6 sm:p-8 flex flex-col items-center text-center lg:items-start lg:text-left justify-center">
             <Sparkles className="w-10 h-10 sm:w-12 sm:h-12 text-blue-400 mb-4 opacity-60" />
