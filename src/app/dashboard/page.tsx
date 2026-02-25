@@ -1,16 +1,34 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { headers } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
 import { Database, LogOut, Sparkles, ArrowRight, User, Zap, Clock } from 'lucide-react';
 import { getUserTier, getTierLabel, getTrialStatus, getUserTierLabel } from '@/lib/tier';
 import { getMonthlyUsage } from '@/lib/usage';
 
-export default async function DashboardPage() {
+export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ upgraded?: string }> }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) redirect('/login');
+
+  // Check if user was redirected from Stripe checkout (upgraded=true)
+  const params = await searchParams;
+  if (params.upgraded === 'true') {
+    // Check if subscription needs to be updated
+    const existingSub = await prisma.subscription.findUnique({ where: { userId: user.id } });
+    if (existingSub && existingSub.status !== 'active') {
+      // Update subscription to active - webhook didn't work, so we do it here as fallback
+      await prisma.subscription.update({
+        where: { userId: user.id },
+        data: {
+          status: 'active',
+          plan: existingSub.plan === 'free' ? 'pro' : existingSub.plan,
+        },
+      });
+    }
+  }
 
   const [profile, tierInfo, usage, recentBatches, trialStatus, tierLabel] = await Promise.all([
     prisma.profile.findUnique({ where: { id: user.id } }),
