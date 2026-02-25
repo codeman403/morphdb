@@ -85,6 +85,7 @@ export default function Navbar() {
           <Link href="#features" onClick={(e) => handleScroll(e, 'features')} className="hover:text-white transition-colors">Features</Link>
           <Link href="#how-it-works" onClick={(e) => handleScroll(e, 'how-it-works')} className="hover:text-white transition-colors">How it Works</Link>
           <Link href="#pricing" onClick={(e) => handleScroll(e, 'pricing')} className="hover:text-white transition-colors">Pricing</Link>
+          <Link href="/support" className="hover:text-white transition-colors">Support</Link>
         </div>
 
         <div className="flex items-center gap-4">
