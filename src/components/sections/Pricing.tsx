@@ -258,10 +258,10 @@ export default function Pricing() {
   return (
     <>
       {trialSuccess && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 px-6 py-4 bg-green-500/10 border border-green-500/20 rounded-2xl backdrop-blur-xl shadow-2xl">
+        <div className="fixed top-24 right-6 z-50 px-6 py-4 bg-green-500/10 border border-green-500/20 rounded-2xl backdrop-blur-xl shadow-2xl">
           <div className="flex items-center gap-3">
             <CheckCircle2 className="w-6 h-6 text-green-400" />
-            <span className="text-green-400 font-medium">3-Day Pro Trial activated! Redirecting to dashboard...</span>
+            <span className="text-green-400 font-medium">3-Day Pro Trial activated! Redirecting...</span>
           </div>
         </div>
       )}
