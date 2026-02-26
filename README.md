@@ -69,4 +69,4 @@ This repository is configured to deploy directly to Vercel. Local setup is not r
 ---
 
 ## 📝 License
-Private Repository — Created for the AI Vibe Coding Hackathon.
+Public Repository — Created for the AI Vibe Coding Hackathon.
