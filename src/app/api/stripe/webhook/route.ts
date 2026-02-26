@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
 
         if (userId && session.subscription) {
           const stripeSub = await stripe.subscriptions.retrieve(session.subscription as string);
-          const periodEnd = stripeSub.current_period_end;
+          const periodEnd = (stripeSub as any).current_period_end;
           
           const result = await prisma.subscription.upsert({
             where: { userId },
