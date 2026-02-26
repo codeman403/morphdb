@@ -17,8 +17,8 @@ interface MigrationResult {
 
 const MODEL_MAP: Record<AIModel, { provider: AIProvider; model: string }> = {
   'gpt-4o-mini': { provider: 'openai', model: 'gpt-4o-mini' },
-  'claude-haiku': { provider: 'anthropic', model: 'claude-3-haiku-20240307' },
-  'claude-sonnet': { provider: 'anthropic', model: 'claude-3-5-sonnet-20241022' },
+  'claude-haiku': { provider: 'anthropic', model: 'claude-haiku-4-20250729' },
+  'claude-sonnet': { provider: 'anthropic', model: 'claude-sonnet-4-5-20250929' },
 };
 
 const DIALECT_LABELS: Record<string, string> = {
