@@ -92,10 +92,10 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
           <div className="bg-white/5 border border-purple-500/20 rounded-2xl p-4 sm:p-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 blur-2xl rounded-full translate-x-1/2 -translate-y-1/2" />
             <div className="text-xl sm:text-3xl font-bold text-white mb-1">
-              {trialStatus.isOnTrial ? 'Pro Trial' : tierLabel}
+              {tierLabel}
             </div>
             <div className="text-xs sm:text-sm font-medium text-zinc-300 mb-1">
-              {trialStatus.isOnTrial ? `${trialStatus.daysRemaining} days remaining` : 'Current Plan'}
+              {tierLabel === 'Pro Trial' ? `${trialStatus.daysRemaining} days remaining` : 'Current Plan'}
             </div>
             <div className="text-xs text-zinc-500">{batchLimit} batches/mo</div>
           </div>
@@ -132,7 +132,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
           </div>
         )}
 
-        {trialStatus.isOnTrial && tierLabel !== 'Pro' && (
+        {trialStatus.isOnTrial && !tierLabel.startsWith('Pro') && !tierLabel.startsWith('Design') && !tierLabel.startsWith('Enterprise') && (
           <div className="mb-6 sm:mb-10 p-4 sm:p-6 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
             <div>
               <h3 className="text-base sm:text-lg font-bold text-white mb-1 flex items-center gap-2">
