@@ -30,17 +30,22 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     }
   }
 
-  const [profile, tierInfo, usage, recentBatches, trialStatus, tierLabel] = await Promise.all([
+  const [profile, subscription, recentBatches] = await Promise.all([
     prisma.profile.findUnique({ where: { id: user.id } }),
-    getUserTier(user.id),
-    getMonthlyUsage(user.id),
+    prisma.subscription.findUnique({ where: { userId: user.id } }),
     prisma.migrationBatch.findMany({
       where: { userId: user.id },
       orderBy: { createdAt: 'desc' },
       take: 5,
     }),
-    getTrialStatus(user.id),
-    getUserTierLabel(user.id),
+  ]);
+
+  // Compute tier info with single subscription object
+  const [tierInfo, usage, trialStatus, tierLabel] = await Promise.all([
+    getUserTier(user.id, subscription),
+    getMonthlyUsage(user.id),
+    getTrialStatus(user.id, subscription),
+    getUserTierLabel(user.id, subscription),
   ]);
 
   const adminEmails = (process.env.ADMIN_EMAILS ?? '').split(',').map(e => e.trim()).filter(Boolean);

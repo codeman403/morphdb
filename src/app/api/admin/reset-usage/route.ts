@@ -8,7 +8,7 @@ const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? '').split(',').map(e => e.trim
 export async function POST(req: NextRequest) {
   try {
     const ip = getClientIp(req.headers);
-    const { ok } = rateLimit(`admin-reset-usage:${ip}`, 10, 60_000);
+    const { ok } = await rateLimit(`admin-reset-usage:${ip}`, 10, 60_000);
     if (!ok) {
       return NextResponse.json({ error: 'Rate limit reached. Please wait.' }, { status: 429 });
     }

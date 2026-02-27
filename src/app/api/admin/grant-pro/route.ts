@@ -9,7 +9,7 @@ const VALID_PLANS = ['free', 'pro', 'design_partner', 'enterprise'];
 export async function POST(req: NextRequest) {
   try {
     const ip = getClientIp(req.headers);
-    const { ok } = rateLimit(`admin-grant-pro:${ip}`, 10, 60_000);
+    const { ok } = await rateLimit(`admin-grant-pro:${ip}`, 10, 60_000);
     if (!ok) {
       return NextResponse.json({ error: 'Rate limit reached. Please wait.' }, { status: 429 });
     }

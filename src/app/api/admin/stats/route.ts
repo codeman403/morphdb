@@ -8,7 +8,7 @@ const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? '').split(',').map(e => e.trim
 export async function GET(req: NextRequest) {
   try {
     const ip = getClientIp(req.headers);
-    const { ok } = rateLimit(`admin-stats:${ip}`, 20, 60_000);
+    const { ok } = await rateLimit(`admin-stats:${ip}`, 20, 60_000);
     if (!ok) {
       return NextResponse.json({ error: 'Rate limit reached. Please wait.' }, { status: 429 });
     }
@@ -20,31 +20,48 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
+    // Parse pagination parameters
+    const url = new URL(req.url);
+    const waitlistOffset = Math.max(0, parseInt(url.searchParams.get('waitlistOffset') ?? '0', 10));
+    const loginsOffset = Math.max(0, parseInt(url.searchParams.get('loginsOffset') ?? '0', 10));
+    const signupsOffset = Math.max(0, parseInt(url.searchParams.get('signupsOffset') ?? '0', 10));
+    
+    const LIMIT = 50;
+
     const [
       waitlistCount,
       waitlistEntries,
+      waitlistEntriesTotal,
       loginLogs,
+      loginsTotal,
       subscriptionStats,
       recentSignups,
+      signupsTotal,
       supportTickets,
     ] = await Promise.all([
       prisma.waitlistEntry.count(),
       prisma.waitlistEntry.findMany({
         orderBy: { createdAt: 'desc' },
-        take: 50,
+        skip: waitlistOffset,
+        take: LIMIT,
       }),
+      prisma.waitlistEntry.count(),
       prisma.loginLog.findMany({
         orderBy: { createdAt: 'desc' },
-        take: 50,
+        skip: loginsOffset,
+        take: LIMIT,
       }),
+      prisma.loginLog.count(),
       prisma.subscription.groupBy({
         by: ['plan'],
         _count: { plan: true },
       }),
       prisma.profile.findMany({
         orderBy: { createdAt: 'desc' },
-        take: 20,
+        skip: signupsOffset,
+        take: LIMIT,
       }),
+      prisma.profile.count(),
       prisma.supportTicket.findMany({
         orderBy: { createdAt: 'desc' },
         take: 50,
@@ -52,10 +69,29 @@ export async function GET(req: NextRequest) {
     ]);
 
     return NextResponse.json({
-      waitlist: { count: waitlistCount, entries: waitlistEntries },
-      logins: loginLogs,
+      waitlist: { 
+        count: waitlistCount, 
+        entries: waitlistEntries,
+        total: waitlistEntriesTotal,
+        offset: waitlistOffset,
+        limit: LIMIT,
+        hasMore: waitlistOffset + LIMIT < waitlistEntriesTotal,
+      },
+      logins: {
+        entries: loginLogs,
+        total: loginsTotal,
+        offset: loginsOffset,
+        limit: LIMIT,
+        hasMore: loginsOffset + LIMIT < loginsTotal,
+      },
       subscriptions: subscriptionStats,
-      recentSignups,
+      recentSignups: {
+        entries: recentSignups,
+        total: signupsTotal,
+        offset: signupsOffset,
+        limit: LIMIT,
+        hasMore: signupsOffset + LIMIT < signupsTotal,
+      },
       supportTickets,
     });
   } catch (e) {

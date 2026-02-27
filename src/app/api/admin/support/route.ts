@@ -8,7 +8,7 @@ const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? '').split(',').map(e => e.trim
 export async function GET(req: NextRequest) {
   try {
     const ip = getClientIp(req.headers);
-    const { ok } = rateLimit(`admin-support:${ip}`, 20, 60_000);
+    const { ok } = await rateLimit(`admin-support:${ip}`, 20, 60_000);
     if (!ok) {
       return NextResponse.json({ error: 'Rate limit reached. Please wait.' }, { status: 429 });
     }
@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   try {
     const ip = getClientIp(req.headers);
-    const { ok } = rateLimit(`admin-support:${ip}`, 20, 60_000);
+    const { ok } = await rateLimit(`admin-support:${ip}`, 20, 60_000);
     if (!ok) {
       return NextResponse.json({ error: 'Rate limit reached. Please wait.' }, { status: 429 });
     }

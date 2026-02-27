@@ -6,13 +6,16 @@ import { rateLimit, getClientIp } from '@/lib/rate-limit';
 import { getUserTier } from '@/lib/tier';
 import { checkQuota, incrementUsage } from '@/lib/usage';
 import { prisma } from '@/lib/prisma';
+import { withTimeout } from '@/lib/timeout';
+import { getIdempotencyKey, storeIdempotencyKey } from '@/lib/idempotency';
 
 const MAX_FILE_SIZE = 500_000;
+const FILE_READ_TIMEOUT_MS = 10_000; // 10 seconds per file
 
 export async function POST(req: NextRequest) {
   try {
     const ip = getClientIp(req.headers);
-    const { ok } = rateLimit(`migrate-batch:${ip}`, 5, 60_000);
+    const { ok } = await rateLimit(`migrate-batch:${ip}`, 5, 60_000);
     if (!ok) {
       return NextResponse.json({ error: 'Rate limit reached. Please wait.' }, { status: 429 });
     }
@@ -21,6 +24,15 @@ export async function POST(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: 'Authentication required for batch migration.' }, { status: 401 });
+    }
+
+    // Check idempotency key from request headers
+    const idempotencyKey = req.headers.get('idempotency-key');
+    if (idempotencyKey) {
+      const cached = await getIdempotencyKey(user.id, idempotencyKey);
+      if (cached.found) {
+        return NextResponse.json(cached.response, { status: cached.status });
+      }
     }
 
     const tierLimits = await getUserTier(user.id);
@@ -76,7 +88,7 @@ export async function POST(req: NextRequest) {
       }
       let content: string;
       try {
-        content = await file.text();
+        content = await withTimeout(file.text(), FILE_READ_TIMEOUT_MS, `File ${file.name} read timeout`);
       } catch {
         return NextResponse.json({ error: `Failed to read file ${file.name}.` }, { status: 400 });
       }
@@ -192,7 +204,7 @@ export async function POST(req: NextRequest) {
 
     await incrementUsage(user.id, successCount, totalTokens);
 
-    return NextResponse.json({
+    const responseBody = {
       results,
       summary: {
         total: results.length,
@@ -201,7 +213,14 @@ export async function POST(req: NextRequest) {
         totalTokens,
         totalDuration,
       },
-    });
+    };
+
+    // Store idempotency key if provided
+    if (idempotencyKey) {
+      await storeIdempotencyKey(user.id, idempotencyKey, responseBody, 200);
+    }
+
+    return NextResponse.json(responseBody);
   } catch (e) {
     console.error('[Batch Migrate Error]', e);
     return NextResponse.json({ error: 'Batch migration failed.' }, { status: 500 });

@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     const isDemo = mode === 'demo';
 
     const limit = isDemo ? DEMO_RATE_LIMIT : AUTH_RATE_LIMIT;
-    const { ok } = rateLimit(`migrate:${ip}`, limit, 60_000);
+    const { ok } = await rateLimit(`migrate:${ip}`, limit, 60_000);
     if (!ok) {
       return NextResponse.json(
         { error: 'Rate limit reached. Please wait a minute.' },
