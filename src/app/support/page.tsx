@@ -13,7 +13,7 @@ export default function SupportPage() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }: { data: { session: { user?: { email?: string } } | null } }) => {
       if (session?.user) {
         fetch('/api/auth/profile').then(r => r.json()).then(d => {
           setForm(prev => ({

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import { Database, ChevronRight, User, LogOut } from 'lucide-react';
 import { animate } from 'framer-motion';
 import { createClient } from '@/lib/supabase/client';
@@ -10,6 +11,9 @@ export default function Navbar() {
   const [user, setUser] = useState<{ email?: string } | null>(null);
   const [firstName, setFirstName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const pathname = usePathname();
+  const router = useRouter();
+  const isHomePage = pathname === '/';
 
   useEffect(() => {
     const supabase = createClient();
@@ -20,13 +24,13 @@ export default function Navbar() {
         setUser(session.user);
         const { data } = await supabase.auth.getUser();
         if (data.user) {
-          fetch('/api/auth/profile').then(r => r.json()).then(d => setFirstName(d.firstName));
+          fetch('/api/auth/profile').then(r => r.json()).then((d: { firstName?: string }) => setFirstName(d.firstName ?? null));
         }
       } else {
         const { data: { session: refreshSession } } = await supabase.auth.refreshSession();
         if (refreshSession?.user) {
           setUser(refreshSession.user);
-          fetch('/api/auth/profile').then(r => r.json()).then(d => setFirstName(d.firstName));
+          fetch('/api/auth/profile').then(r => r.json()).then((d: { firstName?: string }) => setFirstName(d.firstName ?? null));
         }
       }
       setLoading(false);
@@ -34,10 +38,10 @@ export default function Navbar() {
     
     initAuth();
     
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: string, session: { user?: { email?: string } } | null): void => {
       setUser(session?.user ?? null);
       if (session?.user) {
-        fetch('/api/auth/profile').then(r => r.json()).then(d => setFirstName(d.firstName));
+        fetch('/api/auth/profile').then(r => r.json()).then((d: { firstName?: string }) => setFirstName(d.firstName ?? null));
       } else {
         setFirstName(null);
       }
@@ -45,21 +49,28 @@ export default function Navbar() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+  const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
     e.preventDefault();
-    const target = document.getElementById(targetId);
-    if (target) {
-      const navbarHeight = 64;
-      const elementPosition = target.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.scrollY - navbarHeight;
+    
+    if (isHomePage) {
+      // On home page - scroll to element if it exists
+      const target = document.getElementById(targetId);
+      if (target) {
+        const navbarHeight = 64;
+        const elementPosition = target.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.scrollY - navbarHeight;
 
-      animate(window.scrollY, offsetPosition, {
-        duration: 1.2,
-        ease: [0.16, 1, 0.3, 1], 
-        onUpdate: (latest) => window.scrollTo(0, latest)
-      });
-      
-      window.history.pushState(null, '', `#${targetId}`);
+        animate(window.scrollY, offsetPosition, {
+          duration: 1.2,
+          ease: [0.16, 1, 0.3, 1], 
+          onUpdate: (latest) => window.scrollTo(0, latest)
+        });
+        
+        window.history.pushState(null, '', `#${targetId}`);
+      }
+    } else {
+      // Not on home page - navigate to home with anchor
+      router.push(`/#${targetId}`);
     }
   };
 
@@ -82,10 +93,17 @@ export default function Navbar() {
         </Link>
         
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-400">
-          <Link href="#features" onClick={(e) => handleScroll(e, 'features')} className="hover:text-white transition-colors">Features</Link>
-          <Link href="#how-it-works" onClick={(e) => handleScroll(e, 'how-it-works')} className="hover:text-white transition-colors">How it Works</Link>
-          <Link href="#pricing" onClick={(e) => handleScroll(e, 'pricing')} className="hover:text-white transition-colors">Pricing</Link>
-          <Link href="/support" className="hover:text-white transition-colors">Support</Link>
+          <Link href="#features" onClick={(e) => handleNavigation(e, 'features')} className="hover:text-white transition-colors">Features</Link>
+          <Link href="#how-it-works" onClick={(e) => handleNavigation(e, 'how-it-works')} className="hover:text-white transition-colors">How it Works</Link>
+          <Link href="/docs" onClick={(e) => {
+            e.preventDefault();
+            router.push('/docs');
+          }} className="hover:text-white transition-colors">Docs</Link>
+          <Link href="#pricing" onClick={(e) => handleNavigation(e, 'pricing')} className="hover:text-white transition-colors">Pricing</Link>
+          <Link href="/support" onClick={(e) => {
+            e.preventDefault();
+            router.push('/support');
+          }} className="hover:text-white transition-colors">Support</Link>
         </div>
 
         <div className="flex items-center gap-4">

@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
 import { validateEmail, validatePassword, validateName, validateCompany } from '@/lib/validation';
+import { sendEmail, getWelcomeEmailHTML } from '@/lib/email';
 
 export async function POST(req: NextRequest) {
   try {
@@ -82,6 +83,14 @@ export async function POST(req: NextRequest) {
           },
         })
         .catch((e) => console.error('[Login Log Error]', e));
+      
+      // Send welcome email (fire-and-forget)
+      const userName = name || data.user.email?.split('@')[0] || 'User';
+      sendEmail({
+        to: data.user.email!,
+        subject: 'Welcome to MorphDB',
+        html: getWelcomeEmailHTML(userName),
+      }).catch((e) => console.error('[Welcome Email Error]', e));
     }
 
     return NextResponse.json({ success: true, user: data.user }, { status: 201 });

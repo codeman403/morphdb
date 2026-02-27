@@ -1,10 +1,9 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { headers } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
 import { Database, LogOut, Sparkles, ArrowRight, User, Zap, Clock } from 'lucide-react';
-import { getUserTier, getTierLabel, getTrialStatus, getUserTierLabel } from '@/lib/tier';
+import { getUserTier, getTrialStatus, getUserTierLabel } from '@/lib/tier';
 import { getMonthlyUsage } from '@/lib/usage';
 
 export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ upgraded?: string }> }) {

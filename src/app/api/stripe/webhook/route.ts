@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { prisma } from '@/lib/prisma';
+import { sendEmail, getSubscriptionActivatedEmailHTML, getSubscriptionCancelledEmailHTML } from '@/lib/email';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+
+type StripeSubscriptionWithPeriod = Stripe.Subscription & { current_period_end?: number };
 
 export async function POST(req: NextRequest) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -78,9 +81,10 @@ export async function POST(req: NextRequest) {
 
           if (userId && session.subscription) {
             const stripeSub = await stripe.subscriptions.retrieve(session.subscription as string);
-            const periodEnd = typeof (stripeSub as any).current_period_end === 'number'
-              ? (stripeSub as any).current_period_end
-              : ((stripeSub as any) as { current_period_end?: number }).current_period_end;
+            const sub = stripeSub as StripeSubscriptionWithPeriod;
+            const periodEnd = typeof sub.current_period_end === 'number'
+              ? sub.current_period_end
+              : undefined;
             if (!periodEnd) {
               processError = `Missing current_period_end on subscription: ${stripeSub.id}`;
               console.error('[Stripe Webhook] ' + processError);
@@ -107,15 +111,31 @@ export async function POST(req: NextRequest) {
             });
             
             console.log('[Stripe Webhook] Subscription updated:', result);
+            
+            // Send subscription activated email (fire-and-forget)
+            const userProfile = await prisma.profile.findUnique({ where: { id: userId } });
+            const userName = userProfile?.name || userProfile?.email?.split('@')[0] || 'User';
+            const planNames: Record<string, string> = {
+              'pro': 'Pro',
+              'design_partner': 'Design Partner',
+              'enterprise': 'Enterprise',
+            };
+            if (userProfile?.email) {
+              sendEmail({
+                to: userProfile.email,
+                subject: `Your ${planNames[plan] || plan} Subscription is Active`,
+                html: getSubscriptionActivatedEmailHTML(userName, planNames[plan] || plan),
+              }).catch((e) => console.error('[Subscription Email Error]', e));
+            }
           }
           break;
         }
 
         case 'customer.subscription.updated': {
-          const stripeSub = event.data.object as Stripe.Subscription;
-          const periodEnd = typeof (stripeSub as any).current_period_end === 'number'
-            ? (stripeSub as any).current_period_end
-            : ((stripeSub as any) as { current_period_end?: number }).current_period_end;
+          const stripeSub = event.data.object as StripeSubscriptionWithPeriod;
+          const periodEnd = typeof stripeSub.current_period_end === 'number'
+            ? stripeSub.current_period_end
+            : undefined;
           
           console.log('[Stripe Webhook] Subscription updated:', { id: stripeSub.id, status: stripeSub.status });
           
@@ -134,12 +154,29 @@ export async function POST(req: NextRequest) {
           
           console.log('[Stripe Webhook] Subscription deleted:', stripeSub.id);
           
+          const subscriptions = await prisma.subscription.findMany({
+            where: { stripeSubscriptionId: stripeSub.id },
+          });
+          
           await prisma.subscription.updateMany({
             where: { stripeSubscriptionId: stripeSub.id },
             data: {
               status: 'canceled',
             },
           });
+          
+          // Send cancellation email (fire-and-forget)
+          for (const sub of subscriptions) {
+            const userProfile = await prisma.profile.findUnique({ where: { id: sub.userId } });
+            const userName = userProfile?.name || userProfile?.email?.split('@')[0] || 'User';
+            if (userProfile?.email) {
+              sendEmail({
+                to: userProfile.email,
+                subject: 'Your MorphDB Subscription Has Been Cancelled',
+                html: getSubscriptionCancelledEmailHTML(userName),
+              }).catch((e) => console.error('[Subscription Cancelled Email Error]', e));
+            }
+          }
           break;
         }
 

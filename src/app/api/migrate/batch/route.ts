@@ -8,21 +8,48 @@ import { checkQuota, incrementUsage } from '@/lib/usage';
 import { prisma } from '@/lib/prisma';
 import { withTimeout } from '@/lib/timeout';
 import { getIdempotencyKey, storeIdempotencyKey } from '@/lib/idempotency';
+import { anonymizeIpAddress, maskUserAgent } from '@/lib/pii-utils';
+import { sendEmail, getBatchCompletionEmailHTML } from '@/lib/email';
 
 const MAX_FILE_SIZE = 500_000;
 const FILE_READ_TIMEOUT_MS = 10_000; // 10 seconds per file
 
 export async function POST(req: NextRequest) {
+  const requestId = crypto.randomUUID()
+  const startTime = Date.now()
+  const ip = getClientIp(req.headers)
+  
+  // Structured logging for request start
+  const logContext = {
+    timestamp: new Date().toISOString(),
+    requestId,
+    level: 'info',
+    action: 'batch_migration_start',
+    ipAddress: anonymizeIpAddress(ip),
+    userAgent: maskUserAgent(req.headers.get('user-agent') ?? undefined),
+  }
+
   try {
-    const ip = getClientIp(req.headers);
     const { ok } = await rateLimit(`migrate-batch:${ip}`, 5, 60_000);
     if (!ok) {
+      console.log(JSON.stringify({
+        ...logContext,
+        level: 'warn',
+        action: 'batch_migration_rate_limit',
+        reason: 'Too many requests',
+      }))
       return NextResponse.json({ error: 'Rate limit reached. Please wait.' }, { status: 429 });
     }
 
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
+      console.log(JSON.stringify({
+        ...logContext,
+        level: 'warn',
+        action: 'batch_migration_auth_failed',
+        reason: 'No authenticated user',
+      }))
       return NextResponse.json({ error: 'Authentication required for batch migration.' }, { status: 401 });
     }
 
@@ -31,6 +58,13 @@ export async function POST(req: NextRequest) {
     if (idempotencyKey) {
       const cached = await getIdempotencyKey(user.id, idempotencyKey);
       if (cached.found) {
+        console.log(JSON.stringify({
+          ...logContext,
+          level: 'info',
+          action: 'batch_migration_cached',
+          userId: user.id,
+          idempotencyKey: idempotencyKey.substring(0, 8),
+        }))
         return NextResponse.json(cached.response, { status: cached.status });
       }
     }
@@ -39,6 +73,14 @@ export async function POST(req: NextRequest) {
 
     const quota = await checkQuota(user.id, tierLimits.tier);
     if (!quota.ok) {
+      console.log(JSON.stringify({
+        ...logContext,
+        level: 'warn',
+        action: 'batch_migration_quota_exceeded',
+        userId: user.id,
+        tier: tierLimits.tier,
+        reason: quota.error,
+      }))
       return NextResponse.json({ error: quota.error }, { status: 403 });
     }
 
@@ -112,6 +154,20 @@ export async function POST(req: NextRequest) {
       }, { status: 400 });
     }
 
+    // Log batch processing start
+    console.log(JSON.stringify({
+      ...logContext,
+      level: 'info',
+      action: 'batch_processing_start',
+      userId: user.id,
+      sourceDialect,
+      targetDialect,
+      model: model ?? 'gpt-4o-mini',
+      totalStatements: allStatements.length,
+      filesCount: files.length,
+      tier: tierLimits.tier,
+    }))
+
     const results: {
       fileName: string;
       name: string;
@@ -146,6 +202,15 @@ export async function POST(req: NextRequest) {
               status: 'success' as const,
             };
           } catch (e) {
+            // Log individual statement failure
+            console.log(JSON.stringify({
+              ...logContext,
+              level: 'warn',
+              action: 'statement_translation_failed',
+              userId: user.id,
+              statementName: stmt.name,
+              error: e instanceof Error ? e.message : 'Unknown error',
+            }))
             return {
               fileName: stmt.fileName,
               name: stmt.name,
@@ -169,8 +234,24 @@ export async function POST(req: NextRequest) {
     const totalDuration = results.reduce((a, r) => a + r.durationMs, 0);
     const successCount = results.filter(r => r.status === 'success').length;
 
+    // Log batch processing completion
+    console.log(JSON.stringify({
+      ...logContext,
+      level: 'info',
+      action: 'batch_processing_complete',
+      userId: user.id,
+      sourceDialect,
+      targetDialect,
+      totalStatements: results.length,
+      successCount,
+      failedCount: results.length - successCount,
+      totalTokens,
+      totalDurationMs: totalDuration,
+    }))
+
+    let batchId: string | null = null
     try {
-      await prisma.migrationBatch.create({
+      const batch = await prisma.migrationBatch.create({
         data: {
           userId: user.id,
           sourceDialect,
@@ -198,8 +279,12 @@ export async function POST(req: NextRequest) {
           },
         },
       });
+      batchId = batch.id
     } catch (e) {
-      console.error('[Migration History Save Error]', e);
+      console.error('[Migration History Save Error]', {
+        userId: user.id,
+        error: e instanceof Error ? e.message : 'Unknown error',
+      });
     }
 
     await incrementUsage(user.id, successCount, totalTokens);
@@ -220,9 +305,39 @@ export async function POST(req: NextRequest) {
       await storeIdempotencyKey(user.id, idempotencyKey, responseBody, 200);
     }
 
+    // Log successful completion
+    console.log(JSON.stringify({
+      ...logContext,
+      level: 'info',
+      action: 'batch_migration_completed',
+      userId: user.id,
+      batchId,
+      durationMs: Date.now() - startTime,
+      summary: {
+        total: results.length,
+        success: successCount,
+        failed: results.length - successCount,
+      },
+    }))
+
+    // Send batch completion email (fire-and-forget)
+    const userProfile = await prisma.profile.findUnique({ where: { id: user.id } });
+    const userName = userProfile?.name || user.email?.split('@')[0] || 'User';
+    if (batchId && userProfile?.email) {
+      sendEmail({
+        to: userProfile.email,
+        subject: `Your Migration Batch is Complete`,
+        html: getBatchCompletionEmailHTML(userName, batchId, successCount, results.length - successCount),
+      }).catch((e) => console.error('[Batch Completion Email Error]', e));
+    }
+
     return NextResponse.json(responseBody);
   } catch (e) {
-    console.error('[Batch Migrate Error]', e);
+    console.error('[Batch Migrate Error]', {
+      requestId,
+      error: e instanceof Error ? e.message : 'Unknown error',
+      durationMs: Date.now() - startTime,
+    });
     return NextResponse.json({ error: 'Batch migration failed.' }, { status: 500 });
   }
 }

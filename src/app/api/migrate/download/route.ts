@@ -2,6 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import JSZip from 'jszip';
 import { createClient } from '@/lib/supabase/server';
 
+type MigrationResult = {
+  name?: string;
+  type?: string;
+  status: string;
+  translatedSql?: string;
+  changes?: unknown[];
+  tokensUsed?: number;
+};
+
 export async function POST(req: NextRequest) {
   try {
     // Authenticate user
@@ -19,7 +28,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid JSON body.' }, { status: 400 });
     }
 
-    const { results, targetDialect } = body as { results?: any[]; targetDialect?: string };
+    const { results, targetDialect } = body as { results?: MigrationResult[]; targetDialect?: string };
 
     if (!results || !Array.isArray(results) || results.length === 0) {
       return NextResponse.json({ error: 'No results to download.' }, { status: 400 });
@@ -59,7 +68,7 @@ export async function POST(req: NextRequest) {
     let summary = `-- MorphDB Batch Translation Summary\n`;
     summary += `-- Target: ${targetDialect}\n`;
     summary += `-- Files: ${results.length}\n`;
-    summary += `-- Successful: ${results.filter((r: { status: string }) => r.status === 'success').length}\n\n`;
+    summary += `-- Successful: ${results.filter((r) => r.status === 'success').length}\n\n`;
     for (const r of results) {
       summary += `-- ${r.name} (${r.type}): ${r.status}`;
       if (r.status === 'success') summary += ` [${r.changes?.length ?? 0} changes, ${r.tokensUsed} tokens]`;

@@ -209,7 +209,7 @@ export default function Pricing() {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }: { data: { session: { user?: { email?: string } } | null } }) => {
       setIsAuthenticated(!!session?.user);
       if (session?.user) {
         fetch('/api/auth/has-used-trial').then(r => r.json()).then(d => {

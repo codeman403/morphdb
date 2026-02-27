@@ -10,6 +10,14 @@ const INACTIVITY_TIMEOUT = 30 * 60 * 1000;
 const WARNING_BEFORE = 2 * 60 * 1000;
 const ACTIVITY_EVENTS = ['mousedown', 'keydown', 'scroll', 'touchstart', 'mousemove'];
 
+// Try to create client once at module level
+let supabase: ReturnType<typeof createClient> | null = null;
+try {
+  supabase = createClient();
+} catch {
+  // Supabase not configured
+}
+
 export default function SessionManager() {
   const router = useRouter();
   const pathname = usePathname();
@@ -20,22 +28,19 @@ export default function SessionManager() {
   const warningRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const countdownRef = useRef<ReturnType<typeof setInterval>>(undefined);
 
-  const supabase = createClient();
-
   const handleLogout = useCallback(async () => {
     setShowWarning(false);
     await fetch('/api/auth/signout', { method: 'POST' });
     router.push('/login');
   }, [router]);
 
-  const resetTimers = useCallback(() => {
-    if (!isAuthenticated) return;
-
+  const setupTimers = useCallback(() => {
+    // Clear existing timers
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     if (warningRef.current) clearTimeout(warningRef.current);
     if (countdownRef.current) clearInterval(countdownRef.current);
-    setShowWarning(false);
 
+    // Set warning timeout
     warningRef.current = setTimeout(() => {
       setShowWarning(true);
       setCountdown(Math.floor(WARNING_BEFORE / 1000));
@@ -51,8 +56,14 @@ export default function SessionManager() {
       }, 1000);
     }, INACTIVITY_TIMEOUT - WARNING_BEFORE);
 
+    // Set logout timeout
     timeoutRef.current = setTimeout(handleLogout, INACTIVITY_TIMEOUT);
-  }, [isAuthenticated, handleLogout]);
+  }, [handleLogout]);
+
+  const resetTimers = useCallback(() => {
+    setShowWarning(false);
+    setupTimers();
+  }, [setupTimers]);
 
   const stayLoggedIn = useCallback(() => {
     setShowWarning(false);
@@ -61,11 +72,13 @@ export default function SessionManager() {
   }, [resetTimers]);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    if (!supabase) return;
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: string, session: { user?: { email?: string } } | null) => {
       setIsAuthenticated(!!session?.user);
     });
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }: { data: { session: { user?: { email?: string } } | null } }) => {
       setIsAuthenticated(!!session?.user);
     });
 
@@ -75,6 +88,7 @@ export default function SessionManager() {
   useEffect(() => {
     if (!isAuthenticated) return;
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     resetTimers();
 
     const handleActivity = () => {
@@ -96,8 +110,11 @@ export default function SessionManager() {
   }, [isAuthenticated, resetTimers, showWarning]);
 
   useEffect(() => {
-    if (isAuthenticated && !showWarning) resetTimers();
-  }, [pathname]);
+    if (isAuthenticated && !showWarning) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      resetTimers();
+    }
+  }, [pathname, isAuthenticated, showWarning, resetTimers]);
 
   if (!isAuthenticated) return null;
 

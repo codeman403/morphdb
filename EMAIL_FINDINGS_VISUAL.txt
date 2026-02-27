@@ -1,0 +1,363 @@
+═══════════════════════════════════════════════════════════════════════════════
+                    MORPHDB EMAIL INFRASTRUCTURE - VISUAL FINDINGS
+═══════════════════════════════════════════════════════════════════════════════
+
+
+1. CURRENT SYSTEM ARCHITECTURE
+═══════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                            MORPHDB INFRASTRUCTURE                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  Frontend (React 19)        API Layer              Database                 │
+│  ─────────────────          ────────────           ────────────             │
+│                                                                              │
+│  ✓ Login                    ✓ Auth Endpoints        ✓ Profile               │
+│  ✓ Signup                   ✓ Trial Endpoints       ✓ Subscription          │
+│  ✓ Dashboard                ✓ Payment Webhooks      ✓ SupportTicket        │
+│  ✓ Batch Upload             ✓ Migration Batch       ✓ WaitlistEntry        │
+│  ✓ Support Form             ✓ Support Tickets       ✓ MonthlyUsage         │
+│                             ✓ Admin Panel           ✓ MigrationBatch       │
+│                             ✗ EMAIL SERVICE        ✓ LoginLog              │
+│                                                      ✓ AuditLog             │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+                            MISSING: Email Service Layer
+
+
+2. EMAIL SERVICE INTEGRATION POINT
+═══════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                     PROPOSED EMAIL SERVICE INTEGRATION                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│              API Endpoint                Email Service                      │
+│              ─────────────                ──────────────                    │
+│                                                                              │
+│   /api/auth/signup          ────────►  sendEmail()  ────────►  RESEND API │
+│                                        (welcome)                            │
+│                                                                              │
+│   /api/trial                ────────►  sendEmail()  ────────►  RESEND API │
+│                                        (trial-start)                        │
+│                                                                              │
+│   /api/stripe/webhook       ────────►  sendEmail()  ────────►  RESEND API │
+│                                        (subscription-*)                     │
+│                                                                              │
+│   /api/support              ────────►  sendEmail()  ────────►  RESEND API │
+│                                        (ticket-confirmation)                │
+│                                        (admin-alert)                        │
+│                                                                              │
+│   [Background Job]          ────────►  sendEmail()  ────────►  RESEND API │
+│                                        (trial-warning)                      │
+│                                        (trial-expired)                      │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+3. EMAIL TRIGGER FLOWCHART
+═══════════════════════════════════════════════════════════════════════════════
+
+                         USER SIGNUP → POST /api/auth/signup
+                                │
+                                ├──► CREATE Profile
+                                ├──► CREATE LoginLog
+                                └──► SEND Welcome Email
+                                      ├─ Template: welcome.tsx
+                                      ├─ Recipient: user.email
+                                      └─ Content: Get Started Guide
+
+
+                         TRY FREE TRIAL → POST /api/trial
+                                │
+                                ├──► UPDATE Subscription (status: trialing)
+                                └──► SEND Trial Activation Email
+                                      ├─ Template: trial-start.tsx
+                                      ├─ Recipient: user.email
+                                      └─ Content: Features + Countdown
+
+
+                         [DAILY CRON JOB] → Check Trial Expirations
+                                │
+                                ├──► IF expires in 24 hours
+                                │    └──► SEND Trial Warning Email
+                                │         ├─ Template: trial-warning.tsx
+                                │         └─ Content: "Upgrade Now"
+                                │
+                                └──► IF expired
+                                     ├──► UPDATE Subscription (plan: free)
+                                     └──► SEND Trial Expired Email
+                                          ├─ Template: trial-expired.tsx
+                                          └─ Content: "Upgrade to Pro"
+
+
+                         PAYMENT RECEIVED → POST /api/stripe/webhook
+                                │
+                                ├──► Case: checkout.session.completed
+                                │    ├──► UPDATE Subscription (plan: pro/design_partner)
+                                │    └──► SEND Subscription Activated Email
+                                │
+                                └──► Case: customer.subscription.updated
+                                     ├──► UPDATE Subscription
+                                     └──► SEND Subscription Updated Email
+                                          (plan changed, new features)
+
+
+                         CANCEL SUBSCRIPTION → POST /api/stripe/webhook
+                                │
+                                ├──► Case: customer.subscription.deleted
+                                │    ├──► UPDATE Subscription (status: canceled)
+                                │    └──► SEND Subscription Canceled Email
+                                │         ├─ Content: "Sorry to see you go"
+                                │         └─ Content: "Come back offer"
+
+
+                         SUPPORT REQUEST → POST /api/support
+                                │
+                                ├──► CREATE SupportTicket
+                                ├──► SEND Ticket Confirmation Email
+                                │    ├─ Template: support-confirmation.tsx
+                                │    ├─ Recipient: requester.email
+                                │    └─ Content: "Ticket #123 received"
+                                │
+                                └──► SEND New Ticket Alert
+                                     ├─ Template: admin-alert.tsx
+                                     ├─ Recipient: ADMIN_EMAILS
+                                     └─ Content: "New ticket from user@domain.com"
+
+
+                         ADMIN UPDATES TICKET → PATCH /api/admin/support
+                                │
+                                ├──► UPDATE SupportTicket (status: in_progress/resolved)
+                                └──► SEND Status Update Email
+                                     ├─ Template: support-update.tsx
+                                     ├─ Recipient: original_requester.email
+                                     └─ Content: "Your ticket is now resolved"
+
+
+4. DATABASE MODELS READY FOR EMAIL
+═══════════════════════════════════════════════════════════════════════════════
+
+Profile
+─────────
+  ✓ id: String (unique)
+  ✓ email: String (unique) ◄─── READY FOR EMAIL
+  ✓ name: String
+  ✓ company: String
+  ✓ createdAt: DateTime
+
+Subscription
+─────────────
+  ✓ userId: String (unique) ◄─── LINK TO PROFILE
+  ✓ plan: String (free|pro|design_partner|enterprise)
+  ✓ status: String (active|inactive|trialing|canceled)
+  ✓ trialEndsAt: DateTime ◄─── READY FOR SCHEDULED EMAILS
+  ✓ currentPeriodEnd: DateTime ◄─── FOR BILLING EMAILS
+
+SupportTicket
+──────────────
+  ✓ userId: String (optional) ◄─── LINK TO PROFILE
+  ✓ email: String ◄─── DIRECT EMAIL FOR CONTACT
+  ✓ subject: String
+  ✓ status: String (open|in_progress|resolved)
+  ✓ priority: String
+  ✓ createdAt: DateTime
+
+WaitlistEntry
+──────────────
+  ✓ email: String (unique) ◄─── READY FOR EMAIL
+  ✓ name: String
+  ✓ company: String
+
+
+5. API ENDPOINT COVERAGE MAP
+═══════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────┬─────────────┬──────────────────────┐
+│ Endpoint                             │ Status      │ Email Integration    │
+├──────────────────────────────────────┼─────────────┼──────────────────────┤
+│ POST /api/auth/signup                │ READY       │ ✓ PRIORITY 1         │
+│ POST /api/auth/signin                │ READY       │ ○ Optional           │
+│ POST /api/auth/signout               │ READY       │ ○ None needed        │
+│ POST /api/trial                      │ READY       │ ✓ PRIORITY 1         │
+│ POST /api/stripe/checkout            │ READY       │ ○ Pre-payment        │
+│ POST /api/stripe/webhook             │ READY       │ ✓ PRIORITY 1 (3x)   │
+│ POST /api/support                    │ READY       │ ✓ PRIORITY 2 (2x)   │
+│ PATCH /api/admin/support             │ READY       │ ✓ PRIORITY 2         │
+│ POST /api/admin/grant-pro            │ READY       │ ○ PRIORITY 3         │
+│ POST /api/migrate/batch              │ READY       │ ○ PRIORITY 2         │
+│ POST /api/waitlist                   │ READY       │ ○ PRIORITY 3         │
+└──────────────────────────────────────┴─────────────┴──────────────────────┘
+
+✓ = Recommended
+○ = Optional/Nice-to-have
+
+
+6. PRIORITY PYRAMID
+═══════════════════════════════════════════════════════════════════════════════
+
+                              ╔════════════════════╗
+                              ║  PRIORITY 1        ║
+                              ║   Revenue Impact   ║
+                              ║  (7 emails)        ║
+                              ║                    ║
+                              ║ • Welcome          ║
+                              ║ • Trial Start      ║
+                              ║ • Trial Warning    ║
+                              ║ • Trial Expired    ║
+                              ║ • Sub Activated    ║
+                              ║ • Sub Updated      ║
+                              ║ • Sub Canceled     ║
+                              ╚════════════════════╝
+                                      △
+                            ╔═════════════════════╗
+                            ║   PRIORITY 2        ║
+                            ║  User Experience    ║
+                            ║   (4 emails)        ║
+                            ║                     ║
+                            ║ • Ticket Confirm    ║
+                            ║ • Ticket Status     ║
+                            ║ • Admin Alert       ║
+                            ║ • Batch Completion  ║
+                            ╚═════════════════════╝
+                                    △
+                          ╔═══════════════════════╗
+                          ║    PRIORITY 3         ║
+                          ║    Engagement         ║
+                          ║    (2 emails)         ║
+                          ║                       ║
+                          ║ • Plan Granted        ║
+                          ║ • Waitlist Confirm    ║
+                          ╚═══════════════════════╝
+
+
+7. ENVIRONMENT VARIABLES NEEDED
+═══════════════════════════════════════════════════════════════════════════════
+
+CURRENTLY CONFIGURED (11):
+  ✓ NEXT_PUBLIC_SUPABASE_URL
+  ✓ NEXT_PUBLIC_SUPABASE_ANON_KEY
+  ✓ DATABASE_URL
+  ✓ OPENAI_API_KEY
+  ✓ ANTHROPIC_API_KEY
+  ✓ STRIPE_SECRET_KEY
+  ✓ STRIPE_WEBHOOK_SECRET
+  ✓ STRIPE_PRO_PRICE_ID
+  ✓ STRIPE_DESIGN_PARTNER_PRICE_ID
+  ✓ NEXT_PUBLIC_SITE_URL
+  ✓ ADMIN_EMAILS
+
+NEW REQUIRED (5):
+  ✗ EMAIL_PROVIDER_API_KEY         ◄─ Resend, SendGrid, or Postmark
+  ✗ EMAIL_FROM_ADDRESS             ◄─ noreply@morphdb.com
+  ✗ EMAIL_FROM_NAME                ◄─ MorphDB
+  ✗ ADMIN_EMAIL                    ◄─ admin@morphdb.com (primary)
+  ✗ CRON_SECRET                    ◄─ For scheduled jobs (optional)
+
+
+8. FILE STRUCTURE AFTER IMPLEMENTATION
+═══════════════════════════════════════════════════════════════════════════════
+
+src/
+├── lib/
+│   ├── email/                          ◄─ NEW
+│   │   ├── client.ts                   (Email service initialization)
+│   │   ├── send.ts                     (Main send function)
+│   │   └── templates/                  (React Email templates)
+│   │       ├── welcome.tsx
+│   │       ├── trial-start.tsx
+│   │       ├── trial-warning.tsx
+│   │       ├── trial-expired.tsx
+│   │       ├── subscription-activated.tsx
+│   │       ├── subscription-updated.tsx
+│   │       ├── subscription-canceled.tsx
+│   │       ├── support-confirmation.tsx
+│   │       ├── support-update.tsx
+│   │       ├── admin-alert.tsx
+│   │       ├── batch-completion.tsx
+│   │       ├── plan-granted.tsx
+│   │       └── waitlist-confirmation.tsx
+│   │
+│   └── jobs/                           ◄─ NEW
+│       └── trial-expiration.ts         (Background jobs for trials)
+│
+└── app/
+    └── api/
+        ├── auth/
+        │   └── signup/route.ts         (MODIFIED - add email)
+        │
+        ├── trial/
+        │   └── route.ts                (MODIFIED - add email)
+        │
+        ├── stripe/
+        │   └── webhook/route.ts        (MODIFIED - add 3x emails)
+        │
+        ├── support/
+        │   └── route.ts                (MODIFIED - add 2x emails)
+        │
+        ├── admin/
+        │   └── support/route.ts        (MODIFIED - add email)
+        │
+        └── cron/                       ◄─ NEW
+            └── trial-expiration/route.ts  (Scheduled job endpoint)
+
+
+9. TIMELINE & EFFORT BREAKDOWN
+═══════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────┬──────────┬─────────────────────────────────────────────┐
+│ Phase            │ Duration │ Deliverables                                │
+├──────────────────┼──────────┼─────────────────────────────────────────────┤
+│ Setup            │ 2-3 hrs  │ • Email account created                     │
+│                  │          │ • API key obtained                          │
+│                  │          │ • Env vars configured                       │
+│                  │          │ • Email lib installed                       │
+│                  │          │                                             │
+│ Templates        │ 4-6 hrs  │ • 13 email templates created                │
+│                  │          │ • React Email components                    │
+│                  │          │ • Tested in major clients                   │
+│                  │          │                                             │
+│ Integration      │ 6-8 hrs  │ • Email added to 5 endpoints                │
+│                  │          │ • Email client utility created              │
+│                  │          │ • Error handling added                      │
+│                  │          │                                             │
+│ Background Jobs  │ 4-6 hrs  │ • Trial expiration jobs created             │
+│                  │          │ • Cron endpoint set up                      │
+│                  │          │ • Vercel config updated                     │
+│                  │          │                                             │
+│ Testing          │ 3-4 hrs  │ • All templates tested                      │
+│                  │          │ • Delivery verified                         │
+│                  │          │ • Logs monitored                            │
+│                  │          │ • Production ready                          │
+├──────────────────┼──────────┼─────────────────────────────────────────────┤
+│ TOTAL            │ 20-30 hrs│ Fully functional email system               │
+└──────────────────┴──────────┴─────────────────────────────────────────────┘
+
+Implementation Speed: 4-6 business days (full-time developer)
+Rollback Risk: LOW (graceful error handling exists)
+Impact: HIGH (covers all critical user journeys)
+
+
+10. COMPLETION MATRIX
+═══════════════════════════════════════════════════════════════════════════════
+
+Component                        Status       Ready to Code?
+─────────────────────────────    ───────      ───────────────
+Database Schema                  ✓ READY      YES - No migrations needed
+API Endpoints                    ✓ READY      YES - 21 endpoints identified
+User Data Models                 ✓ READY      YES - Email fields exist
+Rate Limiting Infrastructure     ✓ READY      YES - Can reuse existing
+Logging Infrastructure           ✓ READY      YES - Structured logging
+Error Handling Patterns          ✓ READY      YES - Graceful patterns exist
+Auth/Session Context             ✓ READY      YES - Supabase integrated
+Environment Config               ○ PARTIAL    Need to add 5 new vars
+Email Service Provider           ✗ NEEDED     Choose Resend/SendGrid
+Email Templates                  ✗ NEEDED     Create 13 React components
+Background Job System            ✗ NEEDED     Implement trial expiration
+Email Sending Utility            ✗ NEEDED     Create client.ts
+
+READINESS SCORE: 7/10 (Infrastructure exists, need email service + templates)
+
+═══════════════════════════════════════════════════════════════════════════════

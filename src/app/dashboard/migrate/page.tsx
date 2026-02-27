@@ -2,13 +2,12 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   Database, Upload, FileText, Zap, Loader2, CheckCircle2,
   AlertTriangle, Download, ArrowLeft, ArrowRight, Copy, Check,
   X, Trash2, User, LogOut,
 } from 'lucide-react';
-import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
 
 type SourceDialect = 'sql_server' | 'oracle' | 'mysql' | 'postgresql';
@@ -90,7 +89,7 @@ export default function MigratePage() {
   const [copied, setCopied] = useState(false);
   const [model, setModel] = useState('gpt-4o-mini');
   const [isDragging, setIsDragging] = useState(false);
-  const [profile, setProfile] = useState<{ firstName?: string, tier?: string, tierLabel?: string, limits?: any } | null>(null);
+  const [profile, setProfile] = useState<{ firstName?: string, tier?: string, tierLabel?: string, limits?: { batchesPerDay?: number; statementsPerBatch?: number; filesPerBatch?: number } } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {

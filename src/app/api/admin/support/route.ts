@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
+import { sendEmail, getTicketStatusUpdateEmailHTML } from '@/lib/email';
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? '').split(',').map(e => e.trim()).filter(Boolean);
 
@@ -64,10 +65,22 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid status.' }, { status: 400 });
     }
 
-    await prisma.supportTicket.update({
+    const updatedTicket = await prisma.supportTicket.update({
       where: { id },
       data: { status },
     });
+
+    // Send status update email to customer (fire-and-forget)
+    const userProfile = updatedTicket.userId 
+      ? await prisma.profile.findUnique({ where: { id: updatedTicket.userId } })
+      : null;
+    
+    const userName = userProfile?.name || updatedTicket.name;
+    sendEmail({
+      to: updatedTicket.email,
+      subject: `Support Ticket Update: ${status.replace('_', ' ').toUpperCase()}`,
+      html: getTicketStatusUpdateEmailHTML(userName, id, status),
+    }).catch((e) => console.error('[Ticket Status Update Email Error]', e));
 
     return NextResponse.json({ success: true });
   } catch (e) {

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Database, ArrowLeft, Users, LogIn, CreditCard, Clock,
-  Globe, Monitor, Mail, Building2, Shield, RefreshCw, Headphones, RotateCcw, X, AlertTriangle,
+  Globe, Monitor, Mail, Building2, Shield, RefreshCw, Headphones, RotateCcw, X,
 } from 'lucide-react';
 
 interface WaitlistEntry {
@@ -81,7 +81,6 @@ export default function AdminDashboard() {
   const [resetting, setResetting] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const [showGrantProModal, setShowGrantProModal] = useState(false);
-  const [grantProUserId, setGrantProUserId] = useState('');
   const [grantingPro, setGrantingPro] = useState(false);
 
   const fetchStats = async () => {

@@ -13,7 +13,7 @@ export async function GET() {
 
     const used = await hasUsedTrial(user.id);
     return NextResponse.json({ hasUsedTrial: used });
-  } catch (e) {
+  } catch {
     return NextResponse.json({ hasUsedTrial: false });
   }
 }

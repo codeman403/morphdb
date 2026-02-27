@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
 import { getUserTier } from '@/lib/tier';
+import { sendEmail, getTrialStartedEmailHTML } from '@/lib/email';
 
 const TRIAL_DAYS = 3;
 
@@ -48,6 +49,15 @@ export async function POST() {
         },
       });
     });
+
+    // Send trial-started email (fire-and-forget)
+    const profile = await prisma.profile.findUnique({ where: { id: user.id } });
+    const userName = profile?.name || user.email?.split('@')[0] || 'User';
+    sendEmail({
+      to: user.email!,
+      subject: 'Your Pro Trial is Activated',
+      html: getTrialStartedEmailHTML(userName),
+    }).catch((e) => console.error('[Trial Email Error]', e));
 
     return NextResponse.json({ 
       success: true, 

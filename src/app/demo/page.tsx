@@ -106,7 +106,7 @@ export default function DemoPage() {
       setLoading(false);
     };
     initAuth();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: string, session: { user?: { email?: string } } | null) => {
       setUser(session?.user ?? null);
       if (session?.user) {
         fetch('/api/auth/profile').then(r => r.json()).then(d => setFirstName(d.firstName));

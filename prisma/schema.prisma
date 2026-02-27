@@ -72,10 +72,15 @@ model MigrationBatch {
   totalTokens     Int               @map("total_tokens")
   totalDurationMs Int               @map("total_duration_ms")
   createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime?         @updatedAt @map("updated_at")
+  deletedAt       DateTime?         @map("deleted_at")
+  deletedBy       String?           @map("deleted_by")
+  cancellationTokenId String?       @map("cancellation_token_id")
   results         MigrationResult[]
 
   @@index([userId])
   @@index([createdAt])
+  @@index([userId, deletedAt])
   @@map("migration_batches")
 }
 
@@ -158,4 +163,21 @@ model IdempotencyKey {
   @@map("idempotency_keys")
 }
 
+model AuditLog {
+  id            String   @id @default(cuid())
+  action        String   // "grant_pro", "reset_usage", "batch_deleted", etc.
+  userId        String   @map("user_id")  // Admin who performed action
+  resourceType  String   @map("resource_type")  // "user", "batch", "subscription"
+  resourceId    String   @map("resource_id")   // ID of affected resource
+  changes       String   // JSON object: { before: {...}, after: {...} }
+  ipAddress     String?  @map("ip_address")    // Anonymized to CIDR range
+  userAgent     String?  @map("user_agent")    // Masked, no PII
+  createdAt     DateTime @default(now()) @map("created_at")
+  expiresAt     DateTime @map("expires_at")    // For 90-day auto-cleanup
+
+  @@index([userId, createdAt])
+  @@index([resourceType, resourceId])
+  @@index([expiresAt])
+  @@map("audit_logs")
+}
 
