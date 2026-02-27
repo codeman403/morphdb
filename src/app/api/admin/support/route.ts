@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? '').split(',').map(e => e.trim()).filter(Boolean);
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    const ip = getClientIp(req.headers);
+    const { ok } = rateLimit(`admin-support:${ip}`, 20, 60_000);
+    if (!ok) {
+      return NextResponse.json({ error: 'Rate limit reached. Please wait.' }, { status: 429 });
+    }
+
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
@@ -13,22 +20,10 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
-    const tickets = await prisma.$queryRaw`
-      SELECT 
-        id,
-        user_id as "userId",
-        name,
-        email,
-        subject,
-        description,
-        status,
-        priority,
-        created_at as "createdAt",
-        updated_at as "updatedAt"
-      FROM support_tickets
-      ORDER BY created_at DESC
-      LIMIT 100
-    `;
+    const tickets = await prisma.supportTicket.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: 100,
+    });
 
     return NextResponse.json({ tickets });
   } catch (e) {
@@ -39,6 +34,12 @@ export async function GET() {
 
 export async function PATCH(req: NextRequest) {
   try {
+    const ip = getClientIp(req.headers);
+    const { ok } = rateLimit(`admin-support:${ip}`, 20, 60_000);
+    if (!ok) {
+      return NextResponse.json({ error: 'Rate limit reached. Please wait.' }, { status: 429 });
+    }
+
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
@@ -58,11 +59,15 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'ID and status are required.' }, { status: 400 });
     }
 
-    await prisma.$executeRaw`
-      UPDATE support_tickets
-      SET status = ${status}, updated_at = NOW()
-      WHERE id = ${id}
-    `;
+    const validStatuses = ['open', 'in_progress', 'resolved', 'closed'];
+    if (!validStatuses.includes(status)) {
+      return NextResponse.json({ error: 'Invalid status.' }, { status: 400 });
+    }
+
+    await prisma.supportTicket.update({
+      where: { id },
+      data: { status },
+    });
 
     return NextResponse.json({ success: true });
   } catch (e) {

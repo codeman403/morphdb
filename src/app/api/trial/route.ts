@@ -19,41 +19,48 @@ export async function POST() {
       return NextResponse.json({ error: 'Trial only available for free users.' }, { status: 400 });
     }
 
-    const existingSub = await prisma.subscription.findUnique({ where: { userId: user.id } });
-    if (existingSub?.trialTakenAt) {
-      // One-time trial: if a trial was ever taken, do not allow another, even if expired.
-      return NextResponse.json(
-        { error: 'You have already used your free trial. Please upgrade to Pro.' },
-        { status: 400 },
-      );
-    }
+    // Use transaction to prevent race conditions
+    const result = await prisma.$transaction(async (tx) => {
+      const existingSub = await tx.subscription.findUnique({ where: { userId: user.id } });
+      
+      if (existingSub?.trialTakenAt) {
+        // One-time trial: if a trial was ever taken, do not allow another, even if expired.
+        throw new Error('TRIAL_ALREADY_TAKEN');
+      }
 
-    const trialEndDate = new Date();
-    trialEndDate.setDate(trialEndDate.getDate() + TRIAL_DAYS);
+      const trialEndDate = new Date();
+      trialEndDate.setDate(trialEndDate.getDate() + TRIAL_DAYS);
 
-    await prisma.subscription.upsert({
-      where: { userId: user.id },
-      update: {
-        plan: 'pro',
-        status: 'trialing',
-        trialEndsAt: trialEndDate,
-        trialTakenAt: new Date(),
-      },
-      create: {
-        userId: user.id,
-        plan: 'pro',
-        status: 'trialing',
-        trialEndsAt: trialEndDate,
-        trialTakenAt: new Date(),
-      },
+      return await tx.subscription.upsert({
+        where: { userId: user.id },
+        update: {
+          plan: 'pro',
+          status: 'trialing',
+          trialEndsAt: trialEndDate,
+          trialTakenAt: new Date(),
+        },
+        create: {
+          userId: user.id,
+          plan: 'pro',
+          status: 'trialing',
+          trialEndsAt: trialEndDate,
+          trialTakenAt: new Date(),
+        },
+      });
     });
 
     return NextResponse.json({ 
       success: true, 
       message: `You now have ${TRIAL_DAYS} days of Pro access!`,
-      trialEndsAt: trialEndDate.toISOString()
+      trialEndsAt: result.trialEndsAt?.toISOString()
     });
   } catch (e) {
+    if ((e as Error).message === 'TRIAL_ALREADY_TAKEN') {
+      return NextResponse.json(
+        { error: 'You have already used your free trial. Please upgrade to Pro.' },
+        { status: 400 },
+      );
+    }
     console.error('[Start Trial Error]', e);
     return NextResponse.json({ error: 'Failed to start trial.' }, { status: 500 });
   }

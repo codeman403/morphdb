@@ -34,11 +34,40 @@ export async function POST(req: NextRequest) {
   console.log('[Stripe Webhook] Received event:', event.type);
 
   try {
+    // Check for duplicate event processing (idempotency)
+    const existingEvent = await prisma.webhookEvent.findUnique({
+      where: { eventId: event.id },
+    });
+
+    if (existingEvent) {
+      console.log('[Stripe Webhook] Duplicate event detected, skipping:', event.id);
+      return NextResponse.json({ received: true });
+    }
+
+    // Record event as processing
+    await prisma.webhookEvent.create({
+      data: {
+        eventId: event.id,
+        eventType: event.type,
+        processed: true,
+      },
+    });
+
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
         const userId = session.metadata?.userId;
-        const plan = session.metadata?.plan ?? 'pro';
+        const plan = session.metadata?.plan;
+
+        if (!userId) {
+          console.error('[Stripe Webhook] Missing userId in metadata');
+          break;
+        }
+
+        if (!plan || !['pro', 'design_partner', 'enterprise'].includes(plan)) {
+          console.error('[Stripe Webhook] Invalid plan in metadata:', plan);
+          break;
+        }
 
         console.log('[Stripe Webhook] Checkout completed:', { userId, plan, subscription: session.subscription });
 

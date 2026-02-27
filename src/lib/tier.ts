@@ -55,8 +55,8 @@ export async function getUserTier(userId: string): Promise<TierLimits> {
   try {
     const sub = await prisma.subscription.findUnique({ where: { userId } });
     
-    // Priority 1: If subscription is active, use the plan
-    if (sub?.status === 'active' || sub?.status === 'trialing') {
+    // Priority 1: If subscription is active (paid), use the plan
+    if (sub?.status === 'active') {
       if (sub.plan === 'design_partner') return getTierLimits('design_partner');
       if (sub.plan === 'enterprise') return getTierLimits('enterprise');
       if (sub.plan === 'pro') return getTierLimits('pro');

@@ -112,3 +112,33 @@ model MonthlyUsage {
   @@map("monthly_usage")
 }
 
+model SupportTicket {
+  id          String   @id @default(cuid())
+  userId      String?  @map("user_id")
+  name        String
+  email       String
+  subject     String
+  description String
+  status      String   @default("open")
+  priority    String   @default("medium")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([status])
+  @@map("support_tickets")
+}
+
+model WebhookEvent {
+  id        String   @id @default(cuid())
+  eventId   String   @unique @map("event_id")
+  eventType String   @map("event_type")
+  processed Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([eventId])
+  @@map("webhook_events")
+}
+
+
+

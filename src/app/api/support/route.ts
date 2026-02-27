@@ -26,20 +26,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'All fields are required.' }, { status: 400 });
     }
 
-    await prisma.$executeRaw`
-      INSERT INTO support_tickets (user_id, name, email, subject, description, status, priority, created_at, updated_at)
-      VALUES (
-        ${user?.id ?? null},
-        ${name},
-        ${email},
-        ${subject},
-        ${description},
-        'open',
-        'medium',
-        NOW(),
-        NOW()
-      )
-    `;
+    await prisma.supportTicket.create({
+      data: {
+        userId: user?.id ?? null,
+        name,
+        email,
+        subject,
+        description,
+        status: 'open',
+        priority: 'medium',
+      },
+    });
 
     console.log(`[Support Ticket] New ticket from ${email}: ${subject}`);
 

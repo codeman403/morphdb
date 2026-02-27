@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? '').split(',').map(e => e.trim()).filter(Boolean);
 
 export async function POST(req: NextRequest) {
   try {
+    const ip = getClientIp(req.headers);
+    const { ok } = rateLimit(`admin-reset-usage:${ip}`, 10, 60_000);
+    if (!ok) {
+      return NextResponse.json({ error: 'Rate limit reached. Please wait.' }, { status: 429 });
+    }
+
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
@@ -42,11 +49,14 @@ export async function POST(req: NextRequest) {
       });
       return NextResponse.json({ success: true, message: 'User usage reset successfully.' });
     } else {
-      await prisma.$executeRaw`
-        UPDATE monthly_usage
-        SET batch_count = 0, translation_count = 0, token_count = 0
-        WHERE year_month = ${yearMonth}
-      `;
+      await prisma.monthlyUsage.updateMany({
+        where: { yearMonth },
+        data: {
+          batchCount: 0,
+          translationCount: 0,
+          tokenCount: 0,
+        },
+      });
       return NextResponse.json({ success: true, message: 'All users usage reset successfully.' });
     }
   } catch (e) {
