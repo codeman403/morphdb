@@ -3,14 +3,24 @@ import JSZip from 'jszip';
 
 export async function POST(req: NextRequest) {
   try {
-    const { results, targetDialect } = await req.json();
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON body.' }, { status: 400 });
+    }
+
+    const { results, targetDialect } = body as { results?: any[]; targetDialect?: string };
 
     if (!results || !Array.isArray(results) || results.length === 0) {
       return NextResponse.json({ error: 'No results to download.' }, { status: 400 });
     }
 
     if (results.length === 1) {
-      const r = results[0];
+      const r = results[0] as { name?: string; translatedSql?: string };
+      if (!r.name || !r.translatedSql) {
+        return NextResponse.json({ error: 'Invalid result payload.' }, { status: 400 });
+      }
       const fileName = `${r.name}_translated.sql`;
       return new NextResponse(r.translatedSql, {
         headers: {
@@ -22,10 +32,14 @@ export async function POST(req: NextRequest) {
 
     const zip = new JSZip();
     const dialectFolder = targetDialect ?? 'translated';
-    const folder = zip.folder(dialectFolder)!;
+    const folder = zip.folder(dialectFolder);
+    if (!folder) {
+      return NextResponse.json({ error: 'Failed to initialize archive.' }, { status: 500 });
+    }
 
     const nameCount: Record<string, number> = {};
-    for (const r of results) {
+    for (const r of results as { name?: string; status?: string; translatedSql?: string; type?: string; changes?: unknown[]; tokensUsed?: number }[]) {
+      if (!r.name) continue;
       if (r.status !== 'success' || !r.translatedSql) continue;
       const count = (nameCount[r.name] ?? 0) + 1;
       nameCount[r.name] = count;

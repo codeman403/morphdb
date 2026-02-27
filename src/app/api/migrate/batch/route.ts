@@ -31,14 +31,22 @@ export async function POST(req: NextRequest) {
     }
 
     const formData = await req.formData();
-    const sourceDialect = formData.get('sourceDialect') as SourceDialect;
-    const targetDialect = formData.get('targetDialect') as TargetDialect;
+    const sourceDialect = formData.get('sourceDialect') as SourceDialect | null;
+    const targetDialect = formData.get('targetDialect') as TargetDialect | null;
     const model = formData.get('model') as AIModel | null;
     const files = formData.getAll('files') as File[];
     const rawSql = formData.get('sql') as string | null;
 
     if (!sourceDialect || !targetDialect) {
       return NextResponse.json({ error: 'Source and target dialects are required.' }, { status: 400 });
+    }
+
+    const validModels: AIModel[] = ['gpt-4o-mini', 'claude-haiku', 'claude-sonnet'];
+    if (model && !validModels.includes(model)) {
+      return NextResponse.json(
+        { error: 'Invalid model selected.' },
+        { status: 400 },
+      );
     }
 
     if (model && !tierLimits.allowedModels.includes(model)) {
@@ -66,7 +74,12 @@ export async function POST(req: NextRequest) {
       if (file.size > MAX_FILE_SIZE) {
         return NextResponse.json({ error: `File ${file.name} exceeds 500KB limit.` }, { status: 400 });
       }
-      const content = await file.text();
+      let content: string;
+      try {
+        content = await file.text();
+      } catch {
+        return NextResponse.json({ error: `Failed to read file ${file.name}.` }, { status: 400 });
+      }
       const parsed = parseSqlFile(content);
       allStatements.push(...parsed.map(s => ({
         fileName: file.name,
@@ -87,7 +100,19 @@ export async function POST(req: NextRequest) {
       }, { status: 400 });
     }
 
-    const results = [];
+    const results: {
+      fileName: string;
+      name: string;
+      type: string;
+      originalSql: string;
+      translatedSql: string;
+      changes: string[];
+      warnings: string[];
+      tokensUsed: number;
+      durationMs: number;
+      status: 'success' | 'error';
+      error?: string;
+    }[] = [];
     const batchSize = 3;
 
     for (let i = 0; i < allStatements.length; i += batchSize) {

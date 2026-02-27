@@ -1,3 +1,7 @@
+// Note: This in-memory map only applies within a single server instance.
+// In a serverless or multi-instance environment (e.g. Vercel), rate limits
+// will not be shared across instances. For production-grade global rate
+// limiting, back this with a shared store (Redis, Upstash, etc.).
 const rateMap = new Map<string, { count: number; resetAt: number }>();
 
 export function rateLimit(key: string, limit: number, windowMs: number): { ok: boolean; remaining: number } {

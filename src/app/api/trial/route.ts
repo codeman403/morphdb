@@ -21,7 +21,11 @@ export async function POST() {
 
     const existingSub = await prisma.subscription.findUnique({ where: { userId: user.id } });
     if (existingSub?.trialTakenAt) {
-      return NextResponse.json({ error: 'You have already used your free trial. Please upgrade to Pro.' }, { status: 400 });
+      // One-time trial: if a trial was ever taken, do not allow another, even if expired.
+      return NextResponse.json(
+        { error: 'You have already used your free trial. Please upgrade to Pro.' },
+        { status: 400 },
+      );
     }
 
     const trialEndDate = new Date();

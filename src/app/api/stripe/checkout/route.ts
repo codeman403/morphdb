@@ -32,6 +32,12 @@ export async function POST(req: NextRequest) {
     if (!planConfig) {
       return NextResponse.json({ error: 'Invalid plan.' }, { status: 400 });
     }
+    if (!planConfig.priceId) {
+      return NextResponse.json(
+        { error: 'Stripe price not configured for selected plan.' },
+        { status: 500 },
+      );
+    }
 
     const origin = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 

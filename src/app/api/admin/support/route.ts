@@ -46,8 +46,13 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
-    const body = await req.json();
-    const { id, status } = body;
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON body.' }, { status: 400 });
+    }
+    const { id, status } = body as { id?: string; status?: string };
 
     if (!id || !status) {
       return NextResponse.json({ error: 'ID and status are required.' }, { status: 400 });

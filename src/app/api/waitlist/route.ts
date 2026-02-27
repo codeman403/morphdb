@@ -10,8 +10,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Too many attempts. Please wait a minute.' }, { status: 429 });
     }
 
-    const body = await req.json();
-    const { email, name, company, tier = 'design_partner' } = body;
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json(
+        { error: 'Invalid JSON body.' },
+        { status: 400 },
+      );
+    }
+
+    const { email, name, company, tier = 'design_partner' } = body as { email?: string; name?: string; company?: string; tier?: string };
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json(

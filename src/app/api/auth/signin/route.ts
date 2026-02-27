@@ -27,15 +27,17 @@ export async function POST(req: NextRequest) {
     const country = req.headers.get('x-vercel-ip-country') ?? null;
     const userAgent = req.headers.get('user-agent') ?? null;
 
-    prisma.loginLog.create({
-      data: {
-        userId: data.user.id,
-        email: data.user.email,
-        ip,
-        country,
-        userAgent,
-      },
-    }).catch((e) => console.error('[Login Log Error]', e));
+    await prisma.loginLog
+      .create({
+        data: {
+          userId: data.user.id,
+          email: data.user.email,
+          ip,
+          country,
+          userAgent,
+        },
+      })
+      .catch((e) => console.error('[Login Log Error]', e));
 
     return NextResponse.json({ success: true, user: data.user }, { status: 200 });
   } catch (e) {

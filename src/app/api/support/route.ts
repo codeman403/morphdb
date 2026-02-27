@@ -14,14 +14,17 @@ export async function POST(req: NextRequest) {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
-    const body = await req.json();
-    const { name, email, subject, description } = body;
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON body.' }, { status: 400 });
+    }
+    const { name, email, subject, description } = body as { name?: string; email?: string; subject?: string; description?: string };
 
     if (!name || !email || !subject || !description) {
       return NextResponse.json({ error: 'All fields are required.' }, { status: 400 });
     }
-
-    await prisma.$connect();
 
     await prisma.$executeRaw`
       INSERT INTO support_tickets (user_id, name, email, subject, description, status, priority, created_at, updated_at)
