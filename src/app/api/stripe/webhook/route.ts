@@ -44,9 +44,9 @@ export async function POST(req: NextRequest) {
 
         if (userId && session.subscription) {
           const stripeSub = await stripe.subscriptions.retrieve(session.subscription as string);
-          const periodEnd = typeof stripeSub.current_period_end === 'number'
-            ? stripeSub.current_period_end
-            : (stripeSub as { current_period_end?: number }).current_period_end;
+          const periodEnd = typeof (stripeSub as any).current_period_end === 'number'
+            ? (stripeSub as any).current_period_end
+            : ((stripeSub as any) as { current_period_end?: number }).current_period_end;
           if (!periodEnd) {
             console.error('[Stripe Webhook] Missing current_period_end on subscription:', stripeSub.id);
             break;
@@ -78,9 +78,9 @@ export async function POST(req: NextRequest) {
 
       case 'customer.subscription.updated': {
         const stripeSub = event.data.object as Stripe.Subscription;
-        const periodEnd = typeof stripeSub.current_period_end === 'number'
-          ? stripeSub.current_period_end
-          : (stripeSub as { current_period_end?: number }).current_period_end;
+        const periodEnd = typeof (stripeSub as any).current_period_end === 'number'
+          ? (stripeSub as any).current_period_end
+          : ((stripeSub as any) as { current_period_end?: number }).current_period_end;
         
         console.log('[Stripe Webhook] Subscription updated:', { id: stripeSub.id, status: stripeSub.status });
         
