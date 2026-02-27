@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Database, ChevronRight, User, LogOut } from 'lucide-react';
 import { animate } from 'framer-motion';
 import { createClient } from '@/lib/supabase/client';
+import type { Session } from '@supabase/supabase-js';
 
 export default function Navbar() {
   const [user, setUser] = useState<{ email?: string } | null>(null);
@@ -38,7 +39,7 @@ export default function Navbar() {
     
     initAuth();
     
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: string, session: { user?: { email?: string } } | null): void => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
       setUser(session?.user ?? null);
       if (session?.user) {
         fetch('/api/auth/profile').then(r => r.json()).then((d: { firstName?: string }) => setFirstName(d.firstName ?? null));
@@ -93,17 +94,32 @@ export default function Navbar() {
         </Link>
         
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-400">
-          <Link href="#features" onClick={(e) => handleNavigation(e, 'features')} className="hover:text-white transition-colors">Features</Link>
-          <Link href="#how-it-works" onClick={(e) => handleNavigation(e, 'how-it-works')} className="hover:text-white transition-colors">How it Works</Link>
+          <Link href="#features" onClick={(e) => handleNavigation(e, 'features')} className="hover:text-white transition-colors relative group">
+            Features
+            <span className="absolute -bottom-6 left-0 w-full h-[2px] bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
+          </Link>
+          <Link href="#how-it-works" onClick={(e) => handleNavigation(e, 'how-it-works')} className="hover:text-white transition-colors relative group">
+            How it Works
+            <span className="absolute -bottom-6 left-0 w-full h-[2px] bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
+          </Link>
           <Link href="/docs" onClick={(e) => {
             e.preventDefault();
             router.push('/docs');
-          }} className="hover:text-white transition-colors">Docs</Link>
-          <Link href="#pricing" onClick={(e) => handleNavigation(e, 'pricing')} className="hover:text-white transition-colors">Pricing</Link>
+          }} className={`${pathname.startsWith('/docs') ? 'text-white' : 'hover:text-white'} transition-colors relative group`}>
+            Docs
+            <span className={`absolute -bottom-6 left-0 w-full h-[2px] bg-blue-500 origin-left transition-transform ${pathname.startsWith('/docs') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`} />
+          </Link>
+          <Link href="#pricing" onClick={(e) => handleNavigation(e, 'pricing')} className="hover:text-white transition-colors relative group">
+            Pricing
+            <span className="absolute -bottom-6 left-0 w-full h-[2px] bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
+          </Link>
           <Link href="/support" onClick={(e) => {
             e.preventDefault();
             router.push('/support');
-          }} className="hover:text-white transition-colors">Support</Link>
+          }} className={`${pathname === '/support' ? 'text-white' : 'hover:text-white'} transition-colors relative group`}>
+            Support
+            <span className={`absolute -bottom-6 left-0 w-full h-[2px] bg-blue-500 origin-left transition-transform ${pathname === '/support' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`} />
+          </Link>
         </div>
 
         <div className="flex items-center gap-4">

@@ -182,7 +182,16 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
               )}
             </div>
             {recentBatches.length === 0 ? (
-              <div className="px-4 py-8 text-center text-sm text-zinc-500">No migrations yet</div>
+              <div className="px-6 py-12 flex flex-col items-center justify-center text-center">
+                <div className="w-12 h-12 bg-white/5 rounded-full border border-white/10 flex items-center justify-center mb-4">
+                  <Database className="w-6 h-6 text-zinc-600" />
+                </div>
+                <h3 className="text-sm font-medium text-zinc-300 mb-1">No migrations yet</h3>
+                <p className="text-xs text-zinc-500 mb-6 max-w-[200px]">Run your first migration to see your history here.</p>
+                <Link href="/dashboard/migrate" className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 text-zinc-300 hover:text-white hover:bg-white/10 text-xs font-medium rounded-full border border-white/10 transition-colors">
+                  <Zap className="w-3.5 h-3.5" /> Start Migration
+                </Link>
+              </div>
             ) : (
               <div>
                 {recentBatches.map((batch) => (

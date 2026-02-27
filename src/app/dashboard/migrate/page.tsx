@@ -298,19 +298,26 @@ export default function MigratePage() {
                 <p className="text-xs text-zinc-600">Supports .sql and .txt files • Max 500KB each</p>
               </div>
 
-              <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden">
+              <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden focus-within:border-blue-500/50 focus-within:ring-1 focus-within:ring-blue-500/50 transition-all">
                 <div className="flex items-center gap-2 px-4 py-3 border-b border-white/10 bg-white/[0.02]">
                   <FileText className="w-4 h-4 text-zinc-500" />
                   <span className="text-xs text-zinc-500 font-mono">paste SQL directly</span>
                   <span className="ml-auto text-xs text-zinc-600">{pastedSql.length.toLocaleString()} chars</span>
                 </div>
-                <textarea
-                  value={pastedSql}
-                  onChange={(e) => { setPastedSql(e.target.value); setResponse(null); setError(null); }}
-                  placeholder="Paste SQL with multiple statements here..."
-                  className="w-full p-4 text-sm font-mono text-red-400/80 leading-relaxed bg-transparent resize-none focus:outline-none min-h-[200px]"
-                  spellCheck={false}
-                />
+                <div className="relative">
+                  <div className="absolute top-0 left-0 bottom-0 w-12 bg-white/[0.02] border-r border-white/10 flex flex-col items-center py-4 text-xs font-mono text-zinc-600 select-none">
+                    {Array.from({ length: Math.max(10, pastedSql.split('\n').length) }).map((_, i) => (
+                      <span key={i} className="leading-relaxed">{i + 1}</span>
+                    ))}
+                  </div>
+                  <textarea
+                    value={pastedSql}
+                    onChange={(e) => { setPastedSql(e.target.value); setResponse(null); setError(null); }}
+                    placeholder="Paste SQL with multiple statements here...&#10;&#10;CREATE TABLE users (&#10;  id INT PRIMARY KEY,&#10;  name VARCHAR(50)&#10;);"
+                    className="w-full pl-16 pr-4 py-4 text-sm font-mono text-blue-300/90 leading-relaxed bg-transparent resize-none focus:outline-none min-h-[250px] placeholder:text-zinc-700"
+                    spellCheck={false}
+                  />
+                </div>
               </div>
             </div>
 

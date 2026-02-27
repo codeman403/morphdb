@@ -75,13 +75,20 @@ export default async function HistoryPage() {
         </div>
 
         {batches.length === 0 ? (
-          <div className="text-center py-24 bg-white/[0.02] border border-white/10 rounded-2xl">
-            <Clock className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
-            <h2 className="text-lg font-semibold text-zinc-300 mb-2">No migrations yet</h2>
-            <p className="text-zinc-500 text-sm mb-6">Run your first batch migration to see the history here.</p>
-            <Link href="/dashboard/migrate" className="px-6 py-2.5 bg-white text-black font-semibold rounded-full hover:bg-zinc-200 transition-colors">
-              Start Migrating
-            </Link>
+          <div className="text-center py-32 bg-gradient-to-b from-white/[0.05] to-transparent border border-white/10 rounded-3xl relative overflow-hidden">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500/10 blur-[80px] rounded-full pointer-events-none" />
+            <div className="relative z-10 flex flex-col items-center">
+              <div className="w-20 h-20 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center mb-6 shadow-2xl shadow-black/50 rotate-3 transition-transform hover:rotate-6">
+                <Database className="w-10 h-10 text-blue-400" />
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-3 tracking-tight">No migrations yet</h2>
+              <p className="text-zinc-400 text-base mb-8 max-w-md mx-auto leading-relaxed">
+                Your translation history will appear here. Start your first legacy database migration to see the magic happen.
+              </p>
+              <Link href="/dashboard/migrate" className="inline-flex items-center gap-2 px-8 py-4 bg-white text-black font-semibold rounded-full hover:bg-zinc-200 transition-all hover:scale-105 active:scale-95 shadow-xl shadow-white/10">
+                <Zap className="w-5 h-5" /> Start First Migration
+              </Link>
+            </div>
           </div>
         ) : (
           <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
