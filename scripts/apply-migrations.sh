@@ -7,12 +7,25 @@ set -e
 echo "🔄 Applying database migrations..."
 echo ""
 
+# Load environment variables from .env.local
+if [ -f .env.local ]; then
+  export $(cat .env.local | grep -v '^#' | xargs)
+  echo "✓ Loaded environment from .env.local"
+else
+  echo "⚠️  No .env.local file found in current directory"
+fi
+
+echo ""
+
 # Check if DATABASE_URL is set
 if [ -z "$DATABASE_URL" ]; then
   echo "❌ Error: DATABASE_URL environment variable is not set"
   echo "   Make sure your .env.local file contains the DATABASE_URL"
   exit 1
 fi
+
+echo "✓ DATABASE_URL is configured"
+echo ""
 
 # Run prisma db push
 npx prisma db push --accept-data-loss

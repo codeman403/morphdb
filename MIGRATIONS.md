@@ -17,26 +17,31 @@ The application gracefully handles the missing tables and shows helpful empty st
 
 ## How to Apply Migrations
 
-### Option 1: Using the Helper Script (Recommended)
+### Option 1: Using npm script (Recommended - Easiest)
+
+```bash
+npm run migrate
+```
+
+This uses a Node.js script that:
+1. Automatically loads your `.env.local` file
+2. Verifies `DATABASE_URL` is set
+3. Runs Prisma migrations
+4. Shows helpful output
+
+### Option 2: Using the Bash script
 
 ```bash
 ./scripts/apply-migrations.sh
 ```
 
-This script:
-1. Checks that your `DATABASE_URL` is properly configured
-2. Runs `npx prisma db push` to apply all pending migrations
-3. Confirms the tables have been created
-
-### Option 2: Manual Command
-
-If the script doesn't work, you can run manually:
+### Option 3: Manual Prisma command
 
 ```bash
 npx prisma db push --accept-data-loss
 ```
 
-### Option 3: Supabase Dashboard
+### Option 4: Supabase Dashboard (No CLI needed)
 
 1. Go to your [Supabase Dashboard](https://supabase.com)
 2. Navigate to SQL Editor
