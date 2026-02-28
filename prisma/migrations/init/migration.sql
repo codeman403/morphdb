@@ -1,3 +1,14 @@
+-- CreateTable profiles
+CREATE TABLE IF NOT EXISTS "profiles" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "email" TEXT NOT NULL UNIQUE,
+    "name" TEXT,
+    "company" TEXT,
+    "avatar_url" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL
+);
+
 -- CreateTable waitlist_entries
 CREATE TABLE IF NOT EXISTS "waitlist_entries" (
     "id" TEXT NOT NULL PRIMARY KEY,
