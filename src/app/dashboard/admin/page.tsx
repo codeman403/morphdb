@@ -660,9 +660,10 @@ export default function AdminDashboard() {
            />
          )}
         </AnimatePresence>
-     </div>
+      </div>
 
-     <ToastContainer toasts={toasts} onRemove={removeToast} />
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
+    </div>
    );
 }
 
