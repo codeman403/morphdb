@@ -48,20 +48,17 @@ export default function Hero() {
           animate={isVisible ? 'visible' : 'hidden'}
           className="flex flex-col items-center gap-6 mb-16 max-w-5xl"
         >
-          {/* 1. Top - Largest: Tagline - First Line */}
+          {/* 1. Top - Largest: Tagline - Both Lines */}
           <motion.div
             variants={itemVariants}
-            className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-center leading-tight mb-2 text-white"
+            className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-center leading-tight mb-4"
           >
-            Legacy schemas in.
-          </motion.div>
-
-          {/* 2. Top - Largest: Tagline - Second Line */}
-          <motion.div
-            variants={itemVariants}
-            className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-center leading-tight mb-4 text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 animate-gradient-x"
-          >
-            Modern data stacks out.
+            <span className="block text-white">
+              Legacy schemas in.
+            </span>
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 animate-gradient-x">
+              Modern data stacks out.
+            </span>
           </motion.div>
 
           {/* 2. Middle - Medium/Large: Headline */}
