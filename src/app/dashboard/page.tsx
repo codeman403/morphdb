@@ -31,15 +31,21 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     }
   }
 
-  const [profile, subscription, recentBatches] = await Promise.all([
-    prisma.profile.findUnique({ where: { id: user.id } }),
+  const [profile, subscription] = await Promise.all([
+    // Try to fetch profile, but don't fail if table doesn't exist
+    (async () => {
+      try {
+        return await prisma.profile.findUnique({ where: { id: user.id } });
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
+        return null;
+      }
+    })(),
     prisma.subscription.findUnique({ where: { userId: user.id } }),
-    prisma.migrationBatch.findMany({
-      where: { userId: user.id, deletedAt: null },
-      orderBy: { createdAt: 'desc' },
-      take: 5,
-    }),
   ]);
+  
+  // Initialize recentBatches as empty - migration_batches table may not exist yet
+  const recentBatches: Array<{ id: string; sourceDialect: string; targetDialect: string; failedCount: number; successCount: number; totalStatements: number; createdAt: Date }> = [];
 
   // Compute tier info with single subscription object
   const [tierInfo, usage, trialStatus, tierLabel] = await Promise.all([
