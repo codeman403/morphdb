@@ -29,6 +29,7 @@ export async function GET(req: NextRequest) {
     const waitlistOffset = Math.min(MAX_OFFSET, Math.max(0, parseInt(url.searchParams.get('waitlistOffset') ?? '0', 10)));
     const loginsOffset = Math.min(MAX_OFFSET, Math.max(0, parseInt(url.searchParams.get('loginsOffset') ?? '0', 10)));
     const signupsOffset = Math.min(MAX_OFFSET, Math.max(0, parseInt(url.searchParams.get('signupsOffset') ?? '0', 10)));
+    const subscriptionsOffset = Math.min(MAX_OFFSET, Math.max(0, parseInt(url.searchParams.get('subscriptionsOffset') ?? '0', 10)));
     
     const LIMIT = Math.min(MAX_LIMIT, 50);
 
@@ -38,9 +39,10 @@ export async function GET(req: NextRequest) {
       waitlistEntriesTotal,
       loginLogs,
       loginsTotal,
-      subscriptionStats,
       recentSignups,
       signupsTotal,
+      subscriptions,
+      subscriptionsTotal,
       supportTickets,
     ] = await Promise.all([
       prisma.waitlistEntry.count(),
@@ -56,16 +58,28 @@ export async function GET(req: NextRequest) {
         take: LIMIT,
       }),
       prisma.loginLog.count(),
-      prisma.subscription.groupBy({
-        by: ['plan'],
-        _count: { plan: true },
-      }),
       prisma.profile.findMany({
         orderBy: { createdAt: 'desc' },
         skip: signupsOffset,
         take: LIMIT,
       }),
       prisma.profile.count(),
+      prisma.subscription.findMany({
+        include: {
+          profile: true,
+        },
+        where: {
+          NOT: { plan: 'free' },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: subscriptionsOffset,
+        take: LIMIT,
+      }),
+      prisma.subscription.count({
+        where: {
+          NOT: { plan: 'free' },
+        },
+      }),
       prisma.supportTicket.findMany({
         orderBy: { createdAt: 'desc' },
         take: 50,
@@ -88,13 +102,19 @@ export async function GET(req: NextRequest) {
         limit: LIMIT,
         hasMore: loginsOffset + LIMIT < loginsTotal,
       },
-      subscriptions: subscriptionStats,
       recentSignups: {
         entries: recentSignups,
         total: signupsTotal,
         offset: signupsOffset,
         limit: LIMIT,
         hasMore: signupsOffset + LIMIT < signupsTotal,
+      },
+      subscriptions: {
+        entries: subscriptions,
+        total: subscriptionsTotal,
+        offset: subscriptionsOffset,
+        limit: LIMIT,
+        hasMore: subscriptionsOffset + LIMIT < subscriptionsTotal,
       },
       supportTickets,
     });

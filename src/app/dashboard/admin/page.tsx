@@ -48,10 +48,21 @@ interface SupportTicket {
   updatedAt: string;
 }
 
+interface SubscriptionRecord {
+  id: string;
+  userId: string;
+  plan: string;
+  status: string;
+  trialEndsAt: string | null;
+  currentPeriodEnd: string | null;
+  createdAt: string;
+  profile: Profile;
+}
+
 interface Stats {
   waitlist: { count: number; entries: WaitlistEntry[]; total: number; offset: number; limit: number; hasMore: boolean };
   logins: { entries: LoginLog[]; total: number; offset: number; limit: number; hasMore: boolean };
-  subscriptions: { plan: string; _count: { plan: number } }[];
+  subscriptions: { entries: SubscriptionRecord[]; total: number; offset: number; limit: number; hasMore: boolean };
   recentSignups: { entries: Profile[]; total: number; offset: number; limit: number; hasMore: boolean };
   supportTickets: SupportTicket[];
 }
@@ -77,7 +88,7 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'waitlist' | 'logins' | 'signups' | 'support'>('waitlist');
+  const [activeTab, setActiveTab] = useState<'waitlist' | 'logins' | 'signups' | 'subscriptions' | 'support'>('waitlist');
   const [resetting, setResetting] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const [showGrantProModal, setShowGrantProModal] = useState(false);
@@ -134,7 +145,7 @@ export default function AdminDashboard() {
     { label: 'Waitlist Signups', value: stats.waitlist.count, icon: Users, color: 'blue' },
     { label: 'Login Events', value: stats.logins.total, icon: LogIn, color: 'green' },
     { label: 'Total Users', value: stats.recentSignups.total, icon: Mail, color: 'purple' },
-    { label: 'Subscriptions', value: stats.subscriptions.reduce((a, s) => a + s._count.plan, 0), icon: CreditCard, color: 'amber' },
+    { label: 'Paid Subscriptions', value: stats.subscriptions.total, icon: CreditCard, color: 'amber' },
     { label: 'Support Tickets', value: stats.supportTickets.length, icon: Headphones, color: 'cyan' },
   ];
 
@@ -150,6 +161,7 @@ export default function AdminDashboard() {
     { key: 'waitlist' as const, label: 'Waitlist', icon: Users, count: stats.waitlist.count },
     { key: 'logins' as const, label: 'Login Logs', icon: LogIn, count: stats.logins.total },
     { key: 'signups' as const, label: 'Users', icon: Mail, count: stats.recentSignups.total },
+    { key: 'subscriptions' as const, label: 'Subscriptions', icon: CreditCard, count: stats.subscriptions.total },
     { key: 'support' as const, label: 'Support Tickets', icon: Headphones, count: stats.supportTickets.length },
   ];
 
@@ -350,6 +362,66 @@ export default function AdminDashboard() {
                   ))}
                   {stats.recentSignups.entries.length === 0 && (
                     <tr><td colSpan={4} className="p-8 text-center text-zinc-500">No users yet</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+           )}
+
+          {activeTab === 'subscriptions' && (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-white/10">
+                    <th className="text-left p-4 text-zinc-400 font-medium">Email</th>
+                    <th className="text-left p-4 text-zinc-400 font-medium">Name</th>
+                    <th className="text-left p-4 text-zinc-400 font-medium">Plan</th>
+                    <th className="text-left p-4 text-zinc-400 font-medium">Status</th>
+                    <th className="text-left p-4 text-zinc-400 font-medium">Trial Ends</th>
+                    <th className="text-left p-4 text-zinc-400 font-medium">Period End</th>
+                    <th className="text-left p-4 text-zinc-400 font-medium">Subscribed</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stats.subscriptions.entries.map((sub) => (
+                    <tr key={sub.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                      <td className="p-4 font-mono text-amber-400">{sub.profile.email}</td>
+                      <td className="p-4 text-zinc-300">{sub.profile.name ?? '—'}</td>
+                      <td className="p-4">
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                          sub.plan === 'pro' ? 'bg-blue-500/10 border border-blue-500/20 text-blue-400' :
+                          sub.plan === 'design_partner' ? 'bg-purple-500/10 border border-purple-500/20 text-purple-400' :
+                          sub.plan === 'enterprise' ? 'bg-red-500/10 border border-red-500/20 text-red-400' :
+                          'bg-zinc-500/10 border border-zinc-500/20 text-zinc-400'
+                        }`}>
+                          {sub.plan.replace('_', ' ')}
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                          sub.status === 'active' ? 'bg-green-500/10 border border-green-500/20 text-green-400' :
+                          sub.status === 'trialing' ? 'bg-amber-500/10 border border-amber-500/20 text-amber-400' :
+                          'bg-zinc-500/10 border border-zinc-500/20 text-zinc-400'
+                        }`}>
+                          {sub.status}
+                        </span>
+                      </td>
+                      <td className="p-4 text-zinc-400 text-xs">
+                        {sub.trialEndsAt ? new Date(sub.trialEndsAt).toLocaleDateString() : '—'}
+                      </td>
+                      <td className="p-4 text-zinc-400 text-xs">
+                        {sub.currentPeriodEnd ? new Date(sub.currentPeriodEnd).toLocaleDateString() : '—'}
+                      </td>
+                      <td className="p-4 text-zinc-500">
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5" />
+                          {timeAgo(sub.createdAt)}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                  {stats.subscriptions.entries.length === 0 && (
+                    <tr><td colSpan={7} className="p-8 text-center text-zinc-500">No paid subscriptions yet</td></tr>
                   )}
                 </tbody>
               </table>
