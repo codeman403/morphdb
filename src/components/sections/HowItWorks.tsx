@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Database, Sparkles, Cloud, ArrowRight, ArrowDown } from 'lucide-react';
+import GridBeams from '@/components/ui/backgrounds/GridBeams';
 
 const steps = [
   {
@@ -35,11 +36,18 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="py-24 relative overflow-hidden bg-slate-950">
-      {/* Background ambient light */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[300px] bg-slate-800/20 blur-[120px] rounded-full pointer-events-none" />
+    <section id="how-it-works" className="relative py-24 overflow-hidden bg-slate-950">
+      {/* Background Elements */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[400px] bg-emerald-500/15 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[300px] bg-cyan-500/15 blur-[100px] rounded-full pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      {/* Grid Pattern */}
+      <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.05] pointer-events-none" />
+
+      {/* Dynamic Background Effect */}
+      <GridBeams />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6">
         <div className="text-center mb-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

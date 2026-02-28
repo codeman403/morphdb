@@ -1,10 +1,16 @@
+'use client';
+
 import Link from 'next/link';
 import { Database } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-[#050505] pt-16 pb-8">
-      <div className="max-w-7xl mx-auto px-6">
+    <footer className="relative border-t border-white/10 bg-slate-950 pt-16 pb-8 overflow-hidden">
+      {/* Background */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[300px] bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.05] pointer-events-none" />
+      
+      <div className="relative z-10 max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           <div className="col-span-1 md:col-span-2">
             <Link href="/" className="flex items-center gap-2 text-white mb-4">

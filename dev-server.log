@@ -1906,3 +1906,162 @@ Unknown field `profile` for include statement on model `Subscription`. Available
 }
  GET /api/admin/stats 500 in 3.3s (compile: 822ms, render: 2.5s)
 ✓ Compiled in 227ms
+ GET /dashboard/admin 200 in 2.6s (compile: 1538ms, render: 1045ms)
+[Admin Stats Error] Error [PrismaClientValidationError]: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].subscription.findMany()` invocation in
+/Users/abu/Learning/Vibe_Coding_Bootcamp/hackathon-proj/.next/dev/server/chunks/[root-of-the-server]__a556038d._.js:672:155
+
+  669     take: LIMIT
+  670 }),
+  671 __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].profile.count(),
+→ 672 __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].subscription.findMany({
+        include: {
+          profile: true
+          ~~~~~~~
+        },
+        where: {
+          NOT: {
+            plan: "free"
+          }
+        },
+        orderBy: {
+          createdAt: "desc"
+        },
+        skip: 0,
+        take: 50
+      })
+
+Unknown field `profile` for include statement on model `Subscription`. Available options are marked with ?.
+    at <unknown> (src/app/api/admin/stats/route.ts:67:27)
+    at async GET (src/app/api/admin/stats/route.ts:47:9)
+  65 |       }),
+  66 |       prisma.profile.count(),
+> 67 |       prisma.subscription.findMany({
+     |                           ^
+  68 |         include: {
+  69 |           profile: true,
+  70 |         }, {
+  clientVersion: '7.4.1'
+}
+ GET /api/admin/stats 500 in 918ms (compile: 36ms, render: 882ms)
+ GET /dashboard 200 in 391ms (compile: 35ms, render: 356ms)
+ GET /dashboard/admin 200 in 93ms (compile: 37ms, render: 57ms)
+[Admin Stats Error] Error [PrismaClientValidationError]: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].subscription.findMany()` invocation in
+/Users/abu/Learning/Vibe_Coding_Bootcamp/hackathon-proj/.next/dev/server/chunks/[root-of-the-server]__a556038d._.js:672:155
+
+  669     take: LIMIT
+  670 }),
+  671 __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].profile.count(),
+→ 672 __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].subscription.findMany({
+        include: {
+          profile: true
+          ~~~~~~~
+        },
+        where: {
+          NOT: {
+            plan: "free"
+          }
+        },
+        orderBy: {
+          createdAt: "desc"
+        },
+        skip: 0,
+        take: 50
+      })
+
+Unknown field `profile` for include statement on model `Subscription`. Available options are marked with ?.
+    at <unknown> (src/app/api/admin/stats/route.ts:67:27)
+    at async GET (src/app/api/admin/stats/route.ts:47:9)
+  65 |       }),
+  66 |       prisma.profile.count(),
+> 67 |       prisma.subscription.findMany({
+     |                           ^
+  68 |         include: {
+  69 |           profile: true,
+  70 |         }, {
+  clientVersion: '7.4.1'
+}
+ GET /api/admin/stats 500 in 371ms (compile: 14ms, render: 357ms)
+[Admin Stats Error] Error [PrismaClientValidationError]: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].subscription.findMany()` invocation in
+/Users/abu/Learning/Vibe_Coding_Bootcamp/hackathon-proj/.next/dev/server/chunks/[root-of-the-server]__a556038d._.js:672:155
+
+  669     take: LIMIT
+  670 }),
+  671 __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].profile.count(),
+→ 672 __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].subscription.findMany({
+        include: {
+          profile: true
+          ~~~~~~~
+        },
+        where: {
+          NOT: {
+            plan: "free"
+          }
+        },
+        orderBy: {
+          createdAt: "desc"
+        },
+        skip: 0,
+        take: 50
+      })
+
+Unknown field `profile` for include statement on model `Subscription`. Available options are marked with ?.
+    at <unknown> (src/app/api/admin/stats/route.ts:67:27)
+    at async GET (src/app/api/admin/stats/route.ts:47:9)
+  65 |       }),
+  66 |       prisma.profile.count(),
+> 67 |       prisma.subscription.findMany({
+     |                           ^
+  68 |         include: {
+  69 |           profile: true,
+  70 |         }, {
+  clientVersion: '7.4.1'
+}
+ GET /api/admin/stats 500 in 175ms (compile: 1684µs, render: 174ms)
+ GET /dashboard/admin 200 in 1153ms (compile: 229ms, render: 924ms)
+ GET /api/admin/stats 200 in 1619ms (compile: 788ms, render: 831ms)
+ GET /dashboard 200 in 1310ms (compile: 194ms, render: 1115ms)
+ GET / 200 in 218ms (compile: 77ms, render: 141ms)
+ GET /api/auth/has-used-trial 200 in 397ms (compile: 195ms, render: 202ms)
+ GET /api/auth/profile 200 in 592ms (compile: 87ms, render: 505ms)
+ GET /api/auth/has-used-trial 200 in 211ms (compile: 8ms, render: 203ms)
+ GET /api/auth/profile 200 in 205ms (compile: 18ms, render: 187ms)
+ GET /api/auth/profile 200 in 175ms (compile: 5ms, render: 170ms)
+ GET /support 200 in 469ms (compile: 129ms, render: 340ms)
+ GET /api/auth/profile 200 in 305ms (compile: 26ms, render: 278ms)
+ GET /api/auth/profile 200 in 156ms (compile: 7ms, render: 149ms)
+ GET /api/auth/profile 200 in 300ms (compile: 47ms, render: 253ms)
+ GET /api/auth/has-used-trial 200 in 289ms (compile: 49ms, render: 240ms)
+ GET /api/auth/has-used-trial 200 in 163ms (compile: 51ms, render: 112ms)
+ GET /api/auth/profile 200 in 169ms (compile: 8ms, render: 161ms)
+ GET /api/auth/profile 200 in 204ms (compile: 4ms, render: 200ms)
+ GET /demo 200 in 3.2s (compile: 3.0s, render: 137ms)
+ GET /demo 200 in 29ms (compile: 6ms, render: 24ms)
+ GET /api/auth/profile 200 in 382ms (compile: 26ms, render: 356ms)
+ GET /api/auth/profile 200 in 220ms (compile: 2ms, render: 218ms)
+ GET /api/auth/profile 200 in 203ms (compile: 4ms, render: 200ms)
+ GET / 200 in 102ms (compile: 42ms, render: 60ms)
+ GET /api/auth/has-used-trial 200 in 227ms (compile: 14ms, render: 213ms)
+ GET /api/auth/profile 200 in 378ms (compile: 34ms, render: 345ms)
+ GET /api/auth/has-used-trial 200 in 94ms (compile: 3ms, render: 91ms)
+ GET /api/auth/profile 200 in 155ms (compile: 5ms, render: 150ms)
+ GET /api/auth/profile 200 in 215ms (compile: 9ms, render: 206ms)
+ GET /demo 200 in 104ms (compile: 46ms, render: 57ms)
+ GET /api/auth/profile 200 in 197ms (compile: 21ms, render: 176ms)
+ GET /api/auth/profile 200 in 174ms (compile: 3ms, render: 170ms)
+ GET /api/auth/profile 200 in 225ms (compile: 3ms, render: 222ms)
+ GET / 200 in 148ms (compile: 34ms, render: 114ms)
+ GET /api/auth/has-used-trial 200 in 290ms (compile: 16ms, render: 274ms)
+ GET /api/auth/profile 200 in 384ms (compile: 6ms, render: 379ms)
+ GET /api/auth/has-used-trial 200 in 167ms (compile: 2ms, render: 164ms)
+ GET /api/auth/profile 200 in 157ms (compile: 4ms, render: 153ms)
+ GET /api/auth/profile 200 in 204ms (compile: 5ms, render: 199ms)
+ GET /login 200 in 3.6s (compile: 111ms, render: 3.5s)
+ GET / 200 in 3.8s (compile: 2.8s, render: 1028ms)
+✓ Compiled in 471ms
+✓ Compiled in 671ms
+✓ Compiled in 342ms
+✓ Compiled in 1417ms
+✓ Compiled in 263ms
