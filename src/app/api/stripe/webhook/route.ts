@@ -165,16 +165,25 @@ export async function POST(req: NextRequest) {
             },
           });
           
-          // Send cancellation email (fire-and-forget)
-          for (const sub of subscriptions) {
-            const userProfile = await prisma.profile.findUnique({ where: { id: sub.userId } });
-            const userName = userProfile?.name || userProfile?.email?.split('@')[0] || 'User';
-            if (userProfile?.email) {
-              sendEmail({
-                to: userProfile.email,
-                subject: 'Your MorphDB Subscription Has Been Cancelled',
-                html: getSubscriptionCancelledEmailHTML(userName),
-              }).catch((e) => console.error('[Subscription Cancelled Email Error]', e));
+          // Send cancellation emails (fire-and-forget)
+          // Batch load all profiles at once to avoid N+1 query problem
+          if (subscriptions.length > 0) {
+            const userIds = subscriptions.map(sub => sub.userId);
+            const profiles = await prisma.profile.findMany({
+              where: { id: { in: userIds } },
+            });
+            const profileMap = new Map(profiles.map(p => [p.id, p]));
+            
+            for (const sub of subscriptions) {
+              const userProfile = profileMap.get(sub.userId);
+              const userName = userProfile?.name || userProfile?.email?.split('@')[0] || 'User';
+              if (userProfile?.email) {
+                sendEmail({
+                  to: userProfile.email,
+                  subject: 'Your MorphDB Subscription Has Been Cancelled',
+                  html: getSubscriptionCancelledEmailHTML(userName),
+                }).catch((e) => console.error('[Subscription Cancelled Email Error]', e));
+              }
             }
           }
           break;
