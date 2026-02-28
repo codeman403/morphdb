@@ -5,6 +5,10 @@ import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? '').split(',').map(e => e.trim()).filter(Boolean);
 
+// Pagination limits to prevent DoS attacks
+const MAX_LIMIT = 100;
+const MAX_OFFSET = 100_000;
+
 export async function GET(req: NextRequest) {
   try {
     const ip = getClientIp(req.headers);
@@ -20,13 +24,13 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
-    // Parse pagination parameters
+    // Parse pagination parameters with limits to prevent DoS
     const url = new URL(req.url);
-    const waitlistOffset = Math.max(0, parseInt(url.searchParams.get('waitlistOffset') ?? '0', 10));
-    const loginsOffset = Math.max(0, parseInt(url.searchParams.get('loginsOffset') ?? '0', 10));
-    const signupsOffset = Math.max(0, parseInt(url.searchParams.get('signupsOffset') ?? '0', 10));
+    const waitlistOffset = Math.min(MAX_OFFSET, Math.max(0, parseInt(url.searchParams.get('waitlistOffset') ?? '0', 10)));
+    const loginsOffset = Math.min(MAX_OFFSET, Math.max(0, parseInt(url.searchParams.get('loginsOffset') ?? '0', 10)));
+    const signupsOffset = Math.min(MAX_OFFSET, Math.max(0, parseInt(url.searchParams.get('signupsOffset') ?? '0', 10)));
     
-    const LIMIT = 50;
+    const LIMIT = Math.min(MAX_LIMIT, 50);
 
     const [
       waitlistCount,
