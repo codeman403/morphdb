@@ -34,13 +34,11 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const [profile, subscription, recentBatches] = await Promise.all([
     prisma.profile.findUnique({ where: { id: user.id } }),
     prisma.subscription.findUnique({ where: { userId: user.id } }),
-    // TODO: Fix migrationBatch query - schema mismatch
-    Promise.resolve([] as Array<{ id: string; sourceDialect: string; targetDialect: string; failedCount: number; successCount: number; totalStatements: number; createdAt: Date }>),
-    // prisma.migrationBatch.findMany({
-    //   where: { userId: user.id },
-    //   orderBy: { createdAt: 'desc' },
-    //   take: 5,
-    // }),
+    prisma.migrationBatch.findMany({
+      where: { userId: user.id, deletedAt: null },
+      orderBy: { createdAt: 'desc' },
+      take: 5,
+    }),
   ]);
 
   // Compute tier info with single subscription object
