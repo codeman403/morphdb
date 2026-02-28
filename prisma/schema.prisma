@@ -70,7 +70,7 @@ model MigrationBatch {
   userId          String            @map("user_id")
   sourceDialect   String            @map("source_dialect")
   targetDialect   String            @map("target_dialect")
-  model           String
+  model           String            @map("model")
   totalStatements Int               @map("total_statements")
   successCount    Int               @map("success_count")
   failedCount     Int               @map("failed_count")

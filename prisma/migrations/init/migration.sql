@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS "subscriptions" (
 -- CreateIndex subscriptions_stripe_subscription_id_idx
 CREATE INDEX IF NOT EXISTS "subscriptions_stripe_subscription_id_idx" ON "subscriptions"("stripe_subscription_id");
 
--- CreateTable migration_batches
+-- CreateTable migration_batches (or alter if exists)
 CREATE TABLE IF NOT EXISTS "migration_batches" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "user_id" TEXT NOT NULL,
@@ -70,6 +70,11 @@ CREATE TABLE IF NOT EXISTS "migration_batches" (
     "cancellation_token_id" TEXT
 );
 
+-- Add missing columns if they don't exist
+ALTER TABLE "migration_batches" ADD COLUMN IF NOT EXISTS "deleted_at" TIMESTAMP(3);
+ALTER TABLE "migration_batches" ADD COLUMN IF NOT EXISTS "deleted_by" TEXT;
+ALTER TABLE "migration_batches" ADD COLUMN IF NOT EXISTS "cancellation_token_id" TEXT;
+
 -- CreateIndex migration_batches_user_id_idx
 CREATE INDEX IF NOT EXISTS "migration_batches_user_id_idx" ON "migration_batches"("user_id");
 
@@ -77,7 +82,7 @@ CREATE INDEX IF NOT EXISTS "migration_batches_user_id_idx" ON "migration_batches
 CREATE INDEX IF NOT EXISTS "migration_batches_created_at_idx" ON "migration_batches"("created_at");
 
 -- CreateIndex migration_batches_user_id_deleted_at_idx
-CREATE INDEX IF NOT EXISTS "migration_batches_user_id_deleted_at_idx" ON "migration_batches"("user_id", "deleted_at");
+CREATE INDEX IF NOT EXISTS "migration_batches_user_id_deleted_at_idx" ON "migration_batches"("user_id", "deleted_at") WHERE "deleted_at" IS NULL;
 
 -- CreateTable migration_results
 CREATE TABLE IF NOT EXISTS "migration_results" (

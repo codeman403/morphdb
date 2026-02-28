@@ -42,21 +42,9 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
       }
     })(),
     prisma.subscription.findUnique({ where: { userId: user.id } }),
-    // Fetch recent batches - gracefully handle if table doesn't exist yet
-    (async () => {
-      try {
-        const batches = await prisma.migrationBatch.findMany({
-          where: { userId: user.id },
-          orderBy: { createdAt: 'desc' },
-          take: 5,
-        });
-        return batches;
-      } catch (error) {
-        // Table may not exist yet in the database
-        console.error('Failed to fetch migration batches (table may not exist yet):', error);
-        return [];
-      }
-    })(),
+    // TODO: Migration batches query currently failing with Prisma schema mismatch
+    // Temporarily disabled - will be re-enabled once schema is verified
+    Promise.resolve([] as any[]),
   ]);
 
   // Compute tier info with single subscription object
