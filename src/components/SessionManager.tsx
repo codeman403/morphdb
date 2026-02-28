@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, LogOut } from 'lucide-react';
+import { AuthChangeEvent, Session } from '@supabase/supabase-js';
 
 const INACTIVITY_TIMEOUT = 30 * 60 * 1000;
 const WARNING_BEFORE = 2 * 60 * 1000;
@@ -74,7 +75,7 @@ export default function SessionManager() {
   useEffect(() => {
     if (!supabase) return;
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: string, session: { user?: { email?: string } } | null) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
       setIsAuthenticated(!!session?.user);
     });
 

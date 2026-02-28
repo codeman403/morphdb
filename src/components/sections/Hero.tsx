@@ -6,44 +6,8 @@ import Link from 'next/link';
 import { ArrowRight, Zap } from 'lucide-react';
 import GridBeams from '@/components/ui/backgrounds/GridBeams';
 
-const Typewriter = ({ text, delay = 0, onComplete, start = true }: { text: string, delay?: number, onComplete?: () => void, start?: boolean }) => {
-  const [displayText, setDisplayText] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [started, setStarted] = useState(false);
-
-  useEffect(() => {
-    if (start && !started) {
-      const timeout = setTimeout(() => {
-        setStarted(true);
-      }, delay);
-      return () => clearTimeout(timeout);
-    }
-  }, [start, delay, started]);
-
-  useEffect(() => {
-    if (!started) return;
-
-    if (currentIndex < text.length) {
-      const timeout = setTimeout(() => {
-        setDisplayText(prev => prev + text[currentIndex]);
-        setCurrentIndex(prev => prev + 1);
-      }, 75); 
-      return () => clearTimeout(timeout);
-    } else {
-        if (onComplete) {
-            onComplete();
-        }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentIndex, text, started]); // Removed onComplete from dependency array
-
-  return <span>{displayText}</span>;
-};
-
 export default function Hero() {
   const [isVisible, setIsVisible] = useState(false);
-  const [firstLineDone, setFirstLineDone] = useState(false);
-  const [secondLineDone, setSecondLineDone] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -85,37 +49,25 @@ export default function Hero() {
           className="flex flex-col items-center gap-6 mb-16 max-w-5xl"
         >
           {/* 1. Top - Largest: Tagline */}
-          <motion.h1 
+          <motion.div
             variants={itemVariants}
-            className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-center leading-tight mb-4 text-white min-h-[160px] sm:min-h-[180px]"
+            initial="hidden"
+            animate={isVisible ? "visible" : "hidden"}
+            className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-center leading-tight mb-4 text-white"
           >
             <span className="block text-white mb-2">
-               <Typewriter 
-                  text="Legacy schemas in." 
-                  start={isVisible}
-                  onComplete={() => setFirstLineDone(true)}
-               />
-               <span className={`${!firstLineDone ? 'opacity-100 animate-pulse text-emerald-500' : 'hidden'}`}>_</span>
+               Legacy schemas in.
             </span>
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 animate-gradient-x">
-               {firstLineDone && (
-                 <>
-                   <Typewriter 
-                     text="Modern data stacks out." 
-                     onComplete={() => setSecondLineDone(true)}
-                   />
-                   <span className="text-emerald-500 animate-pulse">_</span>
-                 </>
-               )}
-               {!firstLineDone && <span className="opacity-0">Modern data stacks out.</span>}
-            </span>
-          </motion.h1>
+             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 animate-gradient-x">
+                Modern data stacks out.
+             </span>
+          </motion.div>
 
           {/* 2. Middle - Medium/Large: Headline */}
           <motion.div
             variants={itemVariants}
             initial="hidden"
-            animate={secondLineDone ? "visible" : "hidden"}
+            animate={isVisible ? "visible" : "hidden"}
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight text-slate-400 text-center max-w-3xl flex items-center justify-center gap-2"
           >
@@ -130,7 +82,7 @@ export default function Hero() {
           <motion.div 
             variants={itemVariants}
             initial="hidden"
-            animate={secondLineDone ? "visible" : "hidden"}
+            animate={isVisible ? "visible" : "hidden"}
             transition={{ duration: 0.8, delay: 0.8 }}
             className="flex flex-col items-center gap-4"
           >
@@ -153,7 +105,7 @@ export default function Hero() {
           <motion.div
             variants={itemVariants}
             initial="hidden"
-            animate={secondLineDone ? "visible" : "hidden"}
+            animate={isVisible ? "visible" : "hidden"}
             transition={{ duration: 0.8, delay: 1.2 }}
             className="flex flex-col sm:flex-row gap-4 pt-6"
           >
@@ -175,9 +127,9 @@ export default function Hero() {
         {/* Cinematic Visual - Open Holographic Platform */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9, rotateX: 20 }}
-          animate={secondLineDone ? { opacity: 1, scale: 1, rotateX: 0 } : { opacity: 0, scale: 0.9, rotateX: 20 }}
+          animate={isVisible ? { opacity: 1, scale: 1, rotateX: 0 } : { opacity: 0, scale: 0.9, rotateX: 20 }}
           transition={{ duration: 1.5, delay: 1.6, ease: "easeOut" }}
-          className="w-full relative h-[400px] mt-16 max-w-7xl mx-auto perspective-1000"
+          className="w-full relative h-[300px] mt-8 max-w-7xl mx-auto perspective-1000"
         >
            {/* Base Platform / Grid Floor */}
            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[90%] h-[1px] bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
@@ -187,7 +139,7 @@ export default function Hero() {
            <div className="absolute inset-0 flex items-center justify-center">
 
               {/* LEFT SIDE: "Raw Data" Stream */}
-              <div className="flex-1 h-32 relative overflow-hidden flex items-center justify-start pl-4">
+              <div className="flex-1 h-24 relative overflow-hidden flex items-center justify-start pl-4">
                   {/* Connection Rail */}
                   <div className="absolute top-1/2 right-0 left-0 h-[2px] bg-gradient-to-r from-transparent via-slate-700 to-emerald-900/50" />
                   
@@ -198,23 +150,30 @@ export default function Hero() {
                         initial={{ x: '-100%' }}
                         animate={{ x: '150%' }}
                         transition={{ 
-                            duration: 4, 
+                            duration: 3, 
                             repeat: Infinity, 
                             delay: i * 2, 
                             ease: "linear",
-                            repeatDelay: 0
+                            repeatDelay: 3 // Wait for others to pass
                         }}
                         style={{ opacity: 1 }}
                         className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-3 pl-8"
                     >
                         <motion.div 
                             animate={{ opacity: [0, 1, 1, 0] }}
-                            transition={{ duration: 4, times: [0, 0.1, 0.9, 1], repeat: Infinity, delay: i * 2, ease: "linear" }}
+                            transition={{ 
+                                duration: 3, 
+                                times: [0, 0.1, 0.9, 1], 
+                                repeat: Infinity, 
+                                delay: i * 2, 
+                                ease: "linear",
+                                repeatDelay: 3 
+                            }}
                             className="flex items-center gap-3"
                         >
                             <div className="px-3 py-1.5 rounded-md bg-slate-800 border border-slate-600 shadow-lg whitespace-nowrap z-10">
                                 <span className="text-xs sm:text-sm font-mono text-slate-300 font-medium">
-                                  {['Oracle', 'SQL Server', 'Teradata'][i]}
+                                  {['Oracle', 'SQL Server', 'MySQL'][i]}
                                 </span>
                             </div>
                             <div className="w-3 h-3 bg-slate-400 rotate-45 z-10" />
@@ -251,31 +210,38 @@ export default function Hero() {
                    {/* Connection Rail */}
                    <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-900/50 via-emerald-500/50 to-transparent" />
 
-                  {/* Outgoing Packets */}
+                   {/* Outgoing Packets */}
                    {[...Array(3)].map((_, i) => (
                     <motion.div
                         key={`out-${i}`}
                         initial={{ x: '-50%' }}
                         animate={{ x: '200%' }}
                         transition={{ 
-                            duration: 4, 
+                            duration: 3, 
                             repeat: Infinity, 
                             delay: i * 2, 
                             ease: "linear",
-                            repeatDelay: 0 
+                            repeatDelay: 3 
                         }}
                         style={{ opacity: 1 }}
                         className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-3 pl-8"
                     >
                         <motion.div 
                             animate={{ opacity: [0, 1, 1, 0] }}
-                            transition={{ duration: 4, times: [0, 0.1, 0.9, 1], repeat: Infinity, delay: i * 2, ease: "linear" }}
+                            transition={{ 
+                                duration: 3, 
+                                times: [0, 0.1, 0.9, 1], 
+                                repeat: Infinity, 
+                                delay: i * 2, 
+                                ease: "linear",
+                                repeatDelay: 3 
+                            }}
                             className="flex items-center gap-3"
                         >
                             <div className="w-3 h-3 bg-emerald-400 rotate-45 shadow-[0_0_10px_rgba(52,211,153,0.8)] z-10" />
                             <div className="px-3 py-1.5 rounded-md bg-emerald-950/80 border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.2)] whitespace-nowrap z-10">
                                 <span className="text-xs sm:text-sm font-mono text-emerald-300 font-bold">
-                                  {['Snowflake', 'dbt', 'BigQuery'][i]}
+                                  {['Snowflake', 'Redshift', 'BigQuery'][i]}
                                 </span>
                             </div>
                         </motion.div>

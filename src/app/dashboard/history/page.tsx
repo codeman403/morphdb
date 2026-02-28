@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
-import { Database, ArrowLeft, CheckCircle2, AlertTriangle, Clock, Zap, User, LogOut } from 'lucide-react';
+import { Database, ArrowLeft, CheckCircle2, AlertTriangle, Zap, User, LogOut } from 'lucide-react';
 
 const DIALECT_LABELS: Record<string, string> = {
   sql_server: 'SQL Server',

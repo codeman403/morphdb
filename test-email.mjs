@@ -1,5 +1,5 @@
-require('dotenv').config({ path: '.env.local' });
-const { Resend } = require('resend');
+import 'dotenv/config';
+import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -18,9 +18,9 @@ async function sendTestEmail() {
       html: '<h1>It Works!</h1><p>Your local email setup is working perfectly.</p>'
     });
     
-    console.log('✅ Success!', data);
+    console.log('Success!', data);
   } catch (error) {
-    console.error('❌ Error:', error);
+    console.error('Error:', error);
   }
 }
 

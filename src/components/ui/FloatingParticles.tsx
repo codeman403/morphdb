@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
 
 export default function FloatingParticles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);

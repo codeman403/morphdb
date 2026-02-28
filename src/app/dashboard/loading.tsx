@@ -1,4 +1,4 @@
-import { Database, LogOut, User } from 'lucide-react';
+import { Database } from 'lucide-react';
 import Link from 'next/link';
 import { Skeleton, SkeletonCard } from '@/components/ui/Skeleton';
 

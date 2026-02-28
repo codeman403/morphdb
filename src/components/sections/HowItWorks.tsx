@@ -56,7 +56,7 @@ export default function HowItWorks() {
             transition={{ delay: 0.1 }}
             className="text-3xl md:text-5xl font-bold text-white mb-6"
           >
-            How it <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-purple-400 to-emerald-400">works</span>
+            How it <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">works</span>
           </motion.h2>
         </div>
 

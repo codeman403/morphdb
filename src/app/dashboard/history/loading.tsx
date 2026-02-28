@@ -1,4 +1,4 @@
-import { Database, LogOut, ArrowLeft, Search } from 'lucide-react';
+import { Database, ArrowLeft, Search } from 'lucide-react';
 import Link from 'next/link';
 import { Skeleton, SkeletonHistoryRow } from '@/components/ui/Skeleton';
 
