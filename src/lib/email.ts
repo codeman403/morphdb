@@ -14,7 +14,7 @@ function getResendClient(): Resend {
   return resendClient;
 }
 
-const FROM_EMAIL = process.env.NEXT_PUBLIC_FROM_EMAIL || 'noreply@morphdb.ai';
+const FROM_EMAIL = process.env.NEXT_PUBLIC_FROM_EMAIL || process.env.RESEND_TEST_EMAIL || 'noreply@morphdb.ai';
 const SUPPORT_EMAIL = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'support@morphdb.ai';
 
 export interface EmailOptions {
@@ -26,6 +26,10 @@ export interface EmailOptions {
 
 /**
  * Send an email using Resend
+ * 
+ * Note: If using Resend in test/sandbox mode, emails can only be sent to your 
+ * verified email address. For production, verify your domain at resend.com/domains
+ * and upgrade to a paid plan.
  */
 export async function sendEmail(options: EmailOptions) {
   try {
@@ -49,6 +53,12 @@ export async function sendEmail(options: EmailOptions) {
 
     if (response.error) {
       console.error('❌ Email send failed:', response.error);
+      
+      // Check if it's a test mode limitation
+      if (response.error.message?.includes('testing emails')) {
+        console.error('⚠️ Resend is in test/sandbox mode. Verify your domain at resend.com/domains');
+      }
+      
       return { success: false, error: response.error };
     }
 

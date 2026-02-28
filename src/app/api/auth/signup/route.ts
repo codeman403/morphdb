@@ -91,13 +91,20 @@ export async function POST(req: NextRequest) {
         })
         .catch((e) => console.error('[Login Log Error]', e));
       
-      // Send welcome email (fire-and-forget)
+      // Send welcome email (fire-and-forget, but log failures)
       const userName = name || data.user.email?.split('@')[0] || 'User';
       sendEmail({
         to: data.user.email!,
         subject: 'Welcome to MorphDB',
         html: getWelcomeEmailHTML(userName),
-      }).catch((e) => console.error('[Welcome Email Error]', e));
+      }).then(result => {
+        if (!result.success) {
+          console.warn('[Welcome Email] Failed to send to:', data.user.email, 'Error:', result.error);
+          // In production, you would want to notify admins about this
+        }
+      }).catch((e) => {
+        console.error('[Welcome Email Error]', e);
+      });
     }
 
     return NextResponse.json({ success: true, user: data.user }, { status: 201 });
