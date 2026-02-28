@@ -42,9 +42,20 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
       }
     })(),
     prisma.subscription.findUnique({ where: { userId: user.id } }),
-    // TODO: Migration batches query currently failing with Prisma schema mismatch
-    // Temporarily disabled - will be re-enabled once schema is verified
-    Promise.resolve([] as any[]),
+    // Fetch recent batches - now that schema is fixed
+    (async () => {
+      try {
+        const batches = await prisma.migrationBatch.findMany({
+          where: { userId: user.id },
+          orderBy: { createdAt: 'desc' },
+          take: 5,
+        });
+        return batches;
+      } catch (error) {
+        console.error('Failed to fetch migration batches:', error);
+        return [];
+      }
+    })(),
   ]);
 
   // Compute tier info with single subscription object

@@ -105,14 +105,6 @@ export async function POST(
       },
     })
 
-    // Update the batch's updatedAt timestamp
-    await prisma.migrationBatch.update({
-      where: { id: batchId },
-      data: {
-        updatedAt: new Date(),
-      },
-    })
-
     // Log the cancellation action
     await logAuditEvent({
       action: 'batch_cancelled',

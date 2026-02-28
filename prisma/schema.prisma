@@ -77,7 +77,6 @@ model MigrationBatch {
   totalTokens     Int               @map("total_tokens")
   totalDurationMs Int               @map("total_duration_ms")
   createdAt       DateTime          @default(now()) @map("created_at")
-  updatedAt       DateTime?         @updatedAt @map("updated_at")
   deletedAt       DateTime?         @map("deleted_at")
   deletedBy       String?           @map("deleted_by")
   cancellationTokenId String?       @map("cancellation_token_id")
