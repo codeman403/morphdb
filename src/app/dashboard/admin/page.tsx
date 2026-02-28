@@ -8,6 +8,7 @@ import {
   Globe, Monitor, Mail, Building2, Shield, RefreshCw, Headphones, RotateCcw, X,
 } from 'lucide-react';
 import { PageBackground } from '@/components/ui/backgrounds/PageBackground';
+import { ToastContainer, useToast } from '@/components/ui/Toast';
 
 interface WaitlistEntry {
   id: string;
@@ -86,18 +87,19 @@ function parseBrowser(ua: string | null) {
 }
 
 export default function AdminDashboard() {
+   const { toasts, removeToast, success, error: errorToast } = useToast();
    const [stats, setStats] = useState<Stats | null>(null);
    const [error, setError] = useState<string | null>(null);
    const [loading, setLoading] = useState(true);
    const [activeTab, setActiveTab] = useState<'waitlist' | 'logins' | 'signups' | 'subscriptions' | 'support'>('waitlist');
-    const [resetting, setResetting] = useState(false);
-    const [showResetModal, setShowResetModal] = useState(false);
-    const [showGrantProModal, setShowGrantProModal] = useState(false);
-    const [grantingPro, setGrantingPro] = useState(false);
-    const [sendingWelcomeEmailFor, setSendingWelcomeEmailFor] = useState<string | null>(null);
-    const [closingTicket, setClosingTicket] = useState(false);
-    const [selectedTicketForClose, setSelectedTicketForClose] = useState<string | null>(null);
-    const [sendingTrialReminderFor, setSendingTrialReminderFor] = useState<string | null>(null);
+     const [resetting, setResetting] = useState(false);
+     const [showResetModal, setShowResetModal] = useState(false);
+     const [showGrantProModal, setShowGrantProModal] = useState(false);
+     const [grantingPro, setGrantingPro] = useState(false);
+     const [sendingWelcomeEmailFor, setSendingWelcomeEmailFor] = useState<string | null>(null);
+     const [closingTicket, setClosingTicket] = useState(false);
+     const [selectedTicketForClose, setSelectedTicketForClose] = useState<string | null>(null);
+     const [sendingTrialReminderFor, setSendingTrialReminderFor] = useState<string | null>(null);
 
   const fetchStats = async () => {
     setLoading(true);
@@ -116,89 +118,90 @@ export default function AdminDashboard() {
    }
  };
 
-  const sendWelcomeEmail = async (userId: string) => {
-    setSendingWelcomeEmailFor(userId);
-    try {
-      const res = await fetch('/api/admin/send-welcome-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        alert(`Welcome email sent to ${data.email}`);
-      } else {
-        alert(`Error: ${data.error || 'Failed to send email'}`);
-      }
-    } catch (e) {
-      alert(`Error: ${e instanceof Error ? e.message : 'Failed to send email'}`);
-    } finally {
-      setSendingWelcomeEmailFor(null);
-    }
-  };
-
- const closeTicket = async (ticketId: string) => {
-   setClosingTicket(true);
-   try {
-     const res = await fetch('/api/admin/close-ticket', {
-       method: 'POST',
-       headers: { 'Content-Type': 'application/json' },
-       body: JSON.stringify({ ticketId, sendNotification: true }),
-     });
-     const data = await res.json();
-     if (res.ok) {
-       setSelectedTicketForClose(null);
-       fetchStats();
-     } else {
-       alert(`Error: ${data.error || 'Failed to close ticket'}`);
+   const sendWelcomeEmail = async (userId: string) => {
+     setSendingWelcomeEmailFor(userId);
+     try {
+       const res = await fetch('/api/admin/send-welcome-email', {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({ userId }),
+       });
+       const data = await res.json();
+       if (res.ok) {
+         success(`Welcome email sent to ${data.email}`);
+       } else {
+         errorToast(`Error: ${data.error || 'Failed to send email'}`);
+       }
+     } catch (e) {
+       errorToast(`Error: ${e instanceof Error ? e.message : 'Failed to send email'}`);
+     } finally {
+       setSendingWelcomeEmailFor(null);
      }
-   } catch (e) {
-     alert(`Error: ${e instanceof Error ? e.message : 'Failed to close ticket'}`);
-   } finally {
-     setClosingTicket(false);
-   }
- };
+   };
 
-  const sendTrialReminderEmail = async (userId: string) => {
-    setSendingTrialReminderFor(userId);
+  const closeTicket = async (ticketId: string) => {
+    setClosingTicket(true);
     try {
-      const res = await fetch('/api/admin/send-trial-reminder', {
+      const res = await fetch('/api/admin/close-ticket', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId }),
+        body: JSON.stringify({ ticketId, sendNotification: true }),
       });
       const data = await res.json();
       if (res.ok) {
-        alert(`Trial reminder email sent successfully`);
+        setSelectedTicketForClose(null);
+        success('Ticket closed successfully');
+        fetchStats();
       } else {
-        alert(`Error: ${data.error || 'Failed to send email'}`);
+        errorToast(`Error: ${data.error || 'Failed to close ticket'}`);
       }
     } catch (e) {
-      alert(`Error: ${e instanceof Error ? e.message : 'Failed to send email'}`);
+      errorToast(`Error: ${e instanceof Error ? e.message : 'Failed to close ticket'}`);
     } finally {
-      setSendingTrialReminderFor(null);
+      setClosingTicket(false);
     }
   };
 
-  const sendTrialReminderEmails = async () => {
-    setSendingTrialReminderFor('batch');
-    try {
-      const res = await fetch('/api/admin/send-trial-reminder', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      const data = await res.json();
-      if (res.ok) {
-        alert(`Sent ${data.stats.successCount} trial reminder emails. Failed: ${data.stats.failureCount}`);
-      } else {
-        alert(`Error: ${data.error || 'Failed to send reminders'}`);
-      }
-    } catch (e) {
-      alert(`Error: ${e instanceof Error ? e.message : 'Failed to send reminders'}`);
-    } finally {
-      setSendingTrialReminderFor(null);
-    }
-  };
+   const sendTrialReminderEmail = async (userId: string) => {
+     setSendingTrialReminderFor(userId);
+     try {
+       const res = await fetch('/api/admin/send-trial-reminder', {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({ userId }),
+       });
+       const data = await res.json();
+       if (res.ok) {
+         success('Trial reminder email sent successfully');
+       } else {
+         errorToast(`Error: ${data.error || 'Failed to send email'}`);
+       }
+     } catch (e) {
+       errorToast(`Error: ${e instanceof Error ? e.message : 'Failed to send email'}`);
+     } finally {
+       setSendingTrialReminderFor(null);
+     }
+   };
+
+   const sendTrialReminderEmails = async () => {
+     setSendingTrialReminderFor('batch');
+     try {
+       const res = await fetch('/api/admin/send-trial-reminder', {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+       });
+       const data = await res.json();
+       if (res.ok) {
+         success(`Sent ${data.stats.successCount} trial reminder emails. Failed: ${data.stats.failureCount}`);
+       } else {
+         errorToast(`Error: ${data.error || 'Failed to send reminders'}`);
+       }
+     } catch (e) {
+       errorToast(`Error: ${e instanceof Error ? e.message : 'Failed to send reminders'}`);
+     } finally {
+       setSendingTrialReminderFor(null);
+     }
+   };
 
  useEffect(() => { fetchStats(); }, []);
 
@@ -656,9 +659,11 @@ export default function AdminDashboard() {
              loading={grantingPro}
            />
          )}
-       </AnimatePresence>
-    </div>
-  );
+        </AnimatePresence>
+     </div>
+
+     <ToastContainer toasts={toasts} onRemove={removeToast} />
+   );
 }
 
 function ResetUsageModal({ onClose, onReset, users, loading }: { onClose: () => void; onReset: (userId: string | null) => void; users: Profile[]; loading: boolean }) {
