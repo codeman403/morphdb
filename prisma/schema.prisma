@@ -7,8 +7,13 @@ datasource db {
   provider = "postgresql"
 }
 
+// Enable UUID extension
+model Extension {
+  @@ignore
+}
+
 model WaitlistEntry {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   email     String   @unique
   name      String?
   company   String?
@@ -31,7 +36,7 @@ model Profile {
 }
 
 model LoginLog {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   userId    String   @map("user_id")
   email     String?
   ip        String?
@@ -44,7 +49,7 @@ model LoginLog {
 }
 
 model Subscription {
-  id                   String    @id @default(cuid())
+  id                   String    @id @default(uuid())
   userId               String    @unique @map("user_id")
   stripeCustomerId     String?   @unique @map("stripe_customer_id")
   stripeSubscriptionId String?   @unique @map("stripe_subscription_id")
@@ -61,7 +66,7 @@ model Subscription {
 }
 
 model MigrationBatch {
-  id              String            @id @default(cuid())
+  id              String            @id @default(uuid())
   userId          String            @map("user_id")
   sourceDialect   String            @map("source_dialect")
   targetDialect   String            @map("target_dialect")
@@ -85,7 +90,7 @@ model MigrationBatch {
 }
 
 model MigrationResult {
-  id             String         @id @default(cuid())
+  id             String         @id @default(uuid())
   batchId        String         @map("batch_id")
   batch          MigrationBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
   fileName       String         @map("file_name")
@@ -106,7 +111,7 @@ model MigrationResult {
 }
 
 model MonthlyUsage {
-  id               String   @id @default(cuid())
+  id               String   @id @default(uuid())
   userId           String   @map("user_id")
   yearMonth        String   @map("year_month")
   batchCount       Int      @default(0) @map("batch_count")
@@ -121,7 +126,7 @@ model MonthlyUsage {
 }
 
 model SupportTicket {
-  id          String   @id @default(cuid())
+  id          String   @id @default(uuid())
   userId      String?  @map("user_id")
   name        String
   email       String
@@ -138,7 +143,7 @@ model SupportTicket {
 }
 
 model WebhookEvent {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   eventId   String   @unique @map("event_id")
   eventType String   @map("event_type")
   processed Boolean  @default(false)
@@ -151,7 +156,7 @@ model WebhookEvent {
 }
 
 model IdempotencyKey {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   key       String   @unique
   userId    String   @map("user_id")
   response  String   // JSON response stored as string
@@ -164,7 +169,7 @@ model IdempotencyKey {
 }
 
 model AuditLog {
-  id            String   @id @default(cuid())
+  id            String   @id @default(uuid())
   action        String   // "grant_pro", "reset_usage", "batch_deleted", etc.
   userId        String   @map("user_id")  // Admin who performed action
   resourceType  String   @map("resource_type")  // "user", "batch", "subscription"
