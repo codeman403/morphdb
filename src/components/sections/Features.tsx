@@ -26,9 +26,9 @@ const features = [
 
 export default function Features() {
   return (
-    <section id="features" className="py-24 relative overflow-hidden bg-[#050505]">
+    <section id="features" className="py-24 relative overflow-hidden bg-slate-950">
       {/* Top Border Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
       
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-20">
@@ -38,14 +38,14 @@ export default function Features() {
             viewport={{ once: true }}
             className="text-3xl md:text-5xl font-bold text-white mb-6"
           >
-            Migration without the <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-400 to-zinc-100">migraines.</span>
+            Migration without the <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">migraines.</span>
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-zinc-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed"
+            className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed"
           >
             Our proprietary AI engine understands the deep semantics of your legacy databases, 
             automating the most painful parts of your cloud migration journey.
@@ -60,15 +60,15 @@ export default function Features() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 + 0.2 }}
-              className="bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-colors relative group"
+              className="bg-slate-900/50 border border-slate-800 rounded-2xl p-8 hover:bg-slate-800/50 hover:border-emerald-500/30 transition-all duration-300 relative group"
             >
               <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} p-0.5 mb-6 opacity-80 group-hover:opacity-100 transition-opacity`}>
-                <div className="w-full h-full bg-[#0a0a0a] rounded-[10px] flex items-center justify-center">
+                <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
                   <feature.icon className="w-6 h-6 text-white" />
                 </div>
               </div>
               <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
-              <p className="text-zinc-400 leading-relaxed">
+              <p className="text-slate-400 leading-relaxed">
                 {feature.description}
               </p>
             </motion.div>

@@ -59,6 +59,13 @@ export async function POST(req: NextRequest) {
     });
 
     if (error) {
+      // Handle specific Supabase email rate limit error
+      if (error.message?.includes('rate limit') || error.message?.includes('email')) {
+        return NextResponse.json(
+          { error: 'Email rate limit exceeded. Please try again in a few minutes.' },
+          { status: 429 }
+        );
+      }
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 

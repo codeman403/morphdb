@@ -35,9 +35,9 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="py-24 relative overflow-hidden bg-[#050505]">
+    <section id="how-it-works" className="py-24 relative overflow-hidden bg-slate-950">
       {/* Background ambient light */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[300px] bg-zinc-800/20 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[300px] bg-slate-800/20 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="text-center mb-20">
@@ -45,7 +45,7 @@ export default function HowItWorks() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm text-zinc-300 mb-6"
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-sm text-emerald-400 mb-6"
           >
             The Pipeline
           </motion.div>
@@ -56,7 +56,7 @@ export default function HowItWorks() {
             transition={{ delay: 0.1 }}
             className="text-3xl md:text-5xl font-bold text-white mb-6"
           >
-            How it <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">works</span>
+            How it <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-purple-400 to-emerald-400">works</span>
           </motion.h2>
         </div>
 
@@ -68,18 +68,18 @@ export default function HowItWorks() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.2 }}
-                className={`w-full bg-[#0a0a0a]/80 backdrop-blur-xl border ${step.borderColor} rounded-2xl p-8 relative group hover:-translate-y-1 transition-transform duration-300`}
+                className={`w-full bg-slate-900/80 backdrop-blur-xl border ${step.borderColor} rounded-2xl p-8 relative group hover:-translate-y-1 transition-transform duration-300`}
               >
                 {/* Glow effect */}
                 <div className={`absolute -inset-px rounded-2xl ${step.glow} opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl`} />
                 
                 <div className="relative z-10">
-                  <div className={`w-14 h-14 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-6`}>
+                  <div className={`w-14 h-14 rounded-xl bg-slate-800/50 border border-slate-700 flex items-center justify-center mb-6`}>
                     <step.icon className={`w-7 h-7 ${step.iconColor}`} />
                   </div>
                   <h3 className="text-xl font-bold text-white mb-1">{step.title}</h3>
-                  <p className="text-sm font-medium text-zinc-500 mb-4">{step.subtitle}</p>
-                  <p className="text-zinc-400 leading-relaxed text-sm">
+                  <p className="text-sm font-medium text-slate-500 mb-4">{step.subtitle}</p>
+                  <p className="text-slate-400 leading-relaxed text-sm">
                     {step.description}
                   </p>
                 </div>
@@ -92,7 +92,7 @@ export default function HowItWorks() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.2 + 0.1 }}
-                  className="hidden md:flex flex-shrink-0 items-center justify-center w-12 h-12 text-zinc-600 my-4 md:my-0"
+                  className="hidden md:flex flex-shrink-0 items-center justify-center w-12 h-12 text-slate-600 my-4 md:my-0"
                 >
                   <ArrowRight className="w-8 h-8" />
                 </motion.div>
@@ -103,7 +103,7 @@ export default function HowItWorks() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.2 + 0.1 }}
-                  className="flex md:hidden flex-shrink-0 items-center justify-center h-12 text-zinc-600 my-4"
+                  className="flex md:hidden flex-shrink-0 items-center justify-center h-12 text-slate-600 my-4"
                 >
                   <ArrowDown className="w-8 h-8" />
                 </motion.div>

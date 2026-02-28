@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
 @theme inline {
@@ -12,15 +12,92 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Terminal Effect Styles */
+.terminal-text {
+  font-family: 'Monaco', 'Courier New', monospace;
+  letter-spacing: 0.05em;
+}
+
+.terminal-scanline {
+  position: relative;
+}
+
+.terminal-scanline::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(
+    0deg,
+    transparent 24%,
+    rgba(16, 185, 129, 0.05) 25%,
+    rgba(16, 185, 129, 0.05) 26%,
+    transparent 27%,
+    transparent 74%,
+    rgba(16, 185, 129, 0.05) 75%,
+    rgba(16, 185, 129, 0.05) 76%,
+    transparent 77%,
+    transparent
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+}
+
+/* Cursor blink animation */
+@keyframes terminal-blink {
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+
+.terminal-cursor {
+  animation: terminal-blink 1s infinite;
+  display: inline-block;
+}
+
+/* Floating particles animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Glow effect for terminal elements */
+/* Gradient Animation */
+@keyframes gradient-x {
+  0%, 100% {
+    background-size: 200% 200%;
+    background-position: left center;
+  }
+  50% {
+    background-size: 200% 200%;
+    background-position: right center;
+  }
+}
+
+.animate-gradient-x {
+  animation: gradient-x 6s ease infinite;
+}
+
+/* Perspective Utilities */
+.perspective-1000 {
+  perspective: 1000px;
 }

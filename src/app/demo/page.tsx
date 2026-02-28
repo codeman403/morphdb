@@ -106,7 +106,8 @@ export default function DemoPage() {
       setLoading(false);
     };
     initAuth();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: string, session: { user?: { email?: string } } | null) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
       setUser(session?.user ?? null);
       if (session?.user) {
         fetch('/api/auth/profile').then(r => r.json()).then(d => setFirstName(d.firstName));
@@ -157,12 +158,12 @@ export default function DemoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white">
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/50 backdrop-blur-md">
+    <div className="min-h-screen bg-slate-950 text-white">
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Link href="/" className="flex items-center gap-2 text-white">
-              <Database className="w-6 h-6 text-blue-500" />
+              <Database className="w-6 h-6 text-emerald-500" />
               <span className="font-bold text-lg tracking-tight">MorphDB</span>
             </Link>
             <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 font-medium">
@@ -171,24 +172,24 @@ export default function DemoPage() {
           </div>
           <div className="flex items-center gap-4">
             {loading ? (
-              <div className="w-16 h-6 bg-white/5 rounded-full animate-pulse" />
+              <div className="w-16 h-6 bg-slate-800 rounded-full animate-pulse" />
             ) : user ? (
               <>
-                <Link href="/dashboard" className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors">
+                <Link href="/dashboard" className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors">
                   <User className="w-4 h-4" />
                   {firstName ?? user.email?.split('@')[0]}
                 </Link>
-                <Link href="/dashboard" className="px-3 py-1.5 text-sm font-medium text-white bg-white/10 border border-white/20 rounded-full hover:bg-white/20 transition-all">
+                <Link href="/dashboard" className="px-3 py-1.5 text-sm font-medium text-white bg-slate-800 border border-slate-700 rounded-full hover:bg-slate-700 transition-all">
                   Dashboard
                 </Link>
                 <form action="/api/auth/signout" method="POST">
-                  <button type="submit" className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-zinc-500 hover:text-white border border-white/10 rounded-full hover:bg-white/5 transition-colors">
+                  <button type="submit" className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-slate-500 hover:text-white border border-slate-800 rounded-full hover:bg-slate-800 transition-colors">
                     <LogOut className="w-3.5 h-3.5" />
                   </button>
                 </form>
               </>
             ) : (
-              <Link href="/login" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+              <Link href="/login" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
                 Sign In
               </Link>
             )}
@@ -197,16 +198,16 @@ export default function DemoPage() {
       </nav>
 
       <div className="max-w-7xl mx-auto px-6 pt-28 pb-16">
-        <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 border border-white/10">
+        <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-emerald-500/5 to-cyan-500/5 border border-slate-800">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <Lock className="w-5 h-5 text-amber-400" />
               <div>
                 <p className="text-sm font-medium text-white">You&apos;re using Demo Mode</p>
-                <p className="text-xs text-zinc-400">GPT-4o Mini only • {DEMO_MAX_CHARS.toLocaleString()} char limit • No file upload or batch</p>
+                <p className="text-xs text-slate-400">GPT-4o Mini only • {DEMO_MAX_CHARS.toLocaleString()} char limit • No file upload or batch</p>
               </div>
             </div>
-            <Link href="/login" className="px-4 py-2 text-sm font-semibold text-black bg-white rounded-full hover:bg-zinc-200 transition-colors flex items-center gap-2">
+            <Link href="/login" className="px-4 py-2 text-sm font-semibold text-black bg-white rounded-full hover:bg-slate-200 transition-colors flex items-center gap-2">
               Unlock Full Access <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -216,7 +217,7 @@ export default function DemoPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-sm text-blue-400 mb-6"
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-sm text-emerald-400 mb-6"
           >
             <Sparkles className="w-4 h-4 animate-pulse" />
             Try the AI Migration Engine
@@ -227,13 +228,13 @@ export default function DemoPage() {
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-6xl font-bold text-white mb-4"
           >
-            Translate any <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">SQL dialect</span>
+            Translate any <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">SQL dialect</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-zinc-400 text-lg max-w-xl mx-auto"
+            className="text-slate-400 text-lg max-w-xl mx-auto"
           >
             Paste your SQL, pick source &amp; target dialects, and let AI handle the translation. Every function, type, and convention — converted automatically.
           </motion.p>
@@ -243,7 +244,7 @@ export default function DemoPage() {
           {EXAMPLES.map((ex, i) => (
             <button key={ex.label} onClick={() => handleExampleChange(i)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border ${
-                sql === ex.sql ? 'bg-white text-black border-white' : 'bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10'
+                sql === ex.sql ? 'bg-white text-black border-white' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
               }`}
             >
               {ex.label}
@@ -253,47 +254,47 @@ export default function DemoPage() {
 
         <div className="flex flex-wrap justify-center gap-4 mb-8">
           <div className="flex items-center gap-2">
-            <span className="text-xs text-zinc-500 uppercase tracking-wider">From</span>
+            <span className="text-xs text-slate-500 uppercase tracking-wider">From</span>
             <select
               value={sourceDialect}
               onChange={(e) => setSourceDialect(e.target.value as typeof sourceDialect)}
-              className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500/50 appearance-none cursor-pointer"
+              className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500/50 appearance-none cursor-pointer"
             >
               {SOURCE_DIALECTS.map(d => (
-                <option key={d.value} value={d.value} className="bg-zinc-900">{d.label}</option>
+                <option key={d.value} value={d.value} className="bg-slate-900">{d.label}</option>
               ))}
             </select>
           </div>
-          <ArrowRight className="w-5 h-5 text-zinc-600 self-center" />
+          <ArrowRight className="w-5 h-5 text-slate-600 self-center" />
           <div className="flex items-center gap-2">
-            <span className="text-xs text-zinc-500 uppercase tracking-wider">To</span>
+            <span className="text-xs text-slate-500 uppercase tracking-wider">To</span>
             <select
               value={targetDialect}
               onChange={(e) => setTargetDialect(e.target.value as typeof targetDialect)}
-              className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500/50 appearance-none cursor-pointer"
+              className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500/50 appearance-none cursor-pointer"
             >
               {TARGET_DIALECTS.map(d => (
-                <option key={d.value} value={d.value} className="bg-zinc-900">{d.label}</option>
+                <option key={d.value} value={d.value} className="bg-slate-900">{d.label}</option>
               ))}
             </select>
           </div>
-          <div className="w-px h-6 bg-white/10 self-center mx-1" />
+          <div className="w-px h-6 bg-slate-800 self-center mx-1" />
           <div className="flex items-center gap-2 opacity-50 cursor-not-allowed" title="Sign in to unlock Claude models">
-            <span className="text-xs text-zinc-500 uppercase tracking-wider">AI Model</span>
-            <div className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-zinc-500 flex items-center gap-1.5">
+            <span className="text-xs text-slate-500 uppercase tracking-wider">AI Model</span>
+            <div className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-500 flex items-center gap-1.5">
               <Lock className="w-3 h-3" /> GPT-4o Mini
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-          <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden">
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-white/10 bg-white/[0.02]">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-800 bg-slate-800/50">
               <div className="w-3 h-3 rounded-full bg-red-500/70" />
               <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
               <div className="w-3 h-3 rounded-full bg-green-500/70" />
-              <span className="ml-2 text-xs text-zinc-500 font-mono">source.sql</span>
-              <span className={`ml-auto text-xs ${isOverLimit ? 'text-red-400' : 'text-zinc-600'}`}>
+              <span className="ml-2 text-xs text-slate-500 font-mono">source.sql</span>
+              <span className={`ml-auto text-xs ${isOverLimit ? 'text-red-400' : 'text-slate-600'}`}>
                 {sql.length.toLocaleString()}/{DEMO_MAX_CHARS.toLocaleString()} chars
               </span>
             </div>
@@ -301,7 +302,7 @@ export default function DemoPage() {
               value={sql}
               onChange={(e) => { setSql(e.target.value); setResult(null); setError(null); }}
               placeholder="Paste your SQL here..."
-              className="w-full p-6 text-sm font-mono text-red-400/80 leading-relaxed bg-transparent resize-none focus:outline-none min-h-[280px]"
+              className="w-full p-6 text-sm font-mono text-slate-300 leading-relaxed bg-transparent resize-none focus:outline-none min-h-[280px]"
               spellCheck={false}
             />
             {isOverLimit && (
@@ -312,14 +313,14 @@ export default function DemoPage() {
             )}
           </div>
 
-          <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden">
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-white/10 bg-blue-500/[0.05]">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-800 bg-emerald-500/[0.05]">
               <div className="w-3 h-3 rounded-full bg-red-500/70" />
               <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
               <div className="w-3 h-3 rounded-full bg-green-500/70" />
-              <span className="ml-2 text-xs text-blue-400 font-mono">output.sql</span>
+              <span className="ml-2 text-xs text-emerald-400 font-mono">output.sql</span>
               {result && (
-                <button onClick={handleCopy} className="ml-auto flex items-center gap-1 text-xs text-zinc-400 hover:text-white transition-colors">
+                <button onClick={handleCopy} className="ml-auto flex items-center gap-1 text-xs text-slate-400 hover:text-white transition-colors">
                   {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
                   {copied ? 'Copied' : 'Copy'}
                 </button>
@@ -332,11 +333,11 @@ export default function DemoPage() {
                     className="flex flex-col gap-3 w-full"
                   >
                     {[...Array(8)].map((_, i) => (
-                      <div key={i} className="h-4 rounded bg-white/5 animate-pulse"
+                      <div key={i} className="h-4 rounded bg-slate-800 animate-pulse"
                         style={{ width: `${Math.random() * 40 + 50}%`, animationDelay: `${i * 0.08}s` }}
                       />
                     ))}
-                    <p className="text-xs text-zinc-600 mt-2">AI is translating your SQL...</p>
+                    <p className="text-xs text-slate-600 mt-2">AI is translating your SQL...</p>
                   </motion.div>
                 ) : error ? (
                   <motion.div key="error" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
@@ -348,14 +349,14 @@ export default function DemoPage() {
                 ) : result ? (
                   <motion.pre key="output" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                     transition={{ ease: [0.16, 1, 0.3, 1] }}
-                    className="text-sm font-mono text-green-400/80 leading-relaxed overflow-x-auto whitespace-pre w-full"
+                    className="text-sm font-mono text-emerald-400/90 leading-relaxed overflow-x-auto whitespace-pre w-full"
                   >
                     {result.translatedSql}
                   </motion.pre>
                 ) : (
-                  <motion.div key="placeholder" className="text-zinc-600 text-sm font-mono flex flex-col gap-2">
+                  <motion.div key="placeholder" className="text-slate-600 text-sm font-mono flex flex-col gap-2">
                     <p>← Click &quot;Translate&quot; to see the magic ✨</p>
-                    <p className="text-xs text-zinc-700">Powered by GPT-4o Mini • Demo Mode</p>
+                    <p className="text-xs text-slate-700">Powered by GPT-4o Mini • Demo Mode</p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -365,7 +366,7 @@ export default function DemoPage() {
 
         <div className="flex justify-center mb-8">
           <button onClick={handleTranslate} disabled={isTranslating || !sql.trim() || isOverLimit}
-            className="flex items-center gap-2 px-8 py-4 bg-white text-black font-semibold rounded-2xl hover:bg-zinc-200 transition-colors disabled:opacity-50 shadow-lg"
+            className="flex items-center gap-2 px-8 py-4 bg-white text-black font-semibold rounded-2xl hover:bg-slate-200 transition-colors disabled:opacity-50 shadow-lg"
           >
             {isTranslating ? (
               <><Loader2 className="w-5 h-5 animate-spin" /> Translating...</>
@@ -383,27 +384,27 @@ export default function DemoPage() {
               className="space-y-4 mb-10"
             >
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
-                  <div className="text-2xl font-bold text-green-400">{(result.durationMs / 1000).toFixed(1)}s</div>
-                  <div className="text-xs text-zinc-500 mt-1">Translation Time</div>
+                <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 text-center">
+                  <div className="text-2xl font-bold text-emerald-400">{(result.durationMs / 1000).toFixed(1)}s</div>
+                  <div className="text-xs text-slate-500 mt-1">Translation Time</div>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
-                  <div className="text-2xl font-bold text-blue-400">{result.changes.length}</div>
-                  <div className="text-xs text-zinc-500 mt-1">Transformations</div>
+                <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 text-center">
+                  <div className="text-2xl font-bold text-cyan-400">{result.changes.length}</div>
+                  <div className="text-xs text-slate-500 mt-1">Transformations</div>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 text-center">
                   <div className="text-2xl font-bold text-purple-400">{result.tokensUsed}</div>
-                  <div className="text-xs text-zinc-500 mt-1">Tokens Used</div>
+                  <div className="text-xs text-slate-500 mt-1">Tokens Used</div>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 text-center">
                   <div className="text-2xl font-bold text-amber-400">{result.warnings.length}</div>
-                  <div className="text-xs text-zinc-500 mt-1">Warnings</div>
+                  <div className="text-xs text-slate-500 mt-1">Warnings</div>
                 </div>
               </div>
 
               <button
                 onClick={() => setShowDetails(!showDetails)}
-                className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors mx-auto"
+                className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors mx-auto"
               >
                 <ChevronDown className={`w-4 h-4 transition-transform ${showDetails ? 'rotate-180' : ''}`} />
                 {showDetails ? 'Hide' : 'Show'} transformation details
@@ -416,14 +417,14 @@ export default function DemoPage() {
                   className="grid grid-cols-1 md:grid-cols-2 gap-4"
                 >
                   {result.changes.length > 0 && (
-                    <div className="bg-white/5 border border-white/10 rounded-xl p-5">
-                      <h3 className="text-sm font-medium text-blue-400 mb-3 flex items-center gap-2">
+                    <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                      <h3 className="text-sm font-medium text-cyan-400 mb-3 flex items-center gap-2">
                         <CheckCircle2 className="w-4 h-4" /> Transformations Applied
                       </h3>
                       <ul className="space-y-2">
                         {result.changes.map((c, i) => (
-                          <li key={i} className="text-sm text-zinc-300 flex items-start gap-2">
-                            <span className="text-blue-500 mt-1">•</span> {c}
+                          <li key={i} className="text-sm text-slate-300 flex items-start gap-2">
+                            <span className="text-cyan-500 mt-1">•</span> {c}
                           </li>
                         ))}
                       </ul>
@@ -436,7 +437,7 @@ export default function DemoPage() {
                       </h3>
                       <ul className="space-y-2">
                         {result.warnings.map((w, i) => (
-                          <li key={i} className="text-sm text-zinc-300 flex items-start gap-2">
+                          <li key={i} className="text-sm text-slate-300 flex items-start gap-2">
                             <span className="text-amber-500 mt-1">•</span> {w}
                           </li>
                         ))}
@@ -450,22 +451,22 @@ export default function DemoPage() {
         </AnimatePresence>
 
         <div className="text-center">
-          <div className="inline-flex items-center gap-2 text-zinc-400 text-sm mb-6">
+          <div className="inline-flex items-center gap-2 text-slate-400 text-sm mb-6">
             <Clock className="w-4 h-4" />
             Full schema migration estimated: <strong className="text-white">~8 minutes for 500 tables</strong>
           </div>
 
-          <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-white/10 mb-8">
+          <div className="p-6 rounded-2xl bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-slate-800 mb-8">
             <h3 className="text-lg font-bold text-white mb-2">Unlock Developer Beta — Free</h3>
-            <p className="text-sm text-zinc-400 mb-4">Sign in to get Claude models, 10K char limit, batch migration, file upload, and ZIP download.</p>
+            <p className="text-sm text-slate-400 mb-4">Sign in to get Claude models, 10K char limit, batch migration, file upload, and ZIP download.</p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link href="/login"
-                className="px-6 py-3 bg-white text-black font-semibold rounded-full hover:bg-zinc-200 transition-colors flex items-center gap-2"
+                className="px-6 py-3 bg-white text-black font-semibold rounded-full hover:bg-slate-200 transition-colors flex items-center gap-2"
               >
                 Sign In <ArrowRight className="w-4 h-4" />
               </Link>
               <Link href="/waitlist"
-                className="px-6 py-3 bg-white/5 border border-white/10 text-white font-semibold rounded-full hover:bg-white/10 transition-colors"
+                className="px-6 py-3 bg-slate-800 border border-slate-700 text-white font-semibold rounded-full hover:bg-slate-700 transition-colors"
               >
                 Join Design Partner Waitlist
               </Link>

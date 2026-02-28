@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Database, ChevronRight, User, LogOut } from 'lucide-react';
 import { animate } from 'framer-motion';
 import { createClient } from '@/lib/supabase/client';
-import type { Session } from '@supabase/supabase-js';
+import type { Session, AuthChangeEvent } from '@supabase/supabase-js';
 
 export default function Navbar() {
   const [user, setUser] = useState<{ email?: string } | null>(null);
@@ -39,7 +39,7 @@ export default function Navbar() {
     
     initAuth();
     
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
       setUser(session?.user ?? null);
       if (session?.user) {
         fetch('/api/auth/profile').then(r => r.json()).then((d: { firstName?: string }) => setFirstName(d.firstName ?? null));
@@ -76,7 +76,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/50 backdrop-blur-md">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-emerald-500/20 bg-black/60 backdrop-blur-md shadow-lg shadow-emerald-500/5">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" onClick={(e) => {
           if (window.location.pathname === '/') {
@@ -88,64 +88,64 @@ export default function Navbar() {
             });
             window.history.pushState(null, '', '/');
           }
-        }} className="flex items-center gap-2 text-white">
-          <Database className="w-6 h-6 text-blue-500" />
+        }} className="flex items-center gap-2 text-white hover:text-emerald-400 transition-colors">
+          <Database className="w-6 h-6 text-emerald-500" />
           <span className="font-bold text-lg tracking-tight">MorphDB</span>
         </Link>
         
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-400">
-          <Link href="#features" onClick={(e) => handleNavigation(e, 'features')} className="hover:text-white transition-colors relative group">
+          <Link href="#features" onClick={(e) => handleNavigation(e, 'features')} className="hover:text-emerald-400 transition-colors relative group">
             Features
-            <span className="absolute -bottom-6 left-0 w-full h-[2px] bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
+            <span className="absolute -bottom-6 left-0 w-full h-[2px] bg-gradient-to-r from-emerald-500 to-cyan-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
           </Link>
-          <Link href="#how-it-works" onClick={(e) => handleNavigation(e, 'how-it-works')} className="hover:text-white transition-colors relative group">
+          <Link href="#how-it-works" onClick={(e) => handleNavigation(e, 'how-it-works')} className="hover:text-emerald-400 transition-colors relative group">
             How it Works
-            <span className="absolute -bottom-6 left-0 w-full h-[2px] bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
+            <span className="absolute -bottom-6 left-0 w-full h-[2px] bg-gradient-to-r from-emerald-500 to-cyan-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
           </Link>
           <Link href="/docs" onClick={(e) => {
             e.preventDefault();
             router.push('/docs');
-          }} className={`${pathname.startsWith('/docs') ? 'text-white' : 'hover:text-white'} transition-colors relative group`}>
+          }} className={`${pathname.startsWith('/docs') ? 'text-emerald-400' : 'hover:text-emerald-400'} transition-colors relative group`}>
             Docs
-            <span className={`absolute -bottom-6 left-0 w-full h-[2px] bg-blue-500 origin-left transition-transform ${pathname.startsWith('/docs') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`} />
+            <span className={`absolute -bottom-6 left-0 w-full h-[2px] bg-gradient-to-r from-emerald-500 to-cyan-500 origin-left transition-transform ${pathname.startsWith('/docs') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`} />
           </Link>
-          <Link href="#pricing" onClick={(e) => handleNavigation(e, 'pricing')} className="hover:text-white transition-colors relative group">
+          <Link href="#pricing" onClick={(e) => handleNavigation(e, 'pricing')} className="hover:text-emerald-400 transition-colors relative group">
             Pricing
-            <span className="absolute -bottom-6 left-0 w-full h-[2px] bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
+            <span className="absolute -bottom-6 left-0 w-full h-[2px] bg-gradient-to-r from-emerald-500 to-cyan-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
           </Link>
           <Link href="/support" onClick={(e) => {
             e.preventDefault();
             router.push('/support');
-          }} className={`${pathname === '/support' ? 'text-white' : 'hover:text-white'} transition-colors relative group`}>
+          }} className={`${pathname === '/support' ? 'text-emerald-400' : 'hover:text-emerald-400'} transition-colors relative group`}>
             Support
-            <span className={`absolute -bottom-6 left-0 w-full h-[2px] bg-blue-500 origin-left transition-transform ${pathname === '/support' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`} />
+            <span className={`absolute -bottom-6 left-0 w-full h-[2px] bg-gradient-to-r from-emerald-500 to-cyan-500 origin-left transition-transform ${pathname === '/support' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`} />
           </Link>
         </div>
 
         <div className="flex items-center gap-4">
           {loading ? (
-            <div className="w-20 h-8 bg-white/5 rounded-full animate-pulse" />
+            <div className="w-20 h-8 bg-emerald-500/10 rounded-full animate-pulse" />
           ) : user ? (
             <>
-              <Link href="/dashboard" className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors">
+              <Link href="/dashboard" className="flex items-center gap-2 text-sm text-zinc-400 hover:text-emerald-400 transition-colors">
                 <User className="w-4 h-4" />
                 {firstName ?? user.email?.split('@')[0]}
               </Link>
-              <Link href="/dashboard" className="group relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-white/10 border border-white/20 rounded-full hover:bg-white/20 transition-all">
+              <Link href="/dashboard" className="group relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-emerald-600/20 border border-emerald-500/30 rounded-full hover:bg-emerald-600/30 hover:shadow-lg hover:shadow-emerald-500/20 transition-all">
                 Dashboard <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
               </Link>
               <form action="/api/auth/signout" method="POST">
-                <button type="submit" className="flex items-center gap-1.5 px-3 py-2 text-sm text-zinc-500 hover:text-white border border-white/10 rounded-full hover:bg-white/5 transition-colors">
+                <button type="submit" className="flex items-center gap-1.5 px-3 py-2 text-sm text-zinc-400 hover:text-emerald-400 border border-emerald-500/20 rounded-full hover:bg-emerald-500/10 transition-colors">
                   <LogOut className="w-3.5 h-3.5" />
                 </button>
               </form>
             </>
           ) : (
             <>
-              <Link href="/login" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+              <Link href="/login" className="text-sm font-medium text-zinc-400 hover:text-emerald-400 transition-colors">
                 Sign In
               </Link>
-              <Link href="/waitlist" className="group relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-white/10 border border-white/20 rounded-full hover:bg-white/20 transition-all overflow-hidden">
+              <Link href="/waitlist" className="group relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-emerald-600/20 border border-emerald-500/30 rounded-full hover:bg-emerald-600/30 hover:shadow-lg hover:shadow-emerald-500/20 transition-all overflow-hidden">
                 <span className="relative z-10 flex items-center gap-1">
                   Get Early Access <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                 </span>
