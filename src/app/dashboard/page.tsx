@@ -31,7 +31,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     }
   }
 
-  const [profile, subscription] = await Promise.all([
+  const [profile, subscription, recentBatches] = await Promise.all([
     // Try to fetch profile, but don't fail if table doesn't exist
     (async () => {
       try {
@@ -42,10 +42,22 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
       }
     })(),
     prisma.subscription.findUnique({ where: { userId: user.id } }),
+    // Fetch recent batches - gracefully handle if table doesn't exist yet
+    (async () => {
+      try {
+        const batches = await prisma.migrationBatch.findMany({
+          where: { userId: user.id },
+          orderBy: { createdAt: 'desc' },
+          take: 5,
+        });
+        return batches;
+      } catch (error) {
+        // Table may not exist yet in the database
+        console.error('Failed to fetch migration batches (table may not exist yet):', error);
+        return [];
+      }
+    })(),
   ]);
-  
-  // Initialize recentBatches as empty - migration_batches table may not exist yet
-  const recentBatches: Array<{ id: string; sourceDialect: string; targetDialect: string; failedCount: number; successCount: number; totalStatements: number; createdAt: Date }> = [];
 
   // Compute tier info with single subscription object
   const [tierInfo, usage, trialStatus, tierLabel] = await Promise.all([
