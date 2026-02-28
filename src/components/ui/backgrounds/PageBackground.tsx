@@ -5,9 +5,10 @@ import GridBeams from './GridBeams';
 interface PageBackgroundProps {
   variant?: 'default' | 'subtle' | 'intense';
   children?: React.ReactNode;
+  className?: string;
 }
 
-export default function PageBackground({ variant = 'default', children }: PageBackgroundProps) {
+export default function PageBackground({ variant = 'default', children, className = '' }: PageBackgroundProps) {
   const gradients = {
     default: (
       <>
@@ -30,7 +31,7 @@ export default function PageBackground({ variant = 'default', children }: PageBa
   };
 
   return (
-    <div className="relative overflow-hidden">
+    <div className={`relative overflow-hidden ${className}`}>
       {/* Background Elements */}
       {gradients[variant]}
 
@@ -45,3 +46,5 @@ export default function PageBackground({ variant = 'default', children }: PageBa
     </div>
   );
 }
+
+export { PageBackground };

@@ -75,12 +75,39 @@ const tiers = [
   }
 ];
 
-// ... (WaitlistModal component updates)
+// WaitlistModal component with form handling
 function WaitlistModal({ onClose }: { onClose: () => void }) {
-  // ...
+  const [form, setForm] = useState({ name: '', email: '', company: '' });
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('loading');
+    try {
+      const res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...form, tier: 'design_partner' }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setStatus('success');
+      } else {
+        setStatus('error');
+        setMessage(data.error || 'Something went wrong.');
+      }
+    } catch {
+      setStatus('error');
+      setMessage('Network error. Please try again.');
+    }
+  };
+
   return (
     <motion.div
-      // ...
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >

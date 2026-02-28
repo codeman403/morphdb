@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
         html: getWelcomeEmailHTML(userName),
       }).then(result => {
         if (!result.success) {
-          console.warn('[Welcome Email] Failed to send to:', data.user.email, 'Error:', result.error);
+          console.warn('[Welcome Email] Failed to send to:', data.user?.email, 'Error:', result.error);
           // In production, you would want to notify admins about this
         }
       }).catch((e) => {

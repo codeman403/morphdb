@@ -33,7 +33,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     prisma.profile.findUnique({ where: { id: user.id } }),
     prisma.subscription.findUnique({ where: { userId: user.id } }),
     // TODO: Fix migrationBatch query - schema mismatch
-    Promise.resolve([]),
+    Promise.resolve([] as Array<{ id: string; sourceDialect: string; targetDialect: string; failedCount: number; successCount: number; totalStatements: number; createdAt: Date }>),
     // prisma.migrationBatch.findMany({
     //   where: { userId: user.id },
     //   orderBy: { createdAt: 'desc' },
