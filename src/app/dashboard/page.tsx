@@ -6,6 +6,8 @@ import { Database, LogOut, Sparkles, ArrowRight, User, Zap, Clock } from 'lucide
 import { getUserTier, getTrialStatus, getUserTierLabel } from '@/lib/tier';
 import { getMonthlyUsage } from '@/lib/usage';
 
+import { PageBackground } from '@/components/ui/backgrounds/PageBackground';
+
 export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ upgraded?: string }> }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -60,11 +62,11 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white">
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/50 backdrop-blur-md">
+    <div className="min-h-screen bg-slate-950 text-white flex flex-col">
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-emerald-500/20 bg-slate-950/80 shadow-lg shadow-emerald-500/5 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-white">
-            <Database className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
+            <Database className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500" />
             <span className="font-bold tracking-tight">MorphDB</span>
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
@@ -73,7 +75,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
               {profile?.name?.split(' ')[0] ?? user.email?.split('@')[0]}
             </div>
             <form action="/api/auth/signout" method="POST">
-              <button type="submit" className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm text-zinc-400 hover:text-white border border-white/10 rounded-full hover:bg-white/5 transition-colors">
+              <button type="submit" className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm text-zinc-400 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 backdrop-blur-md transition-colors">
                 <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 <span className="hidden sm:inline">Sign Out</span>
               </button>
@@ -82,21 +84,22 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-16">
-        <div className="mb-8 sm:mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-sm text-blue-400 mb-4">
-            <Sparkles className="w-4 h-4 animate-pulse" />
-            Early Access
+      <PageBackground variant="intense" className="flex-grow pt-24 pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="mb-8 sm:mb-12">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-sm text-emerald-400 mb-4">
+              <Sparkles className="w-4 h-4 animate-pulse" />
+              Early Access
+            </div>
+            <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2">
+              Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">{profile?.name?.split(' ')[0] ?? 'there'}</span> 👋
+            </h1>
+            <p className="text-zinc-400 text-sm sm:text-base">Your MorphDB migration dashboard.</p>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2">
-            Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">{profile?.name?.split(' ')[0] ?? 'there'}</span> 👋
-          </h1>
-          <p className="text-zinc-400 text-sm sm:text-base">Your MorphDB migration dashboard.</p>
-        </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-10">
-          <div className="bg-white/5 border border-purple-500/20 rounded-2xl p-4 sm:p-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 blur-2xl rounded-full translate-x-1/2 -translate-y-1/2" />
+          <div className="bg-slate-900/50 backdrop-blur-md border border-cyan-500/20 rounded-2xl p-4 sm:p-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/10 blur-2xl rounded-full translate-x-1/2 -translate-y-1/2" />
             <div className="text-xl sm:text-3xl font-bold text-white mb-1">
               {tierLabel}
             </div>
@@ -105,19 +108,19 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
             </div>
             <div className="text-xs text-zinc-500">{batchLimit} batches/mo</div>
           </div>
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-6">
+          <div className="bg-slate-900/50 backdrop-blur-md border border-emerald-500/20 rounded-2xl p-4 sm:p-6">
             <div className="text-xl sm:text-3xl font-bold text-white mb-1">{usage.batchCount}</div>
             <div className="text-xs sm:text-sm font-medium text-zinc-300 mb-1">Batches This Month</div>
             <div className="text-xs text-zinc-500">{batchLimit === '∞' ? 'Unlimited' : `of ${batchLimit} used`}</div>
           </div>
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-6">
+          <div className="bg-slate-900/50 backdrop-blur-md border border-emerald-500/20 rounded-2xl p-4 sm:p-6">
             <div className="text-xl sm:text-3xl font-bold text-white mb-1">{usage.translationCount}</div>
             <div className="text-xs sm:text-sm font-medium text-zinc-300 mb-1">Translations</div>
             <div className="text-xs text-zinc-500">
               {tierInfo.translationsPerMonth === Infinity ? 'Unlimited' : `of ${tierInfo.translationsPerMonth} used`}
             </div>
           </div>
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-6">
+          <div className="bg-slate-900/50 backdrop-blur-md border border-emerald-500/20 rounded-2xl p-4 sm:p-6">
             <div className="text-xl sm:text-3xl font-bold text-blue-400 mb-1">{usage.tokenCount.toLocaleString()}</div>
             <div className="text-xs sm:text-sm font-medium text-zinc-300 mb-1">Tokens Used</div>
             <div className="text-xs text-zinc-500">This month</div>
@@ -125,7 +128,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         </div>
 
         {tierLabel === 'Free' && (
-          <div className="mb-6 sm:mb-10 p-4 sm:p-6 bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+          <div className="mb-6 sm:mb-10 p-4 sm:p-6 bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-cyan-500/20 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
             <div>
               <h3 className="text-base sm:text-lg font-bold text-white mb-1 flex items-center gap-2">
                 <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" /> Start Your 3-Day Free Pro Trial
@@ -153,7 +156,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-          <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-2xl p-6 sm:p-8 flex flex-col items-center text-center lg:items-start lg:text-left justify-center">
+          <div className="lg:col-span-2 bg-slate-900/50 backdrop-blur-md border border-emerald-500/20 rounded-2xl p-6 sm:p-8 flex flex-col items-center text-center lg:items-start lg:text-left justify-center">
             <Sparkles className="w-10 h-10 sm:w-12 sm:h-12 text-blue-400 mb-4 opacity-60" />
             <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Start a Migration</h2>
             <p className="text-zinc-400 text-sm mb-6 max-w-md">
@@ -164,15 +167,15 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                 Batch Migration <ArrowRight className="w-4 h-4" />
               </Link>
               {isAdmin && (
-                <Link href="/dashboard/admin" className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 text-sm text-zinc-400 hover:text-white border border-white/10 rounded-full hover:bg-white/5 transition-colors">
+                <Link href="/dashboard/admin" className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 text-sm text-zinc-400 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 backdrop-blur-md transition-colors">
                   Admin Panel
                 </Link>
               )}
             </div>
           </div>
 
-          <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
+          <div className="bg-slate-900/50 backdrop-blur-md border border-emerald-500/20 rounded-2xl overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-emerald-500/20">
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-zinc-500" />
                 <span className="text-sm font-medium text-zinc-300">Recent Migrations</span>
@@ -185,19 +188,19 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
             </div>
             {recentBatches.length === 0 ? (
               <div className="px-6 py-12 flex flex-col items-center justify-center text-center">
-                <div className="w-12 h-12 bg-white/5 rounded-full border border-white/10 flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-slate-900/50 backdrop-blur-md rounded-full border border-emerald-500/20 flex items-center justify-center mb-4">
                   <Database className="w-6 h-6 text-zinc-600" />
                 </div>
                 <h3 className="text-sm font-medium text-zinc-300 mb-1">No migrations yet</h3>
                 <p className="text-xs text-zinc-500 mb-6 max-w-[200px]">Run your first migration to see your history here.</p>
-                <Link href="/dashboard/migrate" className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 text-zinc-300 hover:text-white hover:bg-white/10 text-xs font-medium rounded-full border border-white/10 transition-colors">
+                <Link href="/dashboard/migrate" className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900/50 backdrop-blur-md text-zinc-300 hover:text-white hover:bg-white/10 text-xs font-medium rounded-full border border-emerald-500/20 transition-colors">
                   <Zap className="w-3.5 h-3.5" /> Start Migration
                 </Link>
               </div>
             ) : (
               <div>
                 {recentBatches.map((batch) => (
-                  <div key={batch.id} className="flex items-center gap-3 px-4 py-3 border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                  <div key={batch.id} className="flex items-center gap-3 px-4 py-3 border-b border-slate-800 hover:bg-slate-800/50 transition-colors">
                     <div className={`w-2 h-2 rounded-full shrink-0 ${batch.failedCount === 0 ? 'bg-green-400' : batch.successCount === 0 ? 'bg-red-400' : 'bg-amber-400'}`} />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs text-zinc-300 truncate">
@@ -221,7 +224,8 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
             )}
           </div>
         </div>
-      </div>
+        </div>
+      </PageBackground>
     </div>
   );
 }

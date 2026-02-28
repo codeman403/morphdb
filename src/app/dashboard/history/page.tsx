@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
 import { Database, ArrowLeft, CheckCircle2, AlertTriangle, Zap, User, LogOut } from 'lucide-react';
+import { PageBackground } from '@/components/ui/backgrounds/PageBackground';
 
 const DIALECT_LABELS: Record<string, string> = {
   sql_server: 'SQL Server',
@@ -35,15 +36,15 @@ export default async function HistoryPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white">
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/50 backdrop-blur-md">
+    <div className="min-h-screen bg-slate-950 flex flex-col text-white">
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-emerald-500/20 bg-slate-950/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/dashboard" className="text-zinc-400 hover:text-white transition-colors">
               <ArrowLeft className="w-4 h-4" />
             </Link>
             <div className="flex items-center gap-2">
-              <Database className="w-5 h-5 text-blue-500" />
+              <Database className="w-5 h-5 text-emerald-500" />
               <span className="font-bold tracking-tight">MorphDB</span>
             </div>
           </div>
@@ -55,7 +56,7 @@ export default async function HistoryPage() {
               </div>
             )}
             <form action="/api/auth/signout" method="POST">
-              <button type="submit" className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-zinc-500 hover:text-white border border-white/10 rounded-full hover:bg-white/5 transition-colors">
+              <button type="submit" className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-zinc-500 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 backdrop-blur-md transition-colors">
                 <LogOut className="w-3.5 h-3.5" /> Sign Out
               </button>
             </form>
@@ -63,7 +64,8 @@ export default async function HistoryPage() {
         </div>
       </nav>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-24 pb-16">
+      <PageBackground variant="intense" className="flex-grow pt-24 pb-16">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold mb-1">Migration History</h1>
@@ -75,11 +77,11 @@ export default async function HistoryPage() {
         </div>
 
         {batches.length === 0 ? (
-          <div className="text-center py-32 bg-gradient-to-b from-white/[0.05] to-transparent border border-white/10 rounded-3xl relative overflow-hidden">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500/10 blur-[80px] rounded-full pointer-events-none" />
+          <div className="text-center py-32 bg-gradient-to-b from-white/[0.05] to-transparent border border-emerald-500/20 rounded-3xl relative overflow-hidden">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/10 blur-[80px] rounded-full pointer-events-none" />
             <div className="relative z-10 flex flex-col items-center">
-              <div className="w-20 h-20 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center mb-6 shadow-2xl shadow-black/50 rotate-3 transition-transform hover:rotate-6">
-                <Database className="w-10 h-10 text-blue-400" />
+              <div className="w-20 h-20 bg-slate-900/50 backdrop-blur-md rounded-2xl border border-emerald-500/20 flex items-center justify-center mb-6 shadow-2xl shadow-black/50 rotate-3 transition-transform hover:rotate-6">
+                <Database className="w-10 h-10 text-cyan-400" />
               </div>
               <h2 className="text-2xl font-bold text-white mb-3 tracking-tight">No migrations yet</h2>
               <p className="text-zinc-400 text-base mb-8 max-w-md mx-auto leading-relaxed">
@@ -91,8 +93,8 @@ export default async function HistoryPage() {
             </div>
           </div>
         ) : (
-          <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
-            <div className="hidden sm:grid grid-cols-[1fr_auto_auto_auto_auto] gap-4 px-6 py-3 border-b border-white/10 text-xs text-zinc-500 uppercase tracking-wider">
+          <div className="bg-slate-900/50 backdrop-blur-md border border-emerald-500/20 rounded-2xl overflow-hidden">
+            <div className="hidden sm:grid grid-cols-[1fr_auto_auto_auto_auto] gap-4 px-6 py-3 border-b border-emerald-500/20 text-xs text-zinc-500 uppercase tracking-wider">
               <span>Migration</span>
               <span>Model</span>
               <span>Results</span>
@@ -100,7 +102,7 @@ export default async function HistoryPage() {
               <span>Date</span>
             </div>
             {batches.map((batch) => (
-              <div key={batch.id} className="px-4 sm:px-6 py-4 border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+              <div key={batch.id} className="px-4 sm:px-6 py-4 border-b border-emerald-500/10 hover:bg-white/[0.02] transition-colors">
                 <div className="flex flex-col sm:grid sm:grid-cols-[1fr_auto_auto_auto_auto] sm:gap-4 sm:items-center gap-2">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
@@ -108,13 +110,13 @@ export default async function HistoryPage() {
                         {DIALECT_LABELS[batch.sourceDialect] ?? batch.sourceDialect}
                       </span>
                       <span className="text-zinc-600">→</span>
-                      <span className="text-sm font-medium text-blue-400">
+                      <span className="text-sm font-medium text-cyan-400">
                         {DIALECT_LABELS[batch.targetDialect] ?? batch.targetDialect}
                       </span>
                     </div>
                     <p className="text-xs text-zinc-500 mt-0.5">{batch.totalStatements} statements</p>
                   </div>
-                  <span className="text-xs text-zinc-400 bg-white/5 px-2 py-1 rounded w-fit">
+                  <span className="text-xs text-zinc-400 bg-slate-900/50 backdrop-blur-md px-2 py-1 rounded w-fit">
                     {MODEL_LABELS[batch.model] ?? batch.model}
                   </span>
                   <div className="flex items-center gap-2 text-sm">
@@ -139,6 +141,7 @@ export default async function HistoryPage() {
           </div>
         )}
       </div>
+      </PageBackground>
     </div>
   );
 }

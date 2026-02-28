@@ -12,14 +12,14 @@ export default function DocsHomePage() {
       title: 'Get Started',
       description: 'Learn how to set up MorphDB and start migrating databases',
       href: '/docs/get-started/introduction',
-      color: 'text-blue-500',
+      color: 'text-emerald-500',
     },
     {
       icon: BookOpen,
       title: 'Features',
       description: 'Explore our powerful features designed for safe migrations',
       href: '/docs/features/soft-delete',
-      color: 'text-purple-500',
+      color: 'text-cyan-500',
     },
     {
       icon: Shield,
@@ -79,27 +79,27 @@ export default function DocsHomePage() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay: 0.6 }}
-        className="rounded-2xl bg-[#071026] border border-blue-500/10 p-6"
+        className="rounded-2xl bg-slate-900/50 backdrop-blur-md border border-emerald-500/10 p-6"
       >
         <h2 className="text-lg font-semibold text-white mb-2">Quick Links</h2>
         <ul className="space-y-2 text-sm text-zinc-400">
           <li>
-            <Link href="/docs/get-started/quick-start" className="text-blue-400 hover:text-blue-300 hover:underline">
+            <Link href="/docs/get-started/quick-start" className="text-emerald-400 hover:text-emerald-300 hover:underline">
               Quick Start Guide
             </Link>
           </li>
           <li>
-            <Link href="/docs/troubleshooting/faq" className="text-blue-400 hover:text-blue-300 hover:underline">
+            <Link href="/docs/troubleshooting/faq" className="text-emerald-400 hover:text-emerald-300 hover:underline">
               Frequently Asked Questions
             </Link>
           </li>
           <li>
-            <Link href="/docs/changelog" className="text-blue-400 hover:text-blue-300 hover:underline">
+            <Link href="/docs/changelog" className="text-emerald-400 hover:text-emerald-300 hover:underline">
               View Changelog
             </Link>
           </li>
           <li>
-            <Link href="/support" className="text-blue-400 hover:text-blue-300 hover:underline">
+            <Link href="/support" className="text-emerald-400 hover:text-emerald-300 hover:underline">
               Get Help
             </Link>
           </li>

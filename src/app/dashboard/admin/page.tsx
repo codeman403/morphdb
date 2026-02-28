@@ -7,6 +7,7 @@ import {
   Database, ArrowLeft, Users, LogIn, CreditCard, Clock,
   Globe, Monitor, Mail, Building2, Shield, RefreshCw, Headphones, RotateCcw, X,
 } from 'lucide-react';
+import { PageBackground } from '@/components/ui/backgrounds/PageBackground';
 
 interface WaitlistEntry {
   id: string;
@@ -115,27 +116,27 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+      <PageBackground variant="intense" className="min-h-screen bg-slate-950 flex items-center justify-center">
         <div className="flex items-center gap-3 text-zinc-400">
           <RefreshCw className="w-5 h-5 animate-spin" />
           Loading admin dashboard...
         </div>
-      </div>
+      </PageBackground>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+      <PageBackground variant="intense" className="min-h-screen bg-slate-950 flex items-center justify-center">
         <div className="text-center">
           <Shield className="w-12 h-12 text-red-400 mx-auto mb-4" />
           <h1 className="text-xl font-bold text-white mb-2">Access Denied</h1>
           <p className="text-zinc-400 mb-6">{error}</p>
-          <Link href="/dashboard" className="text-blue-400 hover:text-blue-300 underline">
+          <Link href="/dashboard" className="text-emerald-400 hover:text-emerald-300 underline">
             Back to Dashboard
           </Link>
         </div>
-      </div>
+      </PageBackground>
     );
   }
 
@@ -166,15 +167,15 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white">
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/50 backdrop-blur-md">
+    <div className="min-h-screen bg-slate-950 text-white flex flex-col">
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-emerald-500/20 bg-slate-950/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/dashboard" className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors">
               <ArrowLeft className="w-4 h-4" />
             </Link>
             <div className="flex items-center gap-2">
-              <Database className="w-6 h-6 text-blue-500" />
+              <Database className="w-6 h-6 text-emerald-500" />
               <span className="font-bold text-lg tracking-tight">MorphDB</span>
               <span className="text-xs px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 font-medium">Admin</span>
             </div>
@@ -195,7 +196,7 @@ export default function AdminDashboard() {
             </button>
             <button
               onClick={fetchStats}
-              className="flex items-center gap-2 px-4 py-2 text-sm text-zinc-400 hover:text-white border border-white/10 rounded-full hover:bg-white/5 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm text-zinc-400 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 backdrop-blur-md transition-colors"
             >
               <RefreshCw className="w-4 h-4" /> Refresh
             </button>
@@ -203,10 +204,11 @@ export default function AdminDashboard() {
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-6 pt-28 pb-16">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+      <PageBackground variant="intense" className="flex-grow pt-28 pb-16">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
           {statCards.map((card) => (
-            <div key={card.label} className="bg-white/5 border border-white/10 rounded-2xl p-5">
+            <div key={card.label} className="bg-slate-900/50 backdrop-blur-md border border-emerald-500/20 rounded-2xl p-5">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm text-zinc-400">{card.label}</span>
                 <div className={`p-2 rounded-lg border ${colorMap[card.color]}`}>
@@ -226,7 +228,7 @@ export default function AdminDashboard() {
               className={`flex items-center gap-2 px-4 py-2 text-sm rounded-full border transition-colors ${
                 activeTab === tab.key
                   ? 'bg-white text-black border-white font-medium'
-                  : 'text-zinc-400 border-white/10 hover:bg-white/5'
+                  : 'text-zinc-400 border-emerald-500/20 hover:bg-slate-900/50 backdrop-blur-md'
               }`}
             >
               <tab.icon className="w-4 h-4" />
@@ -240,12 +242,12 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+        <div className="bg-slate-900/50 backdrop-blur-md border border-emerald-500/20 rounded-2xl overflow-hidden">
           {activeTab === 'waitlist' && (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-white/10">
+                  <tr className="border-b border-emerald-500/20">
                     <th className="text-left p-4 text-zinc-400 font-medium">Email</th>
                     <th className="text-left p-4 text-zinc-400 font-medium">Name</th>
                     <th className="text-left p-4 text-zinc-400 font-medium">Company</th>
@@ -255,7 +257,7 @@ export default function AdminDashboard() {
                 </thead>
                 <tbody>
                   {stats.waitlist.entries.map((entry) => (
-                    <tr key={entry.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                    <tr key={entry.id} className="border-b border-white/5 hover:bg-slate-900/50 backdrop-blur-md transition-colors">
                       <td className="p-4 font-mono text-blue-400">{entry.email}</td>
                       <td className="p-4 text-zinc-300">{entry.name ?? '—'}</td>
                       <td className="p-4 text-zinc-300">
@@ -265,7 +267,7 @@ export default function AdminDashboard() {
                         </span>
                       </td>
                       <td className="p-4">
-                        <span className="px-2 py-0.5 rounded-full text-xs bg-blue-500/10 border border-blue-500/20 text-blue-400">
+                        <span className="px-2 py-0.5 rounded-full text-xs bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
                           {entry.tier}
                         </span>
                       </td>
@@ -289,7 +291,7 @@ export default function AdminDashboard() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-white/10">
+                  <tr className="border-b border-emerald-500/20">
                     <th className="text-left p-4 text-zinc-400 font-medium">Email</th>
                     <th className="text-left p-4 text-zinc-400 font-medium">IP</th>
                     <th className="text-left p-4 text-zinc-400 font-medium">Country</th>
@@ -299,7 +301,7 @@ export default function AdminDashboard() {
                 </thead>
                 <tbody>
                   {stats.logins.entries.map((log) => (
-                    <tr key={log.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                    <tr key={log.id} className="border-b border-white/5 hover:bg-slate-900/50 backdrop-blur-md transition-colors">
                       <td className="p-4 font-mono text-green-400">{log.email ?? '—'}</td>
                       <td className="p-4 text-zinc-300 font-mono text-xs">{log.ip ?? '—'}</td>
                       <td className="p-4 text-zinc-300">
@@ -334,7 +336,7 @@ export default function AdminDashboard() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-white/10">
+                  <tr className="border-b border-emerald-500/20">
                     <th className="text-left p-4 text-zinc-400 font-medium">Email</th>
                     <th className="text-left p-4 text-zinc-400 font-medium">Name</th>
                     <th className="text-left p-4 text-zinc-400 font-medium">Company</th>
@@ -343,7 +345,7 @@ export default function AdminDashboard() {
                 </thead>
                 <tbody>
                   {stats.recentSignups.entries.map((profile) => (
-                    <tr key={profile.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                    <tr key={profile.id} className="border-b border-white/5 hover:bg-slate-900/50 backdrop-blur-md transition-colors">
                       <td className="p-4 font-mono text-purple-400">{profile.email}</td>
                       <td className="p-4 text-zinc-300">{profile.name ?? '—'}</td>
                       <td className="p-4 text-zinc-300">
@@ -372,7 +374,7 @@ export default function AdminDashboard() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-white/10">
+                  <tr className="border-b border-emerald-500/20">
                     <th className="text-left p-4 text-zinc-400 font-medium">Email</th>
                     <th className="text-left p-4 text-zinc-400 font-medium">Name</th>
                     <th className="text-left p-4 text-zinc-400 font-medium">Plan</th>
@@ -384,12 +386,12 @@ export default function AdminDashboard() {
                 </thead>
                 <tbody>
                   {stats.subscriptions.entries.map((sub) => (
-                    <tr key={sub.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                    <tr key={sub.id} className="border-b border-white/5 hover:bg-slate-900/50 backdrop-blur-md transition-colors">
                       <td className="p-4 font-mono text-amber-400">{sub.profile.email}</td>
                       <td className="p-4 text-zinc-300">{sub.profile.name ?? '—'}</td>
                       <td className="p-4">
                         <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                          sub.plan === 'pro' ? 'bg-blue-500/10 border border-blue-500/20 text-blue-400' :
+                          sub.plan === 'pro' ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400' :
                           sub.plan === 'design_partner' ? 'bg-purple-500/10 border border-purple-500/20 text-purple-400' :
                           sub.plan === 'enterprise' ? 'bg-red-500/10 border border-red-500/20 text-red-400' :
                           'bg-zinc-500/10 border border-zinc-500/20 text-zinc-400'
@@ -432,7 +434,7 @@ export default function AdminDashboard() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-white/10">
+                  <tr className="border-b border-emerald-500/20">
                     <th className="text-left p-4 text-zinc-400 font-medium">Name</th>
                     <th className="text-left p-4 text-zinc-400 font-medium">Email</th>
                     <th className="text-left p-4 text-zinc-400 font-medium">Subject</th>
@@ -443,7 +445,7 @@ export default function AdminDashboard() {
                 </thead>
                 <tbody>
                   {stats.supportTickets.map((ticket) => (
-                    <tr key={ticket.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                    <tr key={ticket.id} className="border-b border-white/5 hover:bg-slate-900/50 backdrop-blur-md transition-colors">
                       <td className="p-4 text-zinc-300">{ticket.name}</td>
                       <td className="p-4 font-mono text-blue-400">{ticket.email}</td>
                       <td className="p-4 text-zinc-300 max-w-xs truncate">{ticket.subject}</td>
@@ -473,7 +475,8 @@ export default function AdminDashboard() {
             </div>
           )}
         </div>
-      </div>
+        </div>
+      </PageBackground>
 
        <AnimatePresence>
          {showResetModal && (
@@ -546,11 +549,11 @@ function ResetUsageModal({ onClose, onReset, users, loading }: { onClose: () => 
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.4 }}
-        className="w-full max-w-md bg-[#0f0f0f] border border-white/10 rounded-3xl p-8 relative shadow-2xl"
+        className="w-full max-w-md bg-[#0f0f0f] border border-emerald-500/20 rounded-3xl p-8 relative shadow-2xl"
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full text-zinc-500 hover:text-white hover:bg-white/5 transition-colors"
+          className="absolute top-4 right-4 p-2 rounded-full text-zinc-500 hover:text-white hover:bg-slate-900/50 backdrop-blur-md transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
@@ -570,7 +573,7 @@ function ResetUsageModal({ onClose, onReset, users, loading }: { onClose: () => 
           <select
             value={selectedUser}
             onChange={(e) => setSelectedUser(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-amber-500/50 transition-colors"
+            className="w-full px-4 py-3 rounded-xl bg-slate-900/50 backdrop-blur-md border border-emerald-500/20 text-white focus:outline-none focus:border-amber-500/50 transition-colors"
           >
             <option value="">Reset all users</option>
             {users.map((user) => (
@@ -587,7 +590,7 @@ function ResetUsageModal({ onClose, onReset, users, loading }: { onClose: () => 
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-3 rounded-full font-medium text-zinc-400 hover:text-white border border-white/10 hover:bg-white/5 transition-colors"
+            className="flex-1 py-3 rounded-full font-medium text-zinc-400 hover:text-white border border-emerald-500/20 hover:bg-slate-900/50 backdrop-blur-md transition-colors"
           >
             Cancel
           </button>
@@ -629,11 +632,11 @@ function GrantProModal({ onClose, users, onGrant }: { onClose: () => void; users
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.4 }}
-        className="w-full max-w-md bg-[#0f0f0f] border border-white/10 rounded-3xl p-8 relative shadow-2xl"
+        className="w-full max-w-md bg-[#0f0f0f] border border-emerald-500/20 rounded-3xl p-8 relative shadow-2xl"
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full text-zinc-500 hover:text-white hover:bg-white/5 transition-colors"
+          className="absolute top-4 right-4 p-2 rounded-full text-zinc-500 hover:text-white hover:bg-slate-900/50 backdrop-blur-md transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
@@ -653,7 +656,7 @@ function GrantProModal({ onClose, users, onGrant }: { onClose: () => void; users
           <select
             value={selectedUser}
             onChange={(e) => setSelectedUser(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-green-500/50 transition-colors"
+            className="w-full px-4 py-3 rounded-xl bg-slate-900/50 backdrop-blur-md border border-emerald-500/20 text-white focus:outline-none focus:border-green-500/50 transition-colors"
           >
             <option value="">Select a user...</option>
             {users.map((user) => (
@@ -669,7 +672,7 @@ function GrantProModal({ onClose, users, onGrant }: { onClose: () => void; users
           <select
             value={selectedPlan}
             onChange={(e) => setSelectedPlan(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-green-500/50 transition-colors"
+            className="w-full px-4 py-3 rounded-xl bg-slate-900/50 backdrop-blur-md border border-emerald-500/20 text-white focus:outline-none focus:border-green-500/50 transition-colors"
           >
             {plans.map((plan) => (
               <option key={plan.value} value={plan.value}>
@@ -682,7 +685,7 @@ function GrantProModal({ onClose, users, onGrant }: { onClose: () => void; users
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-3 rounded-full font-medium text-zinc-400 hover:text-white border border-white/10 hover:bg-white/5 transition-colors"
+            className="flex-1 py-3 rounded-full font-medium text-zinc-400 hover:text-white border border-emerald-500/20 hover:bg-slate-900/50 backdrop-blur-md transition-colors"
           >
             Cancel
           </button>

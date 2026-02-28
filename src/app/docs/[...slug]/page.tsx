@@ -23,19 +23,19 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
           Learn the basics of MorphDB and get up and running in minutes.
         </p>
         <div className="grid gap-4 md:grid-cols-2">
-          <Link href="/docs/get-started/introduction" className="block p-6 border border-white/10 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 transition">
+          <Link href="/docs/get-started/introduction" className="block p-6 border border-emerald-500/20 rounded-lg hover:border-emerald-500 dark:hover:border-emerald-500 transition">
             <h3 className="text-lg font-semibold mb-2 text-white">Introduction</h3>
             <p className="text-sm text-zinc-300">Learn what MorphDB is and what it can do</p>
           </Link>
-          <Link href="/docs/get-started/quick-start" className="block p-6 border border-white/10 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 transition">
+          <Link href="/docs/get-started/quick-start" className="block p-6 border border-emerald-500/20 rounded-lg hover:border-emerald-500 dark:hover:border-emerald-500 transition">
             <h3 className="text-lg font-semibold mb-2 text-white">Quick Start</h3>
             <p className="text-sm text-zinc-300">Get up and running in just a few minutes</p>
           </Link>
-          <Link href="/docs/get-started/authentication" className="block p-6 border border-white/10 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 transition">
+          <Link href="/docs/get-started/authentication" className="block p-6 border border-emerald-500/20 rounded-lg hover:border-emerald-500 dark:hover:border-emerald-500 transition">
             <h3 className="text-lg font-semibold mb-2 text-white">Authentication</h3>
             <p className="text-sm text-zinc-300">Set up secure access to MorphDB</p>
           </Link>
-          <Link href="/docs/get-started/api-keys" className="block p-6 border border-white/10 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 transition">
+          <Link href="/docs/get-started/api-keys" className="block p-6 border border-emerald-500/20 rounded-lg hover:border-emerald-500 dark:hover:border-emerald-500 transition">
             <h3 className="text-lg font-semibold mb-2 text-white">API Keys</h3>
             <p className="text-sm text-zinc-300">Create and manage API keys for programmatic access</p>
           </Link>
@@ -52,19 +52,19 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
           Explore the powerful features that make MorphDB the best choice for database migrations.
         </p>
         <div className="grid gap-4 md:grid-cols-2">
-          <Link href="/docs/features/soft-delete" className="block p-6 border border-white/10 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 transition">
+          <Link href="/docs/features/soft-delete" className="block p-6 border border-emerald-500/20 rounded-lg hover:border-emerald-500 dark:hover:border-emerald-500 transition">
             <h3 className="text-lg font-semibold mb-2 text-white">Soft Delete & Audit Trail</h3>
             <p className="text-sm text-zinc-300">Safely delete migration batches with complete audit history</p>
           </Link>
-          <Link href="/docs/features/batch-cancellation" className="block p-6 border border-white/10 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 transition">
+          <Link href="/docs/features/batch-cancellation" className="block p-6 border border-emerald-500/20 rounded-lg hover:border-emerald-500 dark:hover:border-emerald-500 transition">
             <h3 className="text-lg font-semibold mb-2 text-white">Batch Cancellation</h3>
             <p className="text-sm text-zinc-300">Cancel long-running migrations without losing progress</p>
           </Link>
-          <Link href="/docs/features/enhanced-logging" className="block p-6 border border-white/10 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 transition">
+          <Link href="/docs/features/enhanced-logging" className="block p-6 border border-emerald-500/20 rounded-lg hover:border-emerald-500 dark:hover:border-emerald-500 transition">
             <h3 className="text-lg font-semibold mb-2 text-white">Enhanced Logging & Privacy</h3>
             <p className="text-sm text-zinc-300">All actions logged with automatic privacy protection</p>
           </Link>
-          <Link href="/docs/features/security" className="block p-6 border border-white/10 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 transition">
+          <Link href="/docs/features/security" className="block p-6 border border-emerald-500/20 rounded-lg hover:border-emerald-500 dark:hover:border-emerald-500 transition">
             <h3 className="text-lg font-semibold mb-2 text-white">Security</h3>
             <p className="text-sm text-zinc-300">Enterprise-grade security and compliance features</p>
           </Link>
@@ -81,19 +81,19 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
           Find solutions to common issues and learn best practices.
         </p>
         <div className="grid gap-4 md:grid-cols-2">
-          <Link href="/docs/troubleshooting/common-issues" className="block p-6 border border-white/10 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 transition">
+          <Link href="/docs/troubleshooting/common-issues" className="block p-6 border border-emerald-500/20 rounded-lg hover:border-emerald-500 dark:hover:border-emerald-500 transition">
             <h3 className="text-lg font-semibold mb-2 text-white">Common Issues</h3>
             <p className="text-sm text-zinc-300">Solutions to frequently encountered problems</p>
           </Link>
-          <Link href="/docs/troubleshooting/faq" className="block p-6 border border-white/10 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 transition">
+          <Link href="/docs/troubleshooting/faq" className="block p-6 border border-emerald-500/20 rounded-lg hover:border-emerald-500 dark:hover:border-emerald-500 transition">
             <h3 className="text-lg font-semibold mb-2 text-white">FAQ</h3>
             <p className="text-sm text-zinc-300">Answers to frequently asked questions</p>
           </Link>
-          <Link href="/docs/troubleshooting/error-codes" className="block p-6 border border-white/10 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 transition">
+          <Link href="/docs/troubleshooting/error-codes" className="block p-6 border border-emerald-500/20 rounded-lg hover:border-emerald-500 dark:hover:border-emerald-500 transition">
             <h3 className="text-lg font-semibold mb-2 text-white">Error Codes</h3>
             <p className="text-sm text-zinc-300">Reference guide for error codes and solutions</p>
           </Link>
-          <Link href="/docs/troubleshooting/performance" className="block p-6 border border-white/10 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 transition">
+          <Link href="/docs/troubleshooting/performance" className="block p-6 border border-emerald-500/20 rounded-lg hover:border-emerald-500 dark:hover:border-emerald-500 transition">
             <h3 className="text-lg font-semibold mb-2 text-white">Performance</h3>
             <p className="text-sm text-zinc-300">Tips for optimizing migration performance</p>
           </Link>
@@ -110,15 +110,15 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
           Complete reference for the MorphDB API.
         </p>
         <div className="grid gap-4 md:grid-cols-2">
-          <Link href="/docs/api-reference/endpoints" className="block p-6 border border-white/10 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 transition">
+          <Link href="/docs/api-reference/endpoints" className="block p-6 border border-emerald-500/20 rounded-lg hover:border-emerald-500 dark:hover:border-emerald-500 transition">
             <h3 className="text-lg font-semibold mb-2 text-white">Endpoints</h3>
             <p className="text-sm text-zinc-300">Available API endpoints and methods</p>
           </Link>
-          <Link href="/docs/api-reference/authentication" className="block p-6 border border-white/10 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 transition">
+          <Link href="/docs/api-reference/authentication" className="block p-6 border border-emerald-500/20 rounded-lg hover:border-emerald-500 dark:hover:border-emerald-500 transition">
             <h3 className="text-lg font-semibold mb-2 text-white">Authentication</h3>
             <p className="text-sm text-zinc-300">How to authenticate API requests</p>
           </Link>
-          <Link href="/docs/api-reference/rate-limiting" className="block p-6 border border-white/10 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 transition">
+          <Link href="/docs/api-reference/rate-limiting" className="block p-6 border border-emerald-500/20 rounded-lg hover:border-emerald-500 dark:hover:border-emerald-500 transition">
             <h3 className="text-lg font-semibold mb-2 text-white">Rate Limiting</h3>
             <p className="text-sm text-zinc-300">Rate limit policies and best practices</p>
           </Link>
@@ -136,7 +136,7 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
           MorphDB is an AI-powered database migration platform designed for data engineers. It helps you translate legacy SQL dialects into modern data warehouse formats safely and efficiently.
         </p>
 
-        <div className="bg-blue-950/20 border border-blue-800/50 rounded-lg p-6">
+        <div className="bg-emerald-950/20 border border-emerald-800/50 rounded-lg p-6">
           <h3 className="font-semibold text-white mb-2">What You Can Do</h3>
           <ul className="space-y-2 text-zinc-300">
             <li className="flex gap-3">
@@ -165,7 +165,7 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
         <h2 className="text-2xl font-bold text-white pt-4">Getting Started</h2>
         <p>
           Ready to start? Head over to the{' '}
-          <Link href="/docs/get-started/quick-start" className="text-blue-600 dark:text-blue-400 hover:underline">
+          <Link href="/docs/get-started/quick-start" className="text-emerald-600 dark:text-emerald-400 hover:underline">
             Quick Start guide
           </Link>
           {' '}to set up your first migration in minutes.
@@ -185,7 +185,7 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
         <div className="space-y-6">
           <div>
             <h3 className="text-xl font-semibold text-white mb-3 flex items-center gap-2">
-              <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">1</span>
+              <span className="bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">1</span>
               Sign Up
             </h3>
             <p className="text-zinc-300 ml-8">
@@ -195,7 +195,7 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
 
           <div>
             <h3 className="text-xl font-semibold text-white mb-3 flex items-center gap-2">
-              <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">2</span>
+              <span className="bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">2</span>
               Prepare Your SQL
             </h3>
             <p className="text-zinc-300 ml-8">
@@ -205,7 +205,7 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
 
           <div>
             <h3 className="text-xl font-semibold text-white mb-3 flex items-center gap-2">
-              <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">3</span>
+              <span className="bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">3</span>
               Configure Translation
             </h3>
             <p className="text-zinc-300 ml-8">
@@ -215,7 +215,7 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
 
           <div>
             <h3 className="text-xl font-semibold text-white mb-3 flex items-center gap-2">
-              <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">4</span>
+              <span className="bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">4</span>
               Review & Export
             </h3>
             <p className="text-zinc-300 ml-8">
@@ -248,7 +248,7 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
         <h3 className="text-xl font-semibold text-white">Sign Up & Login</h3>
         <p className="text-zinc-300">
           Create your account on the{' '}
-          <Link href="/login" className="text-blue-600 dark:text-blue-400 hover:underline">
+          <Link href="/login" className="text-emerald-600 dark:text-emerald-400 hover:underline">
             login page
           </Link>
           . We support email/password authentication via Supabase.
@@ -584,29 +584,29 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10">
+              <tr className="border-b border-emerald-500/20">
                 <th className="text-left py-3 px-4 font-semibold text-white">Code</th>
                 <th className="text-left py-3 px-4 font-semibold text-white">Meaning</th>
                 <th className="text-left py-3 px-4 font-semibold text-white">Solution</th>
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-white/10">
+              <tr className="border-b border-emerald-500/20">
                 <td className="py-3 px-4 font-mono text-red-500">400</td>
                 <td className="py-3 px-4 text-zinc-300">Bad Request</td>
                 <td className="py-3 px-4 text-zinc-300">Check your request parameters</td>
               </tr>
-              <tr className="border-b border-white/10">
+              <tr className="border-b border-emerald-500/20">
                 <td className="py-3 px-4 font-mono text-red-500">401</td>
                 <td className="py-3 px-4 text-zinc-300">Unauthorized</td>
                 <td className="py-3 px-4 text-zinc-300">Verify your API key is valid</td>
               </tr>
-              <tr className="border-b border-white/10">
+              <tr className="border-b border-emerald-500/20">
                 <td className="py-3 px-4 font-mono text-red-500">403</td>
                 <td className="py-3 px-4 text-zinc-300">Forbidden</td>
                  <td className="py-3 px-4 text-zinc-300">You don&apos;t have permission for this action</td>
               </tr>
-              <tr className="border-b border-white/10">
+              <tr className="border-b border-emerald-500/20">
                 <td className="py-3 px-4 font-mono text-red-500">429</td>
                 <td className="py-3 px-4 text-zinc-300">Rate Limited</td>
                 <td className="py-3 px-4 text-zinc-300">Wait before making more requests</td>
@@ -664,15 +664,15 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
         </p>
 
         <div className="space-y-6">
-          <div className="bg-[#0a0a0a]/80 rounded-lg p-6">
+          <div className="bg-slate-900/50 backdrop-blur-md rounded-lg p-6">
             <div className="flex items-center gap-2 mb-3">
-              <span className="bg-blue-500 text-white px-2 py-1 rounded text-xs font-mono">POST</span>
+              <span className="bg-emerald-500 text-white px-2 py-1 rounded text-xs font-mono">POST</span>
               <code className="text-gray-300 font-mono text-sm">/api/migrate/batch</code>
             </div>
             <p className="text-zinc-400 text-sm">Create a new migration batch</p>
           </div>
 
-          <div className="bg-[#0a0a0a]/80 rounded-lg p-6">
+          <div className="bg-slate-900/50 backdrop-blur-md rounded-lg p-6">
             <div className="flex items-center gap-2 mb-3">
               <span className="bg-green-500 text-white px-2 py-1 rounded text-xs font-mono">GET</span>
               <code className="text-gray-300 font-mono text-sm">/api/migrate/batch/{'{id}'}</code>
@@ -680,7 +680,7 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
             <p className="text-zinc-400 text-sm">Get migration batch details</p>
           </div>
 
-          <div className="bg-[#0a0a0a]/80 rounded-lg p-6">
+          <div className="bg-slate-900/50 backdrop-blur-md rounded-lg p-6">
             <div className="flex items-center gap-2 mb-3">
               <span className="bg-orange-500 text-white px-2 py-1 rounded text-xs font-mono">POST</span>
               <code className="text-gray-300 font-mono text-sm">/api/migrate/batch/{'{id}'}/cancel</code>
@@ -688,7 +688,7 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
             <p className="text-zinc-400 text-sm">Cancel a migration batch</p>
           </div>
 
-          <div className="bg-[#0a0a0a]/80 rounded-lg p-6">
+          <div className="bg-slate-900/50 backdrop-blur-md rounded-lg p-6">
             <div className="flex items-center gap-2 mb-3">
               <span className="bg-red-500 text-white px-2 py-1 rounded text-xs font-mono">DELETE</span>
               <code className="text-gray-300 font-mono text-sm">/api/migrate/batch/{'{id}'}</code>
@@ -716,7 +716,7 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
         <p className="text-zinc-300 mb-3">
           Include your API key as a Bearer token in the Authorization header:
         </p>
-        <pre className="bg-[#0a0a0a]/80 text-zinc-100 p-4 rounded-lg overflow-x-auto mb-4">
+        <pre className="bg-slate-900/50 backdrop-blur-md text-zinc-100 p-4 rounded-lg overflow-x-auto mb-4">
           <code>{`curl -H "Authorization: Bearer YOUR_API_KEY" \\
   https://api.morphdb.io/api/migrate/batch`}</code>
         </pre>
@@ -748,7 +748,7 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
         <p className="text-zinc-300">
           Each response includes rate limit information:
         </p>
-        <pre className="bg-[#0a0a0a]/80 text-zinc-100 p-4 rounded-lg overflow-x-auto">
+        <pre className="bg-slate-900/50 backdrop-blur-md text-zinc-100 p-4 rounded-lg overflow-x-auto">
           <code>{`X-RateLimit-Limit: 100
 X-RateLimit-Remaining: 95
 X-RateLimit-Reset: 1234567890`}</code>
@@ -838,17 +838,17 @@ export default function DocPage({ params }: PageProps) {
     >
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-white mb-2">{doc.title}</h1>
-        <div className="h-1 w-24 bg-gradient-to-r from-blue-400 to-purple-400 rounded" />
+        <div className="h-1 w-24 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded" />
       </div>
 
       <div className="prose prose-invert max-w-none text-zinc-300">
         {doc.content}
       </div>
 
-      <div className="mt-12 pt-8 border-t border-white/10">
+      <div className="mt-12 pt-8 border-t border-emerald-500/20">
         <p className="text-sm text-zinc-400">
            Can&apos;t find what you&apos;re looking for?{' '}
-          <Link href="/support" className="text-blue-400 hover:text-blue-300 hover:underline">
+          <Link href="/support" className="text-emerald-400 hover:text-emerald-300 hover:underline">
             Contact our support team
           </Link>
         </p>
