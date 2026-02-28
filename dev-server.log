@@ -1745,3 +1745,91 @@ https://nextjs.org/docs/messages/module-not-found
 ✓ Compiled in 51ms
  GET /docs 200 in 254ms (compile: 206ms, render: 48ms)
  GET / 200 in 280ms (compile: 122ms, render: 158ms)
+ GET / 200 in 179ms (compile: 11ms, render: 168ms)
+ GET / 200 in 63ms (compile: 6ms, render: 57ms)
+ GET / 200 in 75ms (compile: 4ms, render: 70ms)
+ GET / 200 in 69ms (compile: 5ms, render: 64ms)
+ GET / 200 in 64ms (compile: 9ms, render: 56ms)
+ GET / 200 in 140ms (compile: 8ms, render: 132ms)
+ GET / 200 in 70ms (compile: 15ms, render: 54ms)
+✓ Compiled in 77ms
+ GET / 200 in 322ms (compile: 122ms, render: 200ms)
+ GET / 200 in 172ms (compile: 16ms, render: 156ms)
+ GET / 200 in 67ms (compile: 13ms, render: 54ms)
+✓ Compiled in 79ms
+ GET / 200 in 311ms (compile: 96ms, render: 215ms)
+ GET / 200 in 93ms (compile: 5ms, render: 88ms)
+ GET / 200 in 107ms (compile: 9ms, render: 99ms)
+ GET / 200 in 77ms (compile: 7ms, render: 70ms)
+ GET / 200 in 48ms (compile: 4ms, render: 44ms)
+ GET / 200 in 72ms (compile: 15ms, render: 58ms)
+ GET / 200 in 75ms (compile: 11ms, render: 64ms)
+ GET / 200 in 119ms (compile: 4ms, render: 114ms)
+✓ Compiled in 99ms
+ GET / 200 in 515ms (compile: 115ms, render: 400ms)
+ GET / 200 in 85ms (compile: 13ms, render: 71ms)
+ GET /support 200 in 168ms (compile: 144ms, render: 24ms)
+ GET / 200 in 27ms (compile: 10ms, render: 18ms)
+ GET /login 200 in 373ms (compile: 360ms, render: 13ms)
+ POST /api/auth/signup 201 in 2.1s (compile: 1027ms, render: 1115ms)
+❌ Email send failed: {
+  statusCode: 403,
+  name: 'validation_error',
+  message: 'You can only send testing emails to your own email address (learnertech111@gmail.com). To send emails to other recipients, please verify a domain at resend.com/domains, and change the `from` address to an email using this domain.'
+}
+ GET / 200 in 53ms (compile: 29ms, render: 24ms)
+ GET /login 200 in 24ms (compile: 9ms, render: 16ms)
+ POST /api/auth/signin 200 in 977ms (compile: 316ms, render: 662ms)
+⨯ Error [PrismaClientKnownRequestError]: 
+Invalid `{imported module ./src/lib/prisma.ts}["prisma"].migrationBatch.findMany()` invocation in
+/Users/abu/Learning/Vibe_Coding_Bootcamp/hackathon-proj/.next/dev/server/chunks/ssr/[root-of-the-server]__3324626e._.js:854:151
+
+  851         userId: user.id
+  852     }
+  853 }),
+→ 854 {imported module ./src/lib/prisma.ts}["prisma"].migrationBatch.findMany(
+The column `(not available)` does not exist in the current database.
+    at <unknown> (src/app/dashboard/page.tsx:35:27)
+    at async DashboardPage (src/app/dashboard/page.tsx:32:50)
+  33 |     prisma.profile.findUnique({ where: { id: user.id } }),
+  34 |     prisma.subscription.findUnique({ where: { userId: user.id } }),
+> 35 |     prisma.migrationBatch.findMany({
+     |                           ^
+  36 |       where: { userId: user.id },
+  37 |       orderBy: { createdAt: 'desc' },
+  38 |       take: 5, {
+  code: 'P2022',
+  meta: [Object],
+  clientVersion: '7.4.1',
+  digest: '2578778052'
+}
+ GET /dashboard 200 in 971ms (compile: 651ms, render: 320ms)
+⨯ Error [PrismaClientKnownRequestError]: 
+Invalid `{imported module ./src/lib/prisma.ts}["prisma"].migrationBatch.findMany()` invocation in
+/Users/abu/Learning/Vibe_Coding_Bootcamp/hackathon-proj/.next/dev/server/chunks/ssr/[root-of-the-server]__3324626e._.js:854:151
+
+  851         userId: user.id
+  852     }
+  853 }),
+→ 854 {imported module ./src/lib/prisma.ts}["prisma"].migrationBatch.findMany(
+The column `(not available)` does not exist in the current database.
+    at <unknown> (src/app/dashboard/page.tsx:35:27)
+    at async DashboardPage (src/app/dashboard/page.tsx:32:50)
+  33 |     prisma.profile.findUnique({ where: { id: user.id } }),
+  34 |     prisma.subscription.findUnique({ where: { userId: user.id } }),
+> 35 |     prisma.migrationBatch.findMany({
+     |                           ^
+  36 |       where: { userId: user.id },
+  37 |       orderBy: { createdAt: 'desc' },
+  38 |       take: 5, {
+  code: 'P2022',
+  meta: [Object],
+  clientVersion: '7.4.1',
+  digest: '2578778052'
+}
+ GET /dashboard 200 in 609ms (compile: 5ms, render: 604ms)
+ GET /api/auth/profile 200 in 735ms (compile: 171ms, render: 564ms)
+✓ Compiled in 434ms
+ GET /docs 200 in 1052ms (compile: 602ms, render: 451ms)
+ GET /api/auth/profile 200 in 646ms (compile: 5ms, render: 641ms)
+ GET /dashboard 200 in 3.0s (compile: 493ms, render: 2.5s)
