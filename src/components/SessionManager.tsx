@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, LogOut } from 'lucide-react';
 import { AuthChangeEvent, Session } from '@supabase/supabase-js';
 
-const INACTIVITY_TIMEOUT = 30 * 60 * 1000;
+const INACTIVITY_TIMEOUT = 15 * 60 * 1000;
 const WARNING_BEFORE = 2 * 60 * 1000;
 const ACTIVITY_EVENTS = ['mousedown', 'keydown', 'scroll', 'touchstart', 'mousemove'];
 
