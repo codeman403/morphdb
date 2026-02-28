@@ -49,10 +49,10 @@ interface SupportTicket {
 }
 
 interface Stats {
-  waitlist: { count: number; entries: WaitlistEntry[] };
-  logins: LoginLog[];
+  waitlist: { count: number; entries: WaitlistEntry[]; total: number; offset: number; limit: number; hasMore: boolean };
+  logins: { entries: LoginLog[]; total: number; offset: number; limit: number; hasMore: boolean };
   subscriptions: { plan: string; _count: { plan: number } }[];
-  recentSignups: Profile[];
+  recentSignups: { entries: Profile[]; total: number; offset: number; limit: number; hasMore: boolean };
   supportTickets: SupportTicket[];
 }
 
@@ -132,8 +132,8 @@ export default function AdminDashboard() {
 
   const statCards = [
     { label: 'Waitlist Signups', value: stats.waitlist.count, icon: Users, color: 'blue' },
-    { label: 'Login Events', value: stats.logins.length, icon: LogIn, color: 'green' },
-    { label: 'Total Users', value: stats.recentSignups.length, icon: Mail, color: 'purple' },
+    { label: 'Login Events', value: stats.logins.total, icon: LogIn, color: 'green' },
+    { label: 'Total Users', value: stats.recentSignups.total, icon: Mail, color: 'purple' },
     { label: 'Subscriptions', value: stats.subscriptions.reduce((a, s) => a + s._count.plan, 0), icon: CreditCard, color: 'amber' },
     { label: 'Support Tickets', value: stats.supportTickets.length, icon: Headphones, color: 'cyan' },
   ];
@@ -148,8 +148,8 @@ export default function AdminDashboard() {
 
   const tabs = [
     { key: 'waitlist' as const, label: 'Waitlist', icon: Users, count: stats.waitlist.count },
-    { key: 'logins' as const, label: 'Login Logs', icon: LogIn, count: stats.logins.length },
-    { key: 'signups' as const, label: 'Users', icon: Mail, count: stats.recentSignups.length },
+    { key: 'logins' as const, label: 'Login Logs', icon: LogIn, count: stats.logins.total },
+    { key: 'signups' as const, label: 'Users', icon: Mail, count: stats.recentSignups.total },
     { key: 'support' as const, label: 'Support Tickets', icon: Headphones, count: stats.supportTickets.length },
   ];
 
@@ -286,7 +286,7 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {stats.logins.map((log) => (
+                  {stats.logins.entries.map((log) => (
                     <tr key={log.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                       <td className="p-4 font-mono text-green-400">{log.email ?? '—'}</td>
                       <td className="p-4 text-zinc-300 font-mono text-xs">{log.ip ?? '—'}</td>
@@ -310,7 +310,7 @@ export default function AdminDashboard() {
                       </td>
                     </tr>
                   ))}
-                  {stats.logins.length === 0 && (
+                  {stats.logins.entries.length === 0 && (
                     <tr><td colSpan={5} className="p-8 text-center text-zinc-500">No login events yet</td></tr>
                   )}
                 </tbody>
@@ -330,7 +330,7 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {stats.recentSignups.map((profile) => (
+                  {stats.recentSignups.entries.map((profile) => (
                     <tr key={profile.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                       <td className="p-4 font-mono text-purple-400">{profile.email}</td>
                       <td className="p-4 text-zinc-300">{profile.name ?? '—'}</td>
@@ -348,7 +348,7 @@ export default function AdminDashboard() {
                       </td>
                     </tr>
                   ))}
-                  {stats.recentSignups.length === 0 && (
+                  {stats.recentSignups.entries.length === 0 && (
                     <tr><td colSpan={4} className="p-8 text-center text-zinc-500">No users yet</td></tr>
                   )}
                 </tbody>
@@ -403,57 +403,57 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <AnimatePresence>
-        {showResetModal && (
-          <ResetUsageModal
-            onClose={() => setShowResetModal(false)}
-            onReset={async (userId) => {
-              setResetting(true);
-              try {
-                const res = await fetch('/api/admin/reset-usage', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ userId: userId || null }),
-                });
-                if (res.ok) {
-                  setShowResetModal(false);
-                  fetchStats();
-                }
-              } finally {
-                setResetting(false);
-              }
-            }}
-            users={stats?.recentSignups || []}
-            loading={resetting}
-          />
-        )}
-      </AnimatePresence>
+       <AnimatePresence>
+         {showResetModal && (
+           <ResetUsageModal
+             onClose={() => setShowResetModal(false)}
+             onReset={async (userId) => {
+               setResetting(true);
+               try {
+                 const res = await fetch('/api/admin/reset-usage', {
+                   method: 'POST',
+                   headers: { 'Content-Type': 'application/json' },
+                   body: JSON.stringify({ userId: userId || null }),
+                 });
+                 if (res.ok) {
+                   setShowResetModal(false);
+                   fetchStats();
+                 }
+               } finally {
+                 setResetting(false);
+               }
+             }}
+             users={stats?.recentSignups?.entries || []}
+             loading={resetting}
+           />
+         )}
+       </AnimatePresence>
 
-      <AnimatePresence>
-        {showGrantProModal && (
-          <GrantProModal
-            onClose={() => setShowGrantProModal(false)}
-            users={stats?.recentSignups || []}
-            onGrant={async (userId, plan) => {
-              setGrantingPro(true);
-              try {
-                const res = await fetch('/api/admin/grant-pro', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ userId, plan }),
-                });
-                if (res.ok) {
-                  setShowGrantProModal(false);
-                  fetchStats();
-                }
-              } finally {
-                setGrantingPro(false);
-              }
-            }}
-            loading={grantingPro}
-          />
-        )}
-      </AnimatePresence>
+       <AnimatePresence>
+         {showGrantProModal && (
+           <GrantProModal
+             onClose={() => setShowGrantProModal(false)}
+             users={stats?.recentSignups?.entries || []}
+             onGrant={async (userId, plan) => {
+               setGrantingPro(true);
+               try {
+                 const res = await fetch('/api/admin/grant-pro', {
+                   method: 'POST',
+                   headers: { 'Content-Type': 'application/json' },
+                   body: JSON.stringify({ userId, plan }),
+                 });
+                 if (res.ok) {
+                   setShowGrantProModal(false);
+                   fetchStats();
+                 }
+               } finally {
+                 setGrantingPro(false);
+               }
+             }}
+             loading={grantingPro}
+           />
+         )}
+       </AnimatePresence>
     </div>
   );
 }
