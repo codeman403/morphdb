@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import AnimatedLinkCard from '@/components/docs/AnimatedLinkCard';
-import { BookOpen, Zap, Shield, Settings } from 'lucide-react';
+import { BookOpen, Zap, Shield } from 'lucide-react'; // Settings removed to fix unused import
 
 export default function DocsHomePage() {
   const sections = [
@@ -28,6 +28,7 @@ export default function DocsHomePage() {
       href: '/docs/features/security',
       color: 'text-green-500',
     },
+    /* 
     {
       icon: Settings,
       title: 'API Reference',
@@ -35,6 +36,7 @@ export default function DocsHomePage() {
       href: '/docs/api-reference/endpoints',
       color: 'text-orange-500',
     },
+    */
   ];
 
   return (

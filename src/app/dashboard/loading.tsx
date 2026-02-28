@@ -8,7 +8,7 @@ export default function DashboardLoading() {
     <div className="min-h-screen bg-slate-950 text-white flex flex-col">
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-emerald-500/20 bg-slate-950/80 shadow-lg shadow-emerald-500/5 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-white">
+          <Link href="/" className="flex items-center gap-2 text-white hover:text-emerald-400 transition-colors">
             <Database className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500" />
             <span className="font-bold tracking-tight">MorphDB</span>
           </Link>

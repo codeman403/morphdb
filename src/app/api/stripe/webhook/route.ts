@@ -120,13 +120,13 @@ export async function POST(req: NextRequest) {
               'design_partner': 'Design Partner',
               'enterprise': 'Enterprise',
             };
-            if (userProfile?.email) {
-              sendEmail({
-                to: userProfile.email,
-                subject: `Your ${planNames[plan] || plan} Subscription is Active`,
-                html: getSubscriptionActivatedEmailHTML(userName, planNames[plan] || plan),
-              }).catch((e) => console.error('[Subscription Email Error]', e));
-            }
+             if (userProfile?.email) {
+               sendEmail({
+                 to: userProfile.email,
+                 subject: `MorphDB: Your ${planNames[plan] || plan} Subscription is Active`,
+                 html: getSubscriptionActivatedEmailHTML(userName, planNames[plan] || plan),
+               }).catch((e) => console.error('[Subscription Email Error]', e));
+             }
           }
           break;
         }

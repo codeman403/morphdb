@@ -240,9 +240,9 @@ export function getSubscriptionActivatedEmailHTML(userName: string | undefined, 
       </head>
       <body>
         <div class="container">
-          <div class="header">
-            <h1>Welcome to ${planName}! 🎊</h1>
-          </div>
+           <div class="header">
+             <h1>Welcome to MorphDB ${planName}! 🎊</h1>
+           </div>
           <div class="content">
             <p>Hi ${displayName},</p>
             <p>Thank you for subscribing to the ${planName} plan. Your subscription is now active!</p>
@@ -292,10 +292,10 @@ export function getSupportTicketEmailHTML(userName: string | undefined, ticketId
         </style>
       </head>
       <body>
-        <div class="container">
-          <div class="header">
-            <h1>Support Ticket Received ✓</h1>
-          </div>
+         <div class="container">
+           <div class="header">
+             <h1>MorphDB Support Ticket Received ✓</h1>
+           </div>
           <div class="content">
             <p>Hi ${displayName},</p>
             <p>Thank you for reaching out to MorphDB support. We've received your ticket and our team will review it shortly.</p>
@@ -345,9 +345,9 @@ export function getBatchCompletionEmailHTML(userName: string | undefined, batchI
       </head>
       <body>
         <div class="container">
-          <div class="header">
-            <h1>Batch Migration Complete! ✅</h1>
-          </div>
+           <div class="header">
+             <h1>MorphDB: Batch Migration Complete! ✅</h1>
+           </div>
           <div class="content">
             <p>Hi ${displayName},</p>
             <p>Your batch migration has finished processing. Here's the summary:</p>
@@ -395,11 +395,11 @@ export function getAdminSupportNotificationEmailHTML(ticketId: string, subject: 
           .ticket-id { font-family: monospace; background: #e5e7eb; padding: 8px; border-radius: 4px; }
         </style>
       </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h1>New Support Ticket</h1>
-          </div>
+       <body>
+         <div class="container">
+           <div class="header">
+             <h1>MorphDB: New Support Ticket</h1>
+           </div>
           <div class="content">
             <p><strong>New support ticket requires attention</strong></p>
             <p>
@@ -448,7 +448,7 @@ export function getTicketStatusUpdateEmailHTML(userName: string | undefined, tic
       <body>
         <div class="container">
           <div class="header">
-            <h1>Support Ticket Updated</h1>
+            <h1>MorphDB Support Ticket Updated</h1>
           </div>
           <div class="content">
             <p>Hi ${displayName},</p>
@@ -470,45 +470,161 @@ export function getTicketStatusUpdateEmailHTML(userName: string | undefined, tic
 }
 
 export function getSubscriptionCancelledEmailHTML(userName: string | undefined) {
-  const displayName = userName || 'there';
-  return `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <style>
-          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); color: white; padding: 30px; border-radius: 8px; text-align: center; }
-          .header h1 { margin: 0; font-size: 28px; }
-          .content { padding: 20px; background: #f9fafb; border-radius: 8px; margin-top: 20px; }
-          .info-box { background: white; padding: 15px; border-left: 4px solid #ef4444; border-radius: 4px; margin-top: 15px; }
-          .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #666; }
-          .cta { display: inline-block; margin-top: 20px; padding: 12px 24px; background: #3b82f6; color: white; text-decoration: none; border-radius: 4px; }
-          .secondary-cta { display: inline-block; margin-left: 10px; padding: 12px 24px; background: #e5e7eb; color: #333; text-decoration: none; border-radius: 4px; }
-        </style>
-      </head>
-      <body>
+   const displayName = userName || 'there';
+   return `
+     <!DOCTYPE html>
+     <html>
+       <head>
+         <meta charset="utf-8">
+         <style>
+           body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif; line-height: 1.6; color: #333; }
+           .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+           .header { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); color: white; padding: 30px; border-radius: 8px; text-align: center; }
+           .header h1 { margin: 0; font-size: 28px; }
+           .content { padding: 20px; background: #f9fafb; border-radius: 8px; margin-top: 20px; }
+           .info-box { background: white; padding: 15px; border-left: 4px solid #ef4444; border-radius: 4px; margin-top: 15px; }
+           .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #666; }
+           .cta { display: inline-block; margin-top: 20px; padding: 12px 24px; background: #3b82f6; color: white; text-decoration: none; border-radius: 4px; }
+           .secondary-cta { display: inline-block; margin-left: 10px; padding: 12px 24px; background: #e5e7eb; color: #333; text-decoration: none; border-radius: 4px; }
+         </style>
+       </head>
+       <body>
         <div class="container">
-          <div class="header">
-            <h1>Subscription Cancelled</h1>
-          </div>
-          <div class="content">
-            <p>Hi ${displayName},</p>
-            <p>Your MorphDB subscription has been cancelled. You will lose access to Pro features at the end of your current billing period.</p>
-            <div class="info-box">
-              <p><strong>We're sorry to see you go!</strong></p>
-              <p>If you cancelled by mistake or have concerns about your account, please don't hesitate to reach out to our support team. We'd love to help!</p>
+            <div class="header">
+              <h1>MorphDB Subscription Cancelled</h1>
             </div>
-            <p>You can still use the free tier with limited functionality. If you'd like to upgrade again in the future, just visit your dashboard.</p>
-            <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.ai'}/dashboard" class="cta">Back to Dashboard</a>
-             <a href="mailto:${SUPPORT_EMAIL}" class="secondary-cta">Contact Support</a>
+           <div class="content">
+             <p>Hi ${displayName},</p>
+             <p>Your MorphDB subscription has been cancelled. You will lose access to Pro features at the end of your current billing period.</p>
+             <div class="info-box">
+               <p><strong>We're sorry to see you go!</strong></p>
+               <p>If you cancelled by mistake or have concerns about your account, please don't hesitate to reach out to our support team. We'd love to help!</p>
+             </div>
+             <p>You can still use the free tier with limited functionality. If you'd like to upgrade again in the future, just visit your dashboard.</p>
+             <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.ai'}/dashboard" class="cta">Back to Dashboard</a>
+              <a href="mailto:${SUPPORT_EMAIL}" class="secondary-cta">Contact Support</a>
+            </div>
+            <div class="footer">
+              <p>© 2025 MorphDB. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+ }
+
+/**
+ * Email template: Trial ending reminder (last day)
+ */
+export function getTrialEndingReminderEmailHTML(userName: string | undefined) {
+   const displayName = userName || 'there';
+   return `
+     <!DOCTYPE html>
+     <html>
+       <head>
+         <meta charset="utf-8">
+         <style>
+           body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif; line-height: 1.6; color: #333; }
+           .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+           .header { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 30px; border-radius: 8px; text-align: center; }
+           .content { padding: 30px; background: #f9fafb; border-radius: 8px; margin-top: 20px; }
+           .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #666; }
+           .cta-button { display: inline-block; background: #f59e0b; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin-top: 20px; font-weight: bold; }
+           .highlight { background: #fee2e2; padding: 20px; border-left: 4px solid #ef4444; margin: 20px 0; border-radius: 4px; }
+           .feature-list { background: white; padding: 20px; border-radius: 6px; margin: 20px 0; }
+           .feature-list li { margin: 10px 0; }
+         </style>
+       </head>
+       <body>
+         <div class="container">
+           <div class="header">
+             <h1>Your Trial Ends Today! ⏰</h1>
+           </div>
+           <div class="content">
+             <p>Hi ${displayName},</p>
+             <div class="highlight">
+               <strong>⚠️ Important Notice:</strong><br>
+               Your 3-day free trial ends TODAY. After tonight, your account will automatically revert to the Free tier unless you upgrade to Pro.
+             </div>
+             <h3>What happens when your trial ends:</h3>
+             <ul>
+               <li>❌ You'll lose access to unlimited translations</li>
+               <li>❌ Batch migration size will be limited</li>
+               <li>❌ You'll be limited to 5 translations per day</li>
+               <li>❌ Priority support access will be removed</li>
+             </ul>
+             <h3>Don't miss out! Upgrade now to keep all Pro features:</h3>
+             <div class="feature-list">
+               <strong>Pro Plan Benefits:</strong>
+               <ul>
+                 <li>✅ Unlimited SQL translations</li>
+                 <li>✅ Batch migration support (up to 100 statements)</li>
+                 <li>✅ Full migration history & audit trails</li>
+                 <li>✅ Priority email support</li>
+                 <li>✅ All future features included</li>
+               </ul>
+             </div>
+             <p style="text-align: center;">
+               <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.ai'}/dashboard" class="cta-button">Upgrade to Pro Now</a>
+             </p>
+             <p style="margin-top: 30px; font-size: 14px; text-align: center; color: #666;">
+               Have questions? <a href="mailto:${SUPPORT_EMAIL}">Contact our support team</a>
+             </p>
            </div>
            <div class="footer">
-             <p>© 2025 MorphDB. All rights reserved.</p>
+             <p>© 2026 MorphDB. All rights reserved.</p>
            </div>
          </div>
        </body>
      </html>
    `;
-}
+ }
+
+/**
+ * Email template: Support ticket closed confirmation
+ */
+export function getTicketClosedEmailHTML(userName: string | undefined, ticketId: string, subject: string) {
+   const displayName = userName || 'there';
+   return `
+     <!DOCTYPE html>
+     <html>
+       <head>
+         <meta charset="utf-8">
+         <style>
+           body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif; line-height: 1.6; color: #333; }
+           .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+           .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; border-radius: 8px; text-align: center; }
+           .content { padding: 30px; background: #f9fafb; border-radius: 8px; margin-top: 20px; }
+           .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #666; }
+           .cta-button { display: inline-block; background: #10b981; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin-top: 20px; font-weight: bold; }
+           .ticket-info { background: white; padding: 15px; border-left: 4px solid #10b981; border-radius: 4px; margin: 20px 0; }
+           .ticket-id { font-family: monospace; background: #e6fffa; padding: 8px 12px; border-radius: 4px; }
+         </style>
+       </head>
+       <body>
+        <div class="container">
+            <div class="header">
+              <h1>MorphDB Support Ticket Closed ✓</h1>
+            </div>
+           <div class="content">
+             <p>Hi ${displayName},</p>
+             <p>Your support ticket has been closed.</p>
+             <div class="ticket-info">
+               <strong>Ticket ID:</strong> <span class="ticket-id">${ticketId}</span><br>
+               <strong>Subject:</strong> ${subject}<br>
+               <strong>Status:</strong> <span style="color: #10b981; font-weight: bold;">Closed</span>
+             </div>
+             <p>Thank you for using MorphDB support! If you need to open a new ticket or have any questions, feel free to reach out at any time.</p>
+             <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.ai'}/support" class="cta-button">Open New Ticket</a>
+             <p style="margin-top: 30px; font-size: 14px; text-align: center;">
+               Questions? <a href="mailto:${SUPPORT_EMAIL}">Contact support</a>
+             </p>
+           </div>
+           <div class="footer">
+             <p>© 2026 MorphDB. All rights reserved.</p>
+           </div>
+         </div>
+       </body>
+     </html>
+   `;
+ }

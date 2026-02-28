@@ -322,14 +322,14 @@ export async function POST(req: NextRequest) {
 
     // Send batch completion email (fire-and-forget)
     const userProfile = await prisma.profile.findUnique({ where: { id: user.id } });
-    const userName = userProfile?.name || user.email?.split('@')[0] || 'User';
-    if (batchId && userProfile?.email) {
-      sendEmail({
-        to: userProfile.email,
-        subject: `Your Migration Batch is Complete`,
-        html: getBatchCompletionEmailHTML(userName, batchId, successCount, results.length - successCount),
-      }).catch((e) => console.error('[Batch Completion Email Error]', e));
-    }
+     const userName = userProfile?.name || user.email?.split('@')[0] || 'User';
+     if (batchId && userProfile?.email) {
+       sendEmail({
+         to: userProfile.email,
+         subject: `MorphDB: Your Migration Batch is Complete`,
+         html: getBatchCompletionEmailHTML(userName, batchId, successCount, results.length - successCount),
+       }).catch((e) => console.error('[Batch Completion Email Error]', e));
+     }
 
     return NextResponse.json(responseBody);
   } catch (e) {

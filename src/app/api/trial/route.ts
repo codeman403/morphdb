@@ -55,7 +55,7 @@ export async function POST() {
     const userName = profile?.name || user.email?.split('@')[0] || 'User';
     sendEmail({
       to: user.email!,
-      subject: 'Your Pro Trial is Activated',
+      subject: 'MorphDB: Your Pro Trial is Activated',
       html: getTrialStartedEmailHTML(userName),
     }).catch((e) => console.error('[Trial Email Error]', e));
 

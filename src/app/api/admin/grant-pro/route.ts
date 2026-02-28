@@ -138,13 +138,13 @@ export async function POST(req: NextRequest) {
         'design_partner': 'Design Partner',
         'enterprise': 'Enterprise',
       };
-      if (userProfile?.email) {
-        sendEmail({
-          to: userProfile.email,
-          subject: `Your ${planNames[plan] || plan} Plan is Now Active`,
-          html: getSubscriptionActivatedEmailHTML(userName, planNames[plan] || plan),
-        }).catch((e) => console.error('[Plan Grant Email Error]', e));
-      }
+       if (userProfile?.email) {
+         sendEmail({
+           to: userProfile.email,
+           subject: `MorphDB: Your ${planNames[plan] || plan} Plan is Now Active`,
+           html: getSubscriptionActivatedEmailHTML(userName, planNames[plan] || plan),
+         }).catch((e) => console.error('[Plan Grant Email Error]', e));
+       }
     }
 
     return NextResponse.json({ success: true });

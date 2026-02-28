@@ -2104,3 +2104,356 @@ Unknown field `profile` for include statement on model `Subscription`. Available
  GET /api/auth/profile 200 in 422ms (compile: 35ms, render: 387ms)
  GET /api/auth/profile 200 in 638ms (compile: 28ms, render: 610ms)
 ✓ Compiled in 300ms
+ GET / 200 in 5.4s (compile: 3.3s, render: 2.1s)
+ GET /api/auth/has-used-trial 200 in 682ms (compile: 73ms, render: 610ms)
+ GET /api/auth/profile 200 in 820ms (compile: 60ms, render: 760ms)
+ GET /api/auth/profile 200 in 147ms (compile: 3ms, render: 144ms)
+ GET / 200 in 166ms (compile: 23ms, render: 143ms)
+ GET /api/auth/has-used-trial 200 in 128ms (compile: 1943µs, render: 126ms)
+ GET /api/auth/profile 200 in 205ms (compile: 9ms, render: 196ms)
+ GET /api/auth/profile 200 in 155ms (compile: 4ms, render: 152ms)
+ GET / 200 in 243ms (compile: 29ms, render: 214ms)
+ GET /api/auth/has-used-trial 200 in 177ms (compile: 2ms, render: 174ms)
+ GET /api/auth/profile 200 in 312ms (compile: 20ms, render: 292ms)
+ GET /api/auth/profile 200 in 265ms (compile: 11ms, render: 253ms)
+ GET / 200 in 701ms (compile: 21ms, render: 680ms)
+ GET /api/auth/has-used-trial 200 in 178ms (compile: 1591µs, render: 177ms)
+ GET /api/auth/profile 200 in 245ms (compile: 4ms, render: 241ms)
+ GET /api/auth/profile 200 in 176ms (compile: 7ms, render: 168ms)
+ GET / 200 in 183ms (compile: 20ms, render: 163ms)
+ GET /api/auth/has-used-trial 200 in 105ms (compile: 16ms, render: 89ms)
+ GET /api/auth/profile 200 in 159ms (compile: 11ms, render: 148ms)
+ GET /api/auth/profile 200 in 212ms (compile: 2ms, render: 210ms)
+✓ Compiled in 964ms
+✓ Compiled in 172ms
+ GET / 200 in 4.8s (compile: 4.1s, render: 720ms)
+ GET /support 200 in 399ms (compile: 194ms, render: 205ms)
+ GET /api/auth/profile 200 in 1165ms (compile: 77ms, render: 1088ms)
+ GET /api/auth/profile 200 in 429ms (compile: 37ms, render: 392ms)
+ GET /api/auth/profile 200 in 292ms (compile: 14ms, render: 277ms)
+ GET /api/auth/profile 200 in 180ms (compile: 5ms, render: 175ms)
+ GET /api/auth/has-used-trial 200 in 537ms (compile: 65ms, render: 472ms)
+ GET /api/auth/profile 200 in 260ms (compile: 9ms, render: 251ms)
+ GET /api/auth/has-used-trial 200 in 229ms (compile: 1091µs, render: 228ms)
+✓ Compiled in 3.2s
+✓ Finished filesystem cache database compaction in 10.8s
+ GET / 200 in 5.1s (compile: 690ms, render: 4.4s)
+ GET /api/auth/has-used-trial 200 in 1069ms (compile: 322ms, render: 747ms)
+ GET /api/auth/profile 200 in 1190ms (compile: 81ms, render: 1109ms)
+ GET /api/auth/profile 200 in 250ms (compile: 8ms, render: 242ms)
+ GET / 200 in 222ms (compile: 23ms, render: 199ms)
+ GET /api/auth/profile 200 in 269ms (compile: 4ms, render: 265ms)
+ GET /api/auth/has-used-trial 200 in 272ms (compile: 4ms, render: 268ms)
+ GET /api/auth/profile 200 in 162ms (compile: 3ms, render: 159ms)
+✓ Compiled in 288ms
+ GET /login 200 in 1251ms (compile: 925ms, render: 326ms)
+ GET / 200 in 1145ms (compile: 131ms, render: 1015ms)
+✓ Compiled in 887ms
+ GET /api/auth/profile 200 in 8.4s (compile: 452ms, render: 8.0s)
+ GET / 200 in 6.9s (compile: 2.9s, render: 4.0s)
+ GET / 200 in 1386ms (compile: 154ms, render: 1232ms)
+ GET /api/auth/profile 200 in 1076ms (compile: 45ms, render: 1031ms)
+ GET /api/auth/profile 200 in 226ms (compile: 10ms, render: 216ms)
+ GET /api/auth/has-used-trial 200 in 1163ms (compile: 715ms, render: 448ms)
+ GET /support 200 in 688ms (compile: 617ms, render: 71ms)
+ GET /api/auth/profile 200 in 233ms (compile: 21ms, render: 211ms)
+ GET /api/auth/profile 200 in 226ms (compile: 4ms, render: 222ms)
+ GET /api/auth/profile 200 in 146ms (compile: 1942µs, render: 144ms)
+ GET /api/auth/profile 200 in 149ms (compile: 8ms, render: 141ms)
+ GET /api/auth/profile 200 in 232ms (compile: 1804µs, render: 230ms)
+ GET / 200 in 72ms (compile: 39ms, render: 32ms)
+ GET /api/auth/has-used-trial 200 in 374ms (compile: 16ms, render: 358ms)
+ GET /api/auth/profile 200 in 578ms (compile: 21ms, render: 557ms)
+ GET /api/auth/has-used-trial 200 in 107ms (compile: 3ms, render: 104ms)
+ GET /api/auth/profile 200 in 220ms (compile: 10ms, render: 210ms)
+ GET /api/auth/profile 200 in 268ms (compile: 4ms, render: 264ms)
+ GET /dashboard 200 in 495ms (compile: 173ms, render: 322ms)
+✓ Compiled in 1528ms
+✓ Compiled in 2.3s
+ GET /api/auth/profile 200 in 1600ms (compile: 233ms, render: 1367ms)
+ GET /api/auth/profile 200 in 298ms (compile: 4ms, render: 294ms)
+ GET /api/auth/profile 200 in 261ms (compile: 3ms, render: 258ms)
+✓ Compiled in 1459ms
+✓ Compiled in 1473ms
+○ Compiling /dashboard ...
+ GET /login 200 in 3.8s (compile: 2.6s, render: 1189ms)
+ GET /dashboard 200 in 4.1s (compile: 3.2s, render: 898ms)
+ GET /login 200 in 507ms (compile: 7ms, render: 499ms)
+ GET /dashboard 200 in 776ms (compile: 116ms, render: 659ms)
+✓ Compiled in 84ms
+ GET /login 200 in 339ms (compile: 14ms, render: 326ms)
+ GET /login 200 in 62ms (compile: 4ms, render: 58ms)
+ GET /dashboard 200 in 416ms (compile: 180ms, render: 235ms)
+ GET /dashboard 200 in 466ms (compile: 20ms, render: 446ms)
+✓ Compiled in 358ms
+ GET /login 200 in 762ms (compile: 34ms, render: 728ms)
+ GET /dashboard 200 in 909ms (compile: 416ms, render: 493ms)
+ GET /api/auth/profile 200 in 2.2s (compile: 204ms, render: 1961ms)
+○ Compiling /dashboard/migrate ...
+ GET /dashboard/migrate 200 in 4.8s (compile: 4.4s, render: 364ms)
+ GET /dashboard/migrate 200 in 85ms (compile: 29ms, render: 56ms)
+ GET /api/auth/profile 200 in 284ms (compile: 20ms, render: 263ms)
+ GET /api/auth/profile 200 in 238ms (compile: 3ms, render: 235ms)
+ GET / 200 in 225ms (compile: 69ms, render: 156ms)
+ GET /api/auth/profile 200 in 480ms (compile: 12ms, render: 468ms)
+ GET /api/auth/profile 200 in 165ms (compile: 5ms, render: 161ms)
+ GET /api/auth/has-used-trial 200 in 626ms (compile: 23ms, render: 603ms)
+ GET /api/auth/profile 200 in 204ms (compile: 4ms, render: 200ms)
+ GET /api/auth/has-used-trial 200 in 194ms (compile: 3ms, render: 191ms)
+✓ Compiled in 695ms
+ GET / 200 in 425ms (compile: 93ms, render: 333ms)
+ GET /login 200 in 250ms (compile: 57ms, render: 193ms)
+✓ Compiled in 1508ms
+ GET / 200 in 1886ms (compile: 469ms, render: 1417ms)
+ GET /api/auth/has-used-trial 200 in 1390ms (compile: 50ms, render: 1340ms)
+ GET /api/auth/profile 200 in 1967ms (compile: 86ms, render: 1882ms)
+ GET /api/auth/profile 200 in 160ms (compile: 3ms, render: 157ms)
+ GET /api/auth/profile 200 in 140ms (compile: 4ms, render: 137ms)
+✓ Compiled in 1157ms
+✓ Compiled in 681ms
+✓ Compiled in 959ms
+✓ Compiled in 26ms
+✓ Compiled in 1953ms
+✓ Finished filesystem cache database compaction in 13.8s
+✓ Compiled in 1611ms
+ GET /login 200 in 1785ms (compile: 1248ms, render: 537ms)
+ GET / 200 in 2.1s (compile: 402ms, render: 1682ms)
+ GET /login 200 in 331ms (compile: 224ms, render: 108ms)
+ GET / 200 in 365ms (compile: 25ms, render: 340ms)
+ GET /login 200 in 26ms (compile: 5ms, render: 22ms)
+ GET / 200 in 105ms (compile: 16ms, render: 89ms)
+ GET /dashboard/admin 200 in 6.7s (compile: 3.6s, render: 3.1s)
+ GET / 200 in 1809ms (compile: 540ms, render: 1269ms)
+ GET /api/auth/has-used-trial 200 in 1275ms (compile: 423ms, render: 852ms)
+ GET /api/auth/profile 200 in 1496ms (compile: 147ms, render: 1349ms)
+ GET /api/auth/profile 200 in 181ms (compile: 3ms, render: 178ms)
+ GET /api/auth/profile 200 in 167ms (compile: 6ms, render: 161ms)
+ GET /api/auth/profile 200 in 267ms (compile: 7ms, render: 261ms)
+ GET /docs 200 in 3.0s (compile: 3.0s, render: 91ms)
+ GET /api/auth/profile 200 in 263ms (compile: 8ms, render: 255ms)
+ GET /api/auth/profile 200 in 265ms (compile: 3ms, render: 262ms)
+ GET /api/auth/profile 200 in 214ms (compile: 16ms, render: 198ms)
+ GET /docs/get-started/introduction 200 in 4.0s (compile: 3.7s, render: 350ms)
+ GET /docs/get-started 200 in 67ms (compile: 16ms, render: 51ms)
+ GET /docs/get-started/introduction 200 in 25ms (compile: 6ms, render: 19ms)
+ GET /docs/get-started/quick-start 200 in 44ms (compile: 18ms, render: 26ms)
+ GET /docs/get-started/authentication 200 in 57ms (compile: 23ms, render: 34ms)
+ GET /docs/get-started/api-keys 200 in 23ms (compile: 10ms, render: 12ms)
+ GET /docs/features 200 in 115ms (compile: 34ms, render: 81ms)
+ GET /docs/features/soft-delete 200 in 37ms (compile: 4ms, render: 33ms)
+ GET /docs/features/batch-cancellation 200 in 20ms (compile: 5ms, render: 14ms)
+ GET /docs/features/enhanced-logging 200 in 20ms (compile: 6ms, render: 14ms)
+ GET /docs/features/security 200 in 172ms (compile: 20ms, render: 152ms)
+ GET /docs/features/enhanced-logging 200 in 66ms (compile: 25ms, render: 41ms)
+ GET /docs/troubleshooting 200 in 38ms (compile: 9ms, render: 30ms)
+ GET /docs/troubleshooting/common-issues 200 in 78ms (compile: 15ms, render: 63ms)
+ GET /docs/troubleshooting/faq 200 in 48ms (compile: 15ms, render: 33ms)
+ GET /docs/troubleshooting/error-codes 200 in 29ms (compile: 15ms, render: 14ms)
+ GET /docs/changelog 200 in 23ms (compile: 8ms, render: 15ms)
+ GET /docs/api-reference 200 in 18ms (compile: 5ms, render: 13ms)
+ GET /docs/api-reference/endpoints 200 in 29ms (compile: 9ms, render: 20ms)
+ GET /docs/api-reference/authentication 200 in 40ms (compile: 9ms, render: 31ms)
+ GET /docs/api-reference/rate-limiting 200 in 24ms (compile: 7ms, render: 17ms)
+ GET /dashboard 200 in 4.5s (compile: 2.8s, render: 1647ms)
+ GET /dashboard/migrate 200 in 538ms (compile: 471ms, render: 67ms)
+ GET /api/auth/profile 200 in 417ms (compile: 83ms, render: 334ms)
+ GET /api/auth/profile 200 in 157ms (compile: 2ms, render: 154ms)
+○ Compiling /api/migrate/batch ...
+{"timestamp":"2026-02-28T13:01:21.443Z","requestId":"f960af0c-44c5-4228-aed8-3f6314dfb40b","level":"info","action":"batch_processing_start","ipAddress":"::1::/64","userAgent":"Mozilla/5.0 Chrome","userId":"7462766c-3092-4b1a-81f0-b1e90bdea11e","sourceDialect":"sql_server","targetDialect":"snowflake_dbt","model":"gpt-4o-mini","totalStatements":1,"filesCount":0,"tier":"pro"}
+{"timestamp":"2026-02-28T13:01:21.443Z","requestId":"f960af0c-44c5-4228-aed8-3f6314dfb40b","level":"info","action":"batch_processing_complete","ipAddress":"::1::/64","userAgent":"Mozilla/5.0 Chrome","userId":"7462766c-3092-4b1a-81f0-b1e90bdea11e","sourceDialect":"sql_server","targetDialect":"snowflake_dbt","totalStatements":1,"successCount":1,"failedCount":0,"totalTokens":284,"totalDurationMs":2216}
+[Migration History Save Error] {
+  userId: '7462766c-3092-4b1a-81f0-b1e90bdea11e',
+  error: '\n' +
+    'Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].migrationBatch.create()` invocation in\n' +
+    '/Users/abu/Learning/Vibe_Coding_Bootcamp/hackathon-proj/.next/dev/server/chunks/[root-of-the-server]__a734f190._.js:2207:177\n' +
+    '\n' +
+    '  2204 }));\n' +
+    '  2205 let batchId = null;\n' +
+    '  2206 try {\n' +
+    '→ 2207     const batch = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].migrationBatch.create(\n' +
+    'The column `updated_at` does not exist in the current database.'
+}
+{"timestamp":"2026-02-28T13:01:21.443Z","requestId":"f960af0c-44c5-4228-aed8-3f6314dfb40b","level":"info","action":"batch_migration_completed","ipAddress":"::1::/64","userAgent":"Mozilla/5.0 Chrome","userId":"7462766c-3092-4b1a-81f0-b1e90bdea11e","batchId":null,"durationMs":3793,"summary":{"total":1,"success":1,"failed":0}}
+ POST /api/migrate/batch 200 in 9.2s (compile: 5.1s, render: 4.1s)
+ GET /dashboard 200 in 1187ms (compile: 137ms, render: 1051ms)
+ GET /dashboard 200 in 5.8s (compile: 11ms, render: 5.8s)
+ GET /api/auth/profile 200 in 448ms (compile: 65ms, render: 383ms)
+ GET /dashboard/admin 200 in 75ms (compile: 49ms, render: 27ms)
+ GET /api/admin/stats 200 in 505ms (compile: 27ms, render: 478ms)
+ GET /api/admin/stats 200 in 157ms (compile: 1568µs, render: 156ms)
+ GET /dashboard 200 in 422ms (compile: 40ms, render: 382ms)
+ GET / 200 in 64ms (compile: 31ms, render: 33ms)
+ GET /api/auth/profile 200 in 204ms (compile: 26ms, render: 178ms)
+ GET /api/auth/has-used-trial 200 in 248ms (compile: 67ms, render: 181ms)
+ GET /api/auth/has-used-trial 200 in 104ms (compile: 1443µs, render: 102ms)
+ GET /api/auth/profile 200 in 160ms (compile: 3ms, render: 157ms)
+ GET /api/auth/profile 200 in 246ms (compile: 1188µs, render: 244ms)
+ GET /docs 200 in 99ms (compile: 39ms, render: 59ms)
+ GET /api/auth/profile 200 in 218ms (compile: 6ms, render: 212ms)
+ GET /api/auth/profile 200 in 300ms (compile: 1567µs, render: 298ms)
+ GET /api/auth/profile 200 in 179ms (compile: 1783µs, render: 177ms)
+ GET /dashboard 200 in 201ms (compile: 12ms, render: 189ms)
+ POST /api/auth/signout 302 in 389ms (compile: 77ms, render: 313ms)
+ GET / 200 in 427ms (compile: 12ms, render: 415ms)
+ GET /login 200 in 119ms (compile: 59ms, render: 60ms)
+ GET / 200 in 88ms (compile: 18ms, render: 70ms)
+ GET /docs 200 in 118ms (compile: 69ms, render: 49ms)
+ GET / 200 in 54ms (compile: 16ms, render: 38ms)
+ GET /support 200 in 591ms (compile: 347ms, render: 245ms)
+ GET / 200 in 107ms (compile: 49ms, render: 57ms)
+ GET /login 200 in 157ms (compile: 41ms, render: 117ms)
+ POST /api/auth/signin 200 in 1259ms (compile: 55ms, render: 1204ms)
+ GET /dashboard 200 in 1080ms (compile: 108ms, render: 972ms)
+ GET /dashboard 200 in 879ms (compile: 5ms, render: 875ms)
+ GET /dashboard/migrate 200 in 176ms (compile: 56ms, render: 120ms)
+ GET /api/auth/profile 200 in 395ms (compile: 24ms, render: 371ms)
+ GET /api/auth/profile 200 in 166ms (compile: 7ms, render: 159ms)
+{"timestamp":"2026-02-28T13:04:37.289Z","requestId":"baf64413-3c82-4497-92eb-8468315becdd","level":"info","action":"batch_processing_start","ipAddress":"::1::/64","userAgent":"Mozilla/5.0 Chrome","userId":"7462766c-3092-4b1a-81f0-b1e90bdea11e","sourceDialect":"sql_server","targetDialect":"snowflake_dbt","model":"gpt-4o-mini","totalStatements":1,"filesCount":0,"tier":"pro"}
+{"timestamp":"2026-02-28T13:04:37.289Z","requestId":"baf64413-3c82-4497-92eb-8468315becdd","level":"info","action":"batch_processing_complete","ipAddress":"::1::/64","userAgent":"Mozilla/5.0 Chrome","userId":"7462766c-3092-4b1a-81f0-b1e90bdea11e","sourceDialect":"sql_server","targetDialect":"snowflake_dbt","totalStatements":1,"successCount":1,"failedCount":0,"totalTokens":279,"totalDurationMs":1887}
+[Migration History Save Error] {
+  userId: '7462766c-3092-4b1a-81f0-b1e90bdea11e',
+  error: '\n' +
+    'Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].migrationBatch.create()` invocation in\n' +
+    '/Users/abu/Learning/Vibe_Coding_Bootcamp/hackathon-proj/.next/dev/server/chunks/[root-of-the-server]__a734f190._.js:2207:177\n' +
+    '\n' +
+    '  2204 }));\n' +
+    '  2205 let batchId = null;\n' +
+    '  2206 try {\n' +
+    '→ 2207     const batch = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].migrationBatch.create(\n' +
+    'The column `updated_at` does not exist in the current database.'
+}
+{"timestamp":"2026-02-28T13:04:37.289Z","requestId":"baf64413-3c82-4497-92eb-8468315becdd","level":"info","action":"batch_migration_completed","ipAddress":"::1::/64","userAgent":"Mozilla/5.0 Chrome","userId":"7462766c-3092-4b1a-81f0-b1e90bdea11e","batchId":null,"durationMs":2862,"summary":{"total":1,"success":1,"failed":0}}
+ POST /api/migrate/batch 200 in 3.4s (compile: 334ms, render: 3.1s)
+ GET /dashboard 200 in 1178ms (compile: 129ms, render: 1049ms)
+ GET / 200 in 820ms (compile: 279ms, render: 541ms)
+ GET /api/auth/has-used-trial 200 in 609ms (compile: 13ms, render: 596ms)
+ GET /api/auth/profile 200 in 1049ms (compile: 113ms, render: 936ms)
+ GET /api/auth/has-used-trial 200 in 122ms (compile: 10ms, render: 112ms)
+ GET /api/auth/profile 200 in 202ms (compile: 5ms, render: 197ms)
+ GET /api/auth/profile 200 in 162ms (compile: 3ms, render: 159ms)
+✓ Compiled in 1733ms
+ GET /login 200 in 643ms (compile: 467ms, render: 176ms)
+ GET / 200 in 697ms (compile: 118ms, render: 578ms)
+ GET /api/auth/profile 200 in 2.2s (compile: 366ms, render: 1848ms)
+ GET / 200 in 1353ms (compile: 149ms, render: 1205ms)
+ GET /api/auth/profile 200 in 734ms (compile: 8ms, render: 726ms)
+ GET /api/auth/profile 200 in 235ms (compile: 13ms, render: 222ms)
+ GET /api/auth/profile 200 in 237ms (compile: 1279µs, render: 236ms)
+ GET /api/auth/has-used-trial 200 in 268ms (compile: 80ms, render: 188ms)
+ GET /api/auth/profile 200 in 220ms (compile: 5ms, render: 216ms)
+ GET /support 200 in 278ms (compile: 61ms, render: 217ms)
+ GET /api/auth/profile 200 in 234ms (compile: 18ms, render: 216ms)
+ GET /api/auth/profile 200 in 171ms (compile: 1571µs, render: 170ms)
+ GET /api/auth/profile 200 in 159ms (compile: 1871µs, render: 157ms)
+ GET /api/auth/profile 200 in 248ms (compile: 7ms, render: 241ms)
+ GET /api/auth/profile 200 in 150ms (compile: 1288µs, render: 149ms)
+ GET /docs 200 in 316ms (compile: 32ms, render: 284ms)
+ GET /api/auth/profile 200 in 166ms (compile: 3ms, render: 163ms)
+ GET /api/auth/profile 200 in 236ms (compile: 5ms, render: 231ms)
+ GET /api/auth/profile 200 in 149ms (compile: 2ms, render: 147ms)
+⨯ Error [PrismaClientKnownRequestError]: 
+Invalid `{imported module ./src/lib/prisma.ts}["prisma"].migrationBatch.findMany()` invocation in
+/Users/abu/Learning/Vibe_Coding_Bootcamp/hackathon-proj/.next/dev/server/chunks/ssr/[root-of-the-server]__3324626e._.js:856:151
+
+  853         userId: user.id
+  854     }
+  855 }),
+→ 856 {imported module ./src/lib/prisma.ts}["prisma"].migrationBatch.findMany(
+The column `(not available)` does not exist in the current database.
+    at <unknown> (src/app/dashboard/page.tsx:37:27)
+    at async DashboardPage (src/app/dashboard/page.tsx:34:50)
+  35 |     prisma.profile.findUnique({ where: { id: user.id } }),
+  36 |     prisma.subscription.findUnique({ where: { userId: user.id } }),
+> 37 |     prisma.migrationBatch.findMany({
+     |                           ^
+  38 |       where: { userId: user.id, deletedAt: null },
+  39 |       orderBy: { createdAt: 'desc' },
+  40 |       take: 5, {
+  code: 'P2022',
+  meta: [Object],
+  clientVersion: '7.4.1',
+  digest: '1740280962'
+}
+ GET /dashboard 200 in 4.2s (compile: 2.6s, render: 1607ms)
+✓ Compiled in 1308ms
+ GET /login 200 in 7.5s (compile: 5.2s, render: 2.3s)
+ GET /dashboard 200 in 9.9s (compile: 3.7s, render: 6.2s)
+ GET /api/auth/profile 200 in 349ms (compile: 23ms, render: 326ms)
+✓ Compiled in 552ms
+ GET /login 200 in 6.4s (compile: 6.0s, render: 374ms)
+⨯ Error [PrismaClientKnownRequestError]: 
+Invalid `{imported module ./src/lib/prisma.ts}["prisma"].migrationBatch.findMany()` invocation in
+/Users/abu/Learning/Vibe_Coding_Bootcamp/hackathon-proj/.next/dev/server/chunks/ssr/[root-of-the-server]__3324626e._.js:856:151
+
+  853         userId: user.id
+  854     }
+  855 }),
+→ 856 {imported module ./src/lib/prisma.ts}["prisma"].migrationBatch.findMany(
+The column `(not available)` does not exist in the current database.
+    at <unknown> (src/app/dashboard/page.tsx:37:27)
+    at async DashboardPage (src/app/dashboard/page.tsx:34:50)
+  35 |     prisma.profile.findUnique({ where: { id: user.id } }),
+  36 |     prisma.subscription.findUnique({ where: { userId: user.id } }),
+> 37 |     prisma.migrationBatch.findMany({
+     |                           ^
+  38 |       where: { userId: user.id, deletedAt: null },
+  39 |       orderBy: { createdAt: 'desc' },
+  40 |       take: 5, {
+  code: 'P2022',
+  meta: [Object],
+  clientVersion: '7.4.1',
+  digest: '1740280962'
+}
+ GET /dashboard 200 in 8.9s (compile: 3.8s, render: 5.2s)
+⨯ Error [PrismaClientKnownRequestError]: 
+Invalid `{imported module ./src/lib/prisma.ts}["prisma"].migrationBatch.findMany()` invocation in
+/Users/abu/Learning/Vibe_Coding_Bootcamp/hackathon-proj/.next/dev/server/chunks/ssr/[root-of-the-server]__3324626e._.js:856:151
+
+  853         userId: user.id
+  854     }
+  855 }),
+→ 856 {imported module ./src/lib/prisma.ts}["prisma"].migrationBatch.findMany(
+The column `(not available)` does not exist in the current database.
+    at <unknown> (src/app/dashboard/page.tsx:37:27)
+    at async DashboardPage (src/app/dashboard/page.tsx:34:50)
+  35 |     prisma.profile.findUnique({ where: { id: user.id } }),
+  36 |     prisma.subscription.findUnique({ where: { userId: user.id } }),
+> 37 |     prisma.migrationBatch.findMany({
+     |                           ^
+  38 |       where: { userId: user.id, deletedAt: null },
+  39 |       orderBy: { createdAt: 'desc' },
+  40 |       take: 5, {
+  code: 'P2022',
+  meta: [Object],
+  clientVersion: '7.4.1',
+  digest: '1740280962'
+}
+ GET /dashboard 200 in 4.4s (compile: 580ms, render: 3.8s)
+ GET /api/auth/profile 200 in 310ms (compile: 83ms, render: 227ms)
+⨯ Error [PrismaClientKnownRequestError]: 
+Invalid `{imported module ./src/lib/prisma.ts}["prisma"].migrationBatch.findMany()` invocation in
+/Users/abu/Learning/Vibe_Coding_Bootcamp/hackathon-proj/.next/dev/server/chunks/ssr/[root-of-the-server]__3324626e._.js:856:151
+
+  853         userId: user.id
+  854     }
+  855 }),
+→ 856 {imported module ./src/lib/prisma.ts}["prisma"].migrationBatch.findMany(
+The column `(not available)` does not exist in the current database.
+    at <unknown> (src/app/dashboard/page.tsx:37:27)
+    at async DashboardPage (src/app/dashboard/page.tsx:34:50)
+  35 |     prisma.profile.findUnique({ where: { id: user.id } }),
+  36 |     prisma.subscription.findUnique({ where: { userId: user.id } }),
+> 37 |     prisma.migrationBatch.findMany({
+     |                           ^
+  38 |       where: { userId: user.id, deletedAt: null },
+  39 |       orderBy: { createdAt: 'desc' },
+  40 |       take: 5, {
+  code: 'P2022',
+  meta: [Object],
+  clientVersion: '7.4.1',
+  digest: '1740280962'
+}
+ GET /dashboard 200 in 3.0s (compile: 392ms, render: 2.7s)
+ GET /api/auth/profile 200 in 339ms (compile: 26ms, render: 314ms)
+ GET /dashboard 200 in 252ms (compile: 18ms, render: 234ms)
+[?25h

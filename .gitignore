@@ -29,6 +29,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+dev-server.log
+
+# temporary files and screenshots (local only)
+test-email.mjs
 
 # env files (can opt-in for committing if needed)
 .env*
@@ -42,5 +46,5 @@ next-env.d.ts
 
 /src/generated/prisma
 
-# local docs
-TESTING.md
+# docs folder (generated documentation)
+/docs/*.md

@@ -204,7 +204,7 @@ export default function MigratePage() {
             </Link>
             <div className="flex items-center gap-2">
               <Database className="w-5 h-5 text-emerald-500" />
-              <span className="font-bold tracking-tight hidden sm:inline">MorphDB</span>
+              <span className="font-bold tracking-tight hidden sm:inline hover:text-emerald-400 transition-colors">MorphDB</span>
               <span className="hidden sm:inline text-xs px-2 py-0.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 font-medium">
                 Developer Beta
               </span>

@@ -57,22 +57,22 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Send confirmation email to user (fire-and-forget)
-    sendEmail({
-      to: email,
-      subject: `Support Request Received: ${subject}`,
-      html: getSupportTicketEmailHTML(name, ticket.id, subject),
-    }).catch((e) => console.error('[Support Email Error]', e));
+     // Send confirmation email to user (fire-and-forget)
+     sendEmail({
+       to: email,
+       subject: `MorphDB Support Request Received: ${subject}`,
+       html: getSupportTicketEmailHTML(name, ticket.id, subject),
+     }).catch((e) => console.error('[Support Email Error]', e));
 
-    // Send admin notification email (fire-and-forget)
-    const adminEmail = process.env.ADMIN_EMAILS?.split(',')[0]?.trim();
-    if (adminEmail) {
-      sendEmail({
-        to: adminEmail,
-        subject: `New Support Ticket: ${subject}`,
-        html: getAdminSupportNotificationEmailHTML(ticket.id, subject, email),
-      }).catch((e) => console.error('[Admin Notification Email Error]', e));
-    }
+     // Send admin notification email (fire-and-forget)
+     const adminEmail = process.env.ADMIN_EMAILS?.split(',')[0]?.trim();
+     if (adminEmail) {
+       sendEmail({
+         to: adminEmail,
+         subject: `MorphDB: New Support Ticket - ${subject}`,
+         html: getAdminSupportNotificationEmailHTML(ticket.id, subject, email),
+       }).catch((e) => console.error('[Admin Notification Email Error]', e));
+     }
 
     // Structured logging for support ticket
     console.log(JSON.stringify({

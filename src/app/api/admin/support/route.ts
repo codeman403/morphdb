@@ -78,7 +78,7 @@ export async function PATCH(req: NextRequest) {
     const userName = userProfile?.name || updatedTicket.name;
     sendEmail({
       to: updatedTicket.email,
-      subject: `Support Ticket Update: ${status.replace('_', ' ').toUpperCase()}`,
+      subject: `MorphDB Support Ticket Update: ${status.replace('_', ' ').toUpperCase()}`,
       html: getTicketStatusUpdateEmailHTML(userName, id, status),
     }).catch((e) => console.error('[Ticket Status Update Email Error]', e));
 

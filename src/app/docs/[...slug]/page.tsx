@@ -261,43 +261,8 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
 
         <h3 className="text-xl font-semibold text-white">Sessions</h3>
          <p className="text-zinc-300">
-           Your session is managed securely and automatically. You&apos;ll be logged out after 30 days of inactivity for security.
-         </p>
-      </div>
-    ),
-  },
-
-  'get-started/api-keys': {
-    title: 'API Keys',
-    content: (
-      <div className="space-y-6">
-        <p className="text-zinc-300">
-          API keys allow you to programmatically access MorphDB features.
-        </p>
-
-        <h3 className="text-xl font-semibold text-white">Generating an API Key</h3>
-         <ol className="list-decimal list-inside space-y-2 text-zinc-300 ml-2">
-           <li>Go to Settings → API Keys</li>
-           <li>Click &quot;Create New Key&quot;</li>
-           <li>Give it a descriptive name</li>
-           <li>Copy the key and store it securely</li>
-         </ol>
-
-        <h3 className="text-xl font-semibold text-white">Using API Keys</h3>
-        <p className="text-zinc-300">
-          Include your API key in the Authorization header:
-        </p>
-        <CodeBlock>{`Authorization: Bearer YOUR_API_KEY`}</CodeBlock>
-
-        <div className="bg-red-950/20 border border-red-800/50 rounded-lg p-6">
-          <h3 className="font-semibold text-white mb-2 flex items-center gap-2">
-            <AlertCircle className="w-5 h-5 text-red-500" />
-            Security Warning
-          </h3>
-          <p className="text-zinc-300">
-            Never share your API keys. Treat them like passwords. If compromised, regenerate immediately.
+            Your session is managed securely and automatically. You&apos;ll be logged out after 15 minutes of inactivity for security.
           </p>
-        </div>
       </div>
     ),
   },
@@ -338,7 +303,6 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
 
         <h3 className="text-xl font-semibold text-white">Benefits</h3>
         <ul className="space-y-2 text-zinc-300 ml-4">
-          <li>✓ GDPR and CCPA compliance</li>
           <li>✓ Complete audit trail for regulatory requirements</li>
           <li>✓ Troubleshoot issues by reviewing deleted operations</li>
           <li>✓ Data safety - nothing is truly deleted</li>
@@ -466,18 +430,6 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
             <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
             <span>Regular security audits and penetration testing</span>
           </li>
-          <li className="flex gap-3">
-            <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-            <span>GDPR and SOC 2 compliance ready</span>
-          </li>
-        </ul>
-
-        <h3 className="text-xl font-semibold text-white">Best Practices</h3>
-        <ul className="space-y-2 text-zinc-300 ml-4">
-          <li>• Never share API keys or authentication tokens</li>
-          <li>• Use environment variables for sensitive configuration</li>
-          <li>• Regularly rotate API keys</li>
-          <li>• Enable two-factor authentication on your account</li>
         </ul>
       </div>
     ),
@@ -523,7 +475,7 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
             If your 3-day trial ended:
           </p>
           <ul className="list-disc list-inside space-y-1 text-zinc-300 ml-2">
-            <li>Upgrade to a paid plan to continue</li>
+            <li>Upgrade to a paid plan or it will be downgraded to Free plan</li>
             <li>Contact us about special pricing for your use case</li>
           </ul>
         </div>
@@ -595,11 +547,6 @@ const docContent: Record<string, { title: string; content: React.ReactNode }> = 
                 <td className="py-3 px-4 font-mono text-red-500">400</td>
                 <td className="py-3 px-4 text-zinc-300">Bad Request</td>
                 <td className="py-3 px-4 text-zinc-300">Check your request parameters</td>
-              </tr>
-              <tr className="border-b border-emerald-500/20">
-                <td className="py-3 px-4 font-mono text-red-500">401</td>
-                <td className="py-3 px-4 text-zinc-300">Unauthorized</td>
-                <td className="py-3 px-4 text-zinc-300">Verify your API key is valid</td>
               </tr>
               <tr className="border-b border-emerald-500/20">
                 <td className="py-3 px-4 font-mono text-red-500">403</td>
@@ -763,8 +710,75 @@ X-RateLimit-Reset: 1234567890`}</code>
     content: (
       <div className="space-y-8">
         <div>
+          <h3 className="text-xl font-semibold text-white mb-2">Version 2.2.0 - 2026-02-28</h3>
+          <p className="text-sm text-zinc-400 mb-3">Enhanced Admin & Compliance Features</p>
+          <ul className="space-y-2 text-zinc-300 ml-4">
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>Multi-template professional email system with 11+ email templates</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>Admin email management: welcome emails and trial reminders</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>Support ticket management with automatic closure notifications</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>Comprehensive audit logging system with PII protection (SHA-256 hashing, IP anonymization)</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>Soft delete pattern for batches with data recovery capability</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>Batch cancellation support with statement-level state preservation</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>Advanced data visualization components (DataFlow, SchemaVisualization)</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>Full-text documentation search across all pages and content</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>Enhanced dashboard with animated background effects</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>Loading state animations with skeleton screens</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>Rate limiting on admin endpoints (20-30 req/min)</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>90-day audit log retention for GDPR compliance</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>UUID migration for consistent ID generation</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>Public navigation component with session awareness</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>Dynamic documentation platform with searchable navigation</span>
+            </li>
+          </ul>
+        </div>
+
+        <div>
           <h3 className="text-xl font-semibold text-white mb-2">Version 2.1.0 - 2026-02-27</h3>
-          <p className="text-sm text-zinc-400 mb-3">Latest Release</p>
+          <p className="text-sm text-zinc-400 mb-3">Audit & Compliance Baseline</p>
           <ul className="space-y-2 text-zinc-300 ml-4">
             <li className="flex gap-3">
               <span className="text-green-500">✓</span>
@@ -787,6 +801,7 @@ X-RateLimit-Reset: 1234567890`}</code>
 
         <div>
           <h3 className="text-xl font-semibold text-white mb-2">Version 2.0.0 - 2026-02-01</h3>
+          <p className="text-sm text-zinc-400 mb-3">Framework Migration</p>
           <ul className="space-y-2 text-zinc-300 ml-4">
             <li className="flex gap-3">
               <span className="text-green-500">✓</span>
@@ -805,6 +820,7 @@ X-RateLimit-Reset: 1234567890`}</code>
 
         <div>
           <h3 className="text-xl font-semibold text-white mb-2">Version 1.5.0 - 2025-12-15</h3>
+          <p className="text-sm text-zinc-400 mb-3">Platform Expansion</p>
           <ul className="space-y-2 text-zinc-300 ml-4">
             <li className="flex gap-3">
               <span className="text-green-500">✓</span>

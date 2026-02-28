@@ -86,14 +86,18 @@ function parseBrowser(ua: string | null) {
 }
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'waitlist' | 'logins' | 'signups' | 'subscriptions' | 'support'>('waitlist');
-  const [resetting, setResetting] = useState(false);
-  const [showResetModal, setShowResetModal] = useState(false);
-  const [showGrantProModal, setShowGrantProModal] = useState(false);
-  const [grantingPro, setGrantingPro] = useState(false);
+   const [stats, setStats] = useState<Stats | null>(null);
+   const [error, setError] = useState<string | null>(null);
+   const [loading, setLoading] = useState(true);
+   const [activeTab, setActiveTab] = useState<'waitlist' | 'logins' | 'signups' | 'subscriptions' | 'support'>('waitlist');
+    const [resetting, setResetting] = useState(false);
+    const [showResetModal, setShowResetModal] = useState(false);
+    const [showGrantProModal, setShowGrantProModal] = useState(false);
+    const [grantingPro, setGrantingPro] = useState(false);
+    const [sendingWelcomeEmailFor, setSendingWelcomeEmailFor] = useState<string | null>(null);
+    const [closingTicket, setClosingTicket] = useState(false);
+    const [selectedTicketForClose, setSelectedTicketForClose] = useState<string | null>(null);
+    const [sendingTrialReminderFor, setSendingTrialReminderFor] = useState<string | null>(null);
 
   const fetchStats = async () => {
     setLoading(true);
@@ -109,10 +113,94 @@ export default function AdminDashboard() {
       setError(e instanceof Error ? e.message : 'Something went wrong');
     } finally {
       setLoading(false);
+   }
+ };
+
+  const sendWelcomeEmail = async (userId: string) => {
+    setSendingWelcomeEmailFor(userId);
+    try {
+      const res = await fetch('/api/admin/send-welcome-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert(`Welcome email sent to ${data.email}`);
+      } else {
+        alert(`Error: ${data.error || 'Failed to send email'}`);
+      }
+    } catch (e) {
+      alert(`Error: ${e instanceof Error ? e.message : 'Failed to send email'}`);
+    } finally {
+      setSendingWelcomeEmailFor(null);
     }
   };
 
-  useEffect(() => { fetchStats(); }, []);
+ const closeTicket = async (ticketId: string) => {
+   setClosingTicket(true);
+   try {
+     const res = await fetch('/api/admin/close-ticket', {
+       method: 'POST',
+       headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify({ ticketId, sendNotification: true }),
+     });
+     const data = await res.json();
+     if (res.ok) {
+       setSelectedTicketForClose(null);
+       fetchStats();
+     } else {
+       alert(`Error: ${data.error || 'Failed to close ticket'}`);
+     }
+   } catch (e) {
+     alert(`Error: ${e instanceof Error ? e.message : 'Failed to close ticket'}`);
+   } finally {
+     setClosingTicket(false);
+   }
+ };
+
+  const sendTrialReminderEmail = async (userId: string) => {
+    setSendingTrialReminderFor(userId);
+    try {
+      const res = await fetch('/api/admin/send-trial-reminder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert(`Trial reminder email sent successfully`);
+      } else {
+        alert(`Error: ${data.error || 'Failed to send email'}`);
+      }
+    } catch (e) {
+      alert(`Error: ${e instanceof Error ? e.message : 'Failed to send email'}`);
+    } finally {
+      setSendingTrialReminderFor(null);
+    }
+  };
+
+  const sendTrialReminderEmails = async () => {
+    setSendingTrialReminderFor('batch');
+    try {
+      const res = await fetch('/api/admin/send-trial-reminder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert(`Sent ${data.stats.successCount} trial reminder emails. Failed: ${data.stats.failureCount}`);
+      } else {
+        alert(`Error: ${data.error || 'Failed to send reminders'}`);
+      }
+    } catch (e) {
+      alert(`Error: ${e instanceof Error ? e.message : 'Failed to send reminders'}`);
+    } finally {
+      setSendingTrialReminderFor(null);
+    }
+  };
+
+ useEffect(() => { fetchStats(); }, []);
 
   if (loading) {
     return (
@@ -180,27 +268,27 @@ export default function AdminDashboard() {
               <span className="text-xs px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 font-medium">Admin</span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setShowGrantProModal(true)}
-              className="flex items-center gap-2 px-4 py-2 text-sm text-green-400 hover:text-green-300 border border-green-500/20 rounded-full hover:bg-green-500/10 transition-colors"
-            >
-              Update Plan
-            </button>
-            <button
-              onClick={() => setShowResetModal(true)}
-              disabled={resetting}
-              className="flex items-center gap-2 px-4 py-2 text-sm text-amber-400 hover:text-amber-300 border border-amber-500/20 rounded-full hover:bg-amber-500/10 transition-colors disabled:opacity-50"
-            >
-              <RotateCcw className={`w-4 h-4 ${resetting ? 'animate-spin' : ''}`} /> {resetting ? 'Resetting...' : 'Reset Usage'}
-            </button>
-            <button
-              onClick={fetchStats}
-              className="flex items-center gap-2 px-4 py-2 text-sm text-zinc-400 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 backdrop-blur-md transition-colors"
-            >
-              <RefreshCw className="w-4 h-4" /> Refresh
-            </button>
-          </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowGrantProModal(true)}
+                className="flex items-center gap-2 px-4 py-2 text-sm text-green-400 hover:text-green-300 border border-green-500/20 rounded-full hover:bg-green-500/10 transition-colors"
+              >
+                Update Plan
+              </button>
+              <button
+                onClick={() => setShowResetModal(true)}
+                disabled={resetting}
+                className="flex items-center gap-2 px-4 py-2 text-sm text-amber-400 hover:text-amber-300 border border-amber-500/20 rounded-full hover:bg-amber-500/10 transition-colors disabled:opacity-50"
+              >
+                <RotateCcw className={`w-4 h-4 ${resetting ? 'animate-spin' : ''}`} /> {resetting ? 'Resetting...' : 'Reset Usage'}
+              </button>
+              <button
+                onClick={fetchStats}
+                className="flex items-center gap-2 px-4 py-2 text-sm text-zinc-400 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 backdrop-blur-md transition-colors"
+              >
+                <RefreshCw className="w-4 h-4" /> Refresh
+              </button>
+            </div>
         </div>
       </nav>
 
@@ -332,58 +420,70 @@ export default function AdminDashboard() {
             </div>
           )}
 
-          {activeTab === 'signups' && (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-emerald-500/20">
-                    <th className="text-left p-4 text-zinc-400 font-medium">Email</th>
-                    <th className="text-left p-4 text-zinc-400 font-medium">Name</th>
-                    <th className="text-left p-4 text-zinc-400 font-medium">Company</th>
-                    <th className="text-left p-4 text-zinc-400 font-medium">Joined</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stats.recentSignups.entries.map((profile) => (
-                    <tr key={profile.id} className="border-b border-white/5 hover:bg-slate-900/50 backdrop-blur-md transition-colors">
-                      <td className="p-4 font-mono text-purple-400">{profile.email}</td>
-                      <td className="p-4 text-zinc-300">{profile.name ?? '—'}</td>
-                      <td className="p-4 text-zinc-300">
-                        <span className="flex items-center gap-1.5">
-                          {profile.company && <Building2 className="w-3.5 h-3.5 text-zinc-500" />}
-                          {profile.company ?? '—'}
-                        </span>
-                      </td>
-                      <td className="p-4 text-zinc-500">
-                        <span className="flex items-center gap-1.5">
-                          <Clock className="w-3.5 h-3.5" />
-                          {timeAgo(profile.createdAt)}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                  {stats.recentSignups.entries.length === 0 && (
-                    <tr><td colSpan={4} className="p-8 text-center text-zinc-500">No users yet</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-           )}
+           {activeTab === 'signups' && (
+             <div className="overflow-x-auto">
+               <table className="w-full text-sm">
+                 <thead>
+                   <tr className="border-b border-emerald-500/20">
+                     <th className="text-left p-4 text-zinc-400 font-medium">Email</th>
+                     <th className="text-left p-4 text-zinc-400 font-medium">Name</th>
+                     <th className="text-left p-4 text-zinc-400 font-medium">Company</th>
+                     <th className="text-left p-4 text-zinc-400 font-medium">Joined</th>
+                     <th className="text-left p-4 text-zinc-400 font-medium">Actions</th>
+                   </tr>
+                 </thead>
+                 <tbody>
+                   {stats.recentSignups.entries.map((profile) => (
+                     <tr key={profile.id} className="border-b border-white/5 hover:bg-slate-900/50 backdrop-blur-md transition-colors">
+                       <td className="p-4 font-mono text-purple-400">{profile.email}</td>
+                       <td className="p-4 text-zinc-300">{profile.name ?? '—'}</td>
+                       <td className="p-4 text-zinc-300">
+                         <span className="flex items-center gap-1.5">
+                           {profile.company && <Building2 className="w-3.5 h-3.5 text-zinc-500" />}
+                           {profile.company ?? '—'}
+                         </span>
+                       </td>
+                       <td className="p-4 text-zinc-500">
+                         <span className="flex items-center gap-1.5">
+                           <Clock className="w-3.5 h-3.5" />
+                           {timeAgo(profile.createdAt)}
+                         </span>
+                       </td>
+                        <td className="p-4">
+                          <button
+                            onClick={() => sendWelcomeEmail(profile.id)}
+                            disabled={sendingWelcomeEmailFor === profile.id}
+                            className="flex items-center gap-1.5 px-2 py-1 text-xs text-blue-400 hover:text-blue-300 border border-blue-500/20 rounded hover:bg-blue-500/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            <Mail className="w-3.5 h-3.5" />
+                            {sendingWelcomeEmailFor === profile.id ? 'Sending...' : 'Welcome Email'}
+                          </button>
+                        </td>
+                     </tr>
+                   ))}
+                   {stats.recentSignups.entries.length === 0 && (
+                     <tr><td colSpan={5} className="p-8 text-center text-zinc-500">No users yet</td></tr>
+                   )}
+                 </tbody>
+               </table>
+             </div>
+            )}
 
           {activeTab === 'subscriptions' && (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-emerald-500/20">
-                    <th className="text-left p-4 text-zinc-400 font-medium">Email</th>
-                    <th className="text-left p-4 text-zinc-400 font-medium">Name</th>
-                    <th className="text-left p-4 text-zinc-400 font-medium">Plan</th>
-                    <th className="text-left p-4 text-zinc-400 font-medium">Status</th>
-                    <th className="text-left p-4 text-zinc-400 font-medium">Trial Ends</th>
-                    <th className="text-left p-4 text-zinc-400 font-medium">Period End</th>
-                    <th className="text-left p-4 text-zinc-400 font-medium">Subscribed</th>
-                  </tr>
-                </thead>
+                 <thead>
+                   <tr className="border-b border-emerald-500/20">
+                     <th className="text-left p-4 text-zinc-400 font-medium">Email</th>
+                     <th className="text-left p-4 text-zinc-400 font-medium">Name</th>
+                     <th className="text-left p-4 text-zinc-400 font-medium">Plan</th>
+                     <th className="text-left p-4 text-zinc-400 font-medium">Status</th>
+                     <th className="text-left p-4 text-zinc-400 font-medium">Trial Ends</th>
+                     <th className="text-left p-4 text-zinc-400 font-medium">Period End</th>
+                     <th className="text-left p-4 text-zinc-400 font-medium">Subscribed</th>
+                     <th className="text-left p-4 text-zinc-400 font-medium">Actions</th>
+                   </tr>
+                 </thead>
                 <tbody>
                   {stats.subscriptions.entries.map((sub) => (
                     <tr key={sub.id} className="border-b border-white/5 hover:bg-slate-900/50 backdrop-blur-md transition-colors">
@@ -414,66 +514,94 @@ export default function AdminDashboard() {
                       <td className="p-4 text-zinc-400 text-xs">
                         {sub.currentPeriodEnd ? new Date(sub.currentPeriodEnd).toLocaleDateString() : '—'}
                       </td>
-                      <td className="p-4 text-zinc-500">
-                        <span className="flex items-center gap-1.5">
-                          <Clock className="w-3.5 h-3.5" />
-                          {timeAgo(sub.createdAt)}
-                        </span>
-                      </td>
-                    </tr>
+                       <td className="p-4 text-zinc-500">
+                         <span className="flex items-center gap-1.5">
+                           <Clock className="w-3.5 h-3.5" />
+                           {timeAgo(sub.createdAt)}
+                         </span>
+                       </td>
+                       <td className="p-4">
+                         <button
+                           onClick={() => sendTrialReminderEmail(sub.profile.id)}
+                           disabled={sendingTrialReminderFor === sub.profile.id}
+                           className="flex items-center gap-1.5 px-2 py-1 text-xs text-blue-400 hover:text-blue-300 border border-blue-500/20 rounded hover:bg-blue-500/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                         >
+                           <Mail className="w-3.5 h-3.5" />
+                           {sendingTrialReminderFor === sub.profile.id ? 'Sending...' : 'Trial Reminder'}
+                         </button>
+                       </td>
+                     </tr>
                   ))}
-                  {stats.subscriptions.entries.length === 0 && (
-                    <tr><td colSpan={7} className="p-8 text-center text-zinc-500">No paid subscriptions yet</td></tr>
-                  )}
+                   {stats.subscriptions.entries.length === 0 && (
+                     <tr><td colSpan={8} className="p-8 text-center text-zinc-500">No paid subscriptions yet</td></tr>
+                   )}
                 </tbody>
               </table>
             </div>
           )}
 
-          {activeTab === 'support' && (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-emerald-500/20">
-                    <th className="text-left p-4 text-zinc-400 font-medium">Name</th>
-                    <th className="text-left p-4 text-zinc-400 font-medium">Email</th>
-                    <th className="text-left p-4 text-zinc-400 font-medium">Subject</th>
-                    <th className="text-left p-4 text-zinc-400 font-medium">Description</th>
-                    <th className="text-left p-4 text-zinc-400 font-medium">Status</th>
-                    <th className="text-left p-4 text-zinc-400 font-medium">Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stats.supportTickets.map((ticket) => (
-                    <tr key={ticket.id} className="border-b border-white/5 hover:bg-slate-900/50 backdrop-blur-md transition-colors">
-                      <td className="p-4 text-zinc-300">{ticket.name}</td>
-                      <td className="p-4 font-mono text-blue-400">{ticket.email}</td>
-                      <td className="p-4 text-zinc-300 max-w-xs truncate">{ticket.subject}</td>
-                      <td className="p-4 text-zinc-400 max-w-md truncate">{ticket.description}</td>
-                      <td className="p-4">
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                          ticket.status === 'open' ? 'bg-green-500/10 border border-green-500/20 text-green-400' :
-                          ticket.status === 'in_progress' ? 'bg-amber-500/10 border border-amber-500/20 text-amber-400' :
-                          'bg-zinc-500/10 border border-zinc-500/20 text-zinc-400'
-                        }`}>
-                          {ticket.status}
-                        </span>
-                      </td>
-                      <td className="p-4 text-zinc-500">
-                        <span className="flex items-center gap-1.5">
-                          <Clock className="w-3.5 h-3.5" />
-                          {timeAgo(ticket.createdAt)}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                  {stats.supportTickets.length === 0 && (
-                    <tr><td colSpan={6} className="p-8 text-center text-zinc-500">No support tickets yet</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          )}
+           {activeTab === 'support' && (
+             <div className="overflow-x-auto">
+               <table className="w-full text-sm">
+                 <thead>
+                   <tr className="border-b border-emerald-500/20">
+                     <th className="text-left p-4 text-zinc-400 font-medium">Name</th>
+                     <th className="text-left p-4 text-zinc-400 font-medium">Email</th>
+                     <th className="text-left p-4 text-zinc-400 font-medium">Subject</th>
+                     <th className="text-left p-4 text-zinc-400 font-medium">Description</th>
+                     <th className="text-left p-4 text-zinc-400 font-medium">Status</th>
+                     <th className="text-left p-4 text-zinc-400 font-medium">Date</th>
+                     <th className="text-left p-4 text-zinc-400 font-medium">Actions</th>
+                   </tr>
+                 </thead>
+                 <tbody>
+                   {stats.supportTickets.map((ticket) => (
+                     <tr key={ticket.id} className="border-b border-white/5 hover:bg-slate-900/50 backdrop-blur-md transition-colors">
+                       <td className="p-4 text-zinc-300">{ticket.name}</td>
+                       <td className="p-4 font-mono text-blue-400">{ticket.email}</td>
+                       <td className="p-4 text-zinc-300 max-w-xs truncate">{ticket.subject}</td>
+                       <td className="p-4 text-zinc-400 max-w-md truncate">{ticket.description}</td>
+                       <td className="p-4">
+                         <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                           ticket.status === 'open' ? 'bg-green-500/10 border border-green-500/20 text-green-400' :
+                           ticket.status === 'in_progress' ? 'bg-amber-500/10 border border-amber-500/20 text-amber-400' :
+                           'bg-zinc-500/10 border border-zinc-500/20 text-zinc-400'
+                         }`}>
+                           {ticket.status}
+                         </span>
+                       </td>
+                       <td className="p-4 text-zinc-500">
+                         <span className="flex items-center gap-1.5">
+                           <Clock className="w-3.5 h-3.5" />
+                           {timeAgo(ticket.createdAt)}
+                         </span>
+                       </td>
+                       <td className="p-4">
+                         {ticket.status !== 'closed' && (
+                            <button
+                              onClick={() => {
+                                if (confirm('Close this ticket and send confirmation email?')) {
+                                  setSelectedTicketForClose(ticket.id);
+                                  closeTicket(ticket.id);
+                                }
+                              }}
+                              disabled={selectedTicketForClose === ticket.id}
+                              className="flex items-center gap-1.5 px-2 py-1 text-xs text-amber-400 hover:text-amber-300 border border-amber-500/20 rounded hover:bg-amber-500/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                              {selectedTicketForClose === ticket.id ? 'Closing...' : 'Close'}
+                            </button>
+                         )}
+                       </td>
+                     </tr>
+                   ))}
+                   {stats.supportTickets.length === 0 && (
+                     <tr><td colSpan={7} className="p-8 text-center text-zinc-500">No support tickets yet</td></tr>
+                   )}
+                 </tbody>
+               </table>
+             </div>
+           )}
         </div>
         </div>
       </PageBackground>
