@@ -68,17 +68,17 @@ export default function HowItWorks() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.2 }}
-                className={`w-full bg-slate-900/80 backdrop-blur-xl border ${step.borderColor} rounded-2xl p-8 relative group hover:-translate-y-1 transition-transform duration-300`}
+                className={`w-full h-full bg-slate-900/50 backdrop-blur-sm border ${step.borderColor} rounded-2xl p-8 relative group hover:-translate-y-1 transition-all duration-300 shadow-xl`}
               >
                 {/* Glow effect */}
-                <div className={`absolute -inset-px rounded-2xl ${step.glow} opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl`} />
+                <div className={`absolute -inset-px rounded-2xl ${step.glow} opacity-0 group-hover:opacity-20 transition-opacity duration-500 blur-xl`} />
                 
                 <div className="relative z-10">
-                  <div className={`w-14 h-14 rounded-xl bg-slate-800/50 border border-slate-700 flex items-center justify-center mb-6`}>
-                    <step.icon className={`w-7 h-7 ${step.iconColor}`} />
+                  <div className={`w-14 h-14 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                    <step.icon className={`w-7 h-7 ${step.iconColor} drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]`} />
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-1">{step.title}</h3>
-                  <p className="text-sm font-medium text-slate-500 mb-4">{step.subtitle}</p>
+                  <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
+                  <p className="text-xs font-mono font-medium text-slate-500 mb-4 tracking-wide uppercase">{step.subtitle}</p>
                   <p className="text-slate-400 leading-relaxed text-sm">
                     {step.description}
                   </p>

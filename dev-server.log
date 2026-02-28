@@ -267,3 +267,12 @@
 ✓ Compiled in 38ms
  GET / 200 in 231ms (compile: 64ms, render: 167ms)
  GET / 200 in 82ms (compile: 9ms, render: 73ms)
+ GET /docs 200 in 50ms (compile: 27ms, render: 23ms)
+ GET / 200 in 37ms (compile: 10ms, render: 27ms)
+ GET /support 200 in 647ms (compile: 632ms, render: 15ms)
+ GET / 200 in 28ms (compile: 6ms, render: 22ms)
+ GET /docs 200 in 55ms (compile: 9ms, render: 46ms)
+ GET / 200 in 32ms (compile: 6ms, render: 25ms)
+✓ Compiled in 91ms
+✓ Compiled in 38ms
+✓ Compiled in 107ms

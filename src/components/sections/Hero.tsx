@@ -213,7 +213,9 @@ export default function Hero() {
                             className="flex items-center gap-3"
                         >
                             <div className="px-3 py-1.5 rounded-md bg-slate-800 border border-slate-600 shadow-lg whitespace-nowrap z-10">
-                                <span className="text-xs sm:text-sm font-mono text-slate-300 font-medium">legacy.sql</span>
+                                <span className="text-xs sm:text-sm font-mono text-slate-300 font-medium">
+                                  {['Oracle', 'SQL Server', 'Teradata'][i]}
+                                </span>
                             </div>
                             <div className="w-3 h-3 bg-slate-400 rotate-45 z-10" />
                         </motion.div>
@@ -272,7 +274,9 @@ export default function Hero() {
                         >
                             <div className="w-3 h-3 bg-emerald-400 rotate-45 shadow-[0_0_10px_rgba(52,211,153,0.8)] z-10" />
                             <div className="px-3 py-1.5 rounded-md bg-emerald-950/80 border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.2)] whitespace-nowrap z-10">
-                                <span className="text-xs sm:text-sm font-mono text-emerald-300 font-bold">modern.sql</span>
+                                <span className="text-xs sm:text-sm font-mono text-emerald-300 font-bold">
+                                  {['Snowflake', 'dbt', 'BigQuery'][i]}
+                                </span>
                             </div>
                         </motion.div>
                     </motion.div>
