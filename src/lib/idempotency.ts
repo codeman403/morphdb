@@ -10,11 +10,16 @@ export async function getIdempotencyKey(userId: string, key: string) {
     });
 
     if (existing && existing.userId === userId && existing.expiresAt > new Date()) {
-      return {
-        found: true,
-        response: JSON.parse(existing.response),
-        status: existing.status,
-      };
+      try {
+        return {
+          found: true,
+          response: JSON.parse(existing.response),
+          status: existing.status,
+        };
+      } catch {
+        // If cached response is corrupted, treat as cache miss
+        return { found: false };
+      }
     }
 
     // Delete expired key
