@@ -2065,3 +2065,42 @@ Unknown field `profile` for include statement on model `Subscription`. Available
 ✓ Compiled in 342ms
 ✓ Compiled in 1417ms
 ✓ Compiled in 263ms
+ GET / 200 in 4.5s (compile: 1746ms, render: 2.8s)
+ GET /api/auth/has-used-trial 200 in 1153ms (compile: 25ms, render: 1128ms)
+ GET /api/auth/profile 200 in 1318ms (compile: 84ms, render: 1234ms)
+ GET /api/auth/profile 200 in 157ms (compile: 3ms, render: 155ms)
+ GET /docs 200 in 1929ms (compile: 1670ms, render: 260ms)
+ GET /api/auth/profile 200 in 855ms (compile: 99ms, render: 756ms)
+ GET /api/auth/profile 200 in 157ms (compile: 5ms, render: 153ms)
+ GET /api/auth/profile 200 in 281ms (compile: 4ms, render: 277ms)
+ GET / 200 in 41ms (compile: 12ms, render: 29ms)
+ GET /api/auth/profile 200 in 277ms (compile: 1605µs, render: 275ms)
+ GET /api/auth/has-used-trial 200 in 400ms (compile: 21ms, render: 379ms)
+ GET /api/auth/profile 200 in 198ms (compile: 1525µs, render: 197ms)
+ GET /api/auth/has-used-trial 200 in 93ms (compile: 1562µs, render: 92ms)
+ GET /api/auth/profile 200 in 302ms (compile: 1149µs, render: 301ms)
+ GET /support 200 in 126ms (compile: 58ms, render: 68ms)
+ GET /api/auth/profile 200 in 241ms (compile: 5ms, render: 236ms)
+ GET /api/auth/profile 200 in 158ms (compile: 3ms, render: 155ms)
+ GET / 200 in 32ms (compile: 11ms, render: 22ms)
+ GET /api/auth/has-used-trial 200 in 113ms (compile: 2ms, render: 111ms)
+ GET /api/auth/profile 200 in 157ms (compile: 9ms, render: 147ms)
+ GET /api/auth/has-used-trial 200 in 102ms (compile: 1432µs, render: 101ms)
+ GET /api/auth/profile 200 in 163ms (compile: 5ms, render: 159ms)
+ GET /api/auth/profile 200 in 243ms (compile: 20ms, render: 223ms)
+✓ Compiled in 177ms
+✓ Compiled in 473ms
+✓ Compiled in 164ms
+✓ Compiled in 745ms
+✓ Compiled in 175ms
+✓ Compiled in 447ms
+✓ Compiled in 248ms
+ GET /login 200 in 2.3s (compile: 121ms, render: 2.2s)
+ GET / 200 in 2.4s (compile: 2.3s, render: 155ms)
+✓ Compiled in 6ms
+ GET /api/auth/has-used-trial 200 in 755ms (compile: 47ms, render: 707ms)
+ GET /api/auth/profile 200 in 1850ms (compile: 30ms, render: 1820ms)
+ GET /api/auth/has-used-trial 200 in 395ms (compile: 66ms, render: 329ms)
+ GET /api/auth/profile 200 in 422ms (compile: 35ms, render: 387ms)
+ GET /api/auth/profile 200 in 638ms (compile: 28ms, render: 610ms)
+✓ Compiled in 300ms

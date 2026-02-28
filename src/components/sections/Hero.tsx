@@ -30,8 +30,8 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center pt-32 pb-20 overflow-hidden bg-slate-950">
-      {/* Background Elements */}
+    <section className="relative flex flex-col items-center pt-32 pb-0 overflow-visible">
+      {/* Background Elements - positioned absolutely to extend */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] bg-emerald-500/20 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[400px] bg-cyan-500/20 blur-[100px] rounded-full pointer-events-none" />
 
