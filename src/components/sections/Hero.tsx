@@ -51,6 +51,7 @@ export default function Hero() {
           {/* 1. Top - Largest: Tagline - Both Lines */}
           <motion.div
             variants={itemVariants}
+            transition={{ duration: 0.8 }}
             className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-center leading-tight mb-4"
           >
             <span className="block text-white">
