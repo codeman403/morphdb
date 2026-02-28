@@ -65,9 +65,6 @@ export async function GET(req: NextRequest) {
       }),
       prisma.profile.count(),
       prisma.subscription.findMany({
-        include: {
-          profile: true,
-        },
         where: {
           NOT: { plan: 'free' },
         },
@@ -85,6 +82,19 @@ export async function GET(req: NextRequest) {
         take: 50,
       }),
     ]);
+
+    // Fetch profiles for subscriptions
+    const profileIds = subscriptions.map(s => s.userId);
+    const profiles = await prisma.profile.findMany({
+      where: { id: { in: profileIds } },
+    });
+    const profileMap = new Map(profiles.map(p => [p.id, p]));
+
+    // Combine subscription data with profiles
+    const subscriptionsWithProfiles = subscriptions.map(sub => ({
+      ...sub,
+      profile: profileMap.get(sub.userId) || { id: sub.userId, email: '', name: null, company: null, avatarUrl: null, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+    }));
 
     return NextResponse.json({
       waitlist: { 
@@ -110,7 +120,7 @@ export async function GET(req: NextRequest) {
         hasMore: signupsOffset + LIMIT < signupsTotal,
       },
       subscriptions: {
-        entries: subscriptions,
+        entries: subscriptionsWithProfiles,
         total: subscriptionsTotal,
         offset: subscriptionsOffset,
         limit: LIMIT,
