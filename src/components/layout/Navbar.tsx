@@ -198,7 +198,11 @@ export default function Navbar() {
   const renderMobileMenuButton = () => (
     <button
       onClick={() => setMobileMenuOpen((prev) => !prev)}
-      className="md:hidden flex items-center justify-center w-10 h-10 text-zinc-400 hover:text-emerald-400 transition-colors relative pointer-events-auto z-50"
+      onTouchEnd={(e) => {
+        e.preventDefault();
+        setMobileMenuOpen((prev) => !prev);
+      }}
+      className="md:hidden flex items-center justify-center w-10 h-10 text-zinc-400 hover:text-emerald-400 active:text-emerald-300 transition-colors relative pointer-events-auto z-50 touch-manipulation"
       aria-label="Toggle navigation"
     >
       {mobileMenuOpen ? (
@@ -310,7 +314,7 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-emerald-500/20 bg-slate-950/80 backdrop-blur-md shadow-lg shadow-emerald-500/5">
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <Link href="/" onClick={handleLogoClick} className="flex items-center gap-2 text-white hover:text-emerald-400 transition-colors z-50">
           <Database className="w-6 h-6 text-emerald-500" />
           <span className="font-bold text-lg tracking-tight">MorphDB</span>
