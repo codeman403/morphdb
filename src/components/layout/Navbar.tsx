@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Database, ChevronRight, User, LogOut, Settings } from 'lucide-react';
-import { animate } from 'framer-motion';
+import { animate, AnimatePresence, motion } from 'framer-motion';
 import { createClient } from '@/lib/supabase/client';
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 
@@ -198,7 +198,7 @@ export default function Navbar() {
   const renderMobileMenuButton = () => (
     <button
       onClick={() => setMobileMenuOpen((prev) => !prev)}
-      className="md:hidden flex items-center justify-center w-10 h-10 text-zinc-400 hover:text-emerald-400 transition-colors z-50"
+      className="md:hidden flex items-center justify-center w-10 h-10 text-zinc-400 hover:text-emerald-400 transition-colors z-[60] relative"
       aria-label="Toggle navigation"
     >
       {mobileMenuOpen ? (
@@ -212,8 +212,15 @@ export default function Navbar() {
   );
 
   const renderMobileMenu = () => (
-    mobileMenuOpen && (
-      <div className="md:hidden fixed inset-0 top-16 bg-slate-950/95 backdrop-blur-xl border-t border-emerald-500/20 z-40 overflow-y-auto">
+    <AnimatePresence>
+      {mobileMenuOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.2 }}
+          className="md:hidden fixed inset-0 top-16 bg-slate-950/95 backdrop-blur-xl border-t border-emerald-500/20 z-40 overflow-y-auto"
+        >
         <div className="px-6 py-8 space-y-6">
           <div className="flex flex-col space-y-4">
             {navLinks.map((link) => (
@@ -283,8 +290,9 @@ export default function Navbar() {
             )}
           </div>
         </div>
-      </div>
-    )
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 
   const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {

@@ -68,10 +68,10 @@ export default function Hero() {
             initial="hidden"
             animate={isVisible ? "visible" : "hidden"}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight text-slate-400 text-center max-w-3xl flex items-center justify-center gap-2"
+            className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight text-slate-400 text-center max-w-3xl flex flex-wrap items-center justify-center gap-x-2 gap-y-1"
           >
-            Flawless migrations powered by 
-            <span className="relative inline-flex items-center gap-1 text-emerald-400 font-bold">
+            <span>Flawless migrations powered by</span>
+            <span className="relative inline-flex items-center gap-1 text-emerald-400 font-bold whitespace-nowrap">
               AI
               <Zap className="w-6 h-6 text-amber-400 fill-amber-400/20 animate-pulse" />
             </span>
