@@ -76,6 +76,10 @@ export async function POST(req: NextRequest) {
   } catch (e) {
     console.error('[Migrate API Error]', e);
     const message = e instanceof Error ? e.message : 'Translation failed';
-    return NextResponse.json({ error: message }, { status: 500 });
+    
+    // If it's our non-SQL detection error, return 400 Bad Request
+    const status = message.includes("assist with SQL code translation") ? 400 : 500;
+    
+    return NextResponse.json({ error: message }, { status });
   }
 }

@@ -41,6 +41,9 @@ Rules:
 4. Preserve business logic exactly — never add, remove, or alter filtering/aggregation/joins.
 5. Add brief SQL comments only where a non-obvious transformation was made.
 6. Output ONLY the translated SQL — no explanations, no markdown fences.
+7. CRITICAL: If the user input is completely unrelated to SQL, conversational, or not SQL code at all, you MUST reply with EXACTLY this string:
+---ERROR---: I'm here to assist with SQL code translation. Please provide the SQL code you'd like to convert.
+Do not output anything else if the input is not SQL.
 
 After the SQL, on a new line starting with "---CHANGES---", list each transformation made as a bullet point.
 After changes, on a new line starting with "---WARNINGS---", list any potential issues or things to verify (empty if none).`;
@@ -136,6 +139,16 @@ export async function translateSql(
     : await callOpenAI(systemPrompt, sourceSql, model);
 
   const durationMs = Date.now() - start;
+  
+  if (raw.includes('---ERROR---:')) {
+    const errorMsg = raw.split('---ERROR---:')[1]?.trim() || "I'm here to assist with SQL code translation. Please provide the SQL code you'd like to convert.";
+    throw new Error(errorMsg);
+  }
+  
+  if (raw.toLowerCase().includes("i'm here to assist with sql code translation")) {
+    throw new Error("I'm here to assist with SQL code translation. Please provide the SQL code you'd like to convert.");
+  }
+
   const { sql, changes, warnings } = parseResponse(raw);
 
   return {
