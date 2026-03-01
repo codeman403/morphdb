@@ -59,15 +59,31 @@ export async function POST(req: NextRequest) {
         },
       });
 
+      // Send cancellation email
+      const profile = await prisma.profile.findUnique({
+        where: { id: user.id },
+      });
+
+      const effectiveDate = new Date()
+        .toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
+
+      if (profile?.email) {
+        await sendEmail({
+          to: profile.email,
+          subject: 'MorphDB Subscription Cancellation Confirmed',
+          html: getSubscriptionCancelledEmailHTML(profile.name, effectiveDate),
+        });
+      }
+
       return NextResponse.json(
         {
           success: true,
           message: 'Subscription cancelled successfully',
-          effectiveDate: new Date().toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          }),
+          effectiveDate,
           cancelledAt: new Date().toISOString(),
         },
         { status: 200 }
