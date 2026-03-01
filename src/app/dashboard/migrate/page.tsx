@@ -273,7 +273,7 @@ export default function MigratePage() {
                       GPT-4o Mini
                     </div>
                     <Link href="/#pricing" className="flex items-center gap-1 text-xs text-purple-400 hover:text-purple-300 transition-colors whitespace-nowrap">
-                      <Zap className="w-3 h-3" /> Upgrade for Claude
+                      <Zap className="w-3 h-3" /> Upgrade for other AI models
                     </Link>
                   </div>
                 ) : (
