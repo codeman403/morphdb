@@ -46,10 +46,8 @@ next-env.d.ts
 
 /src/generated/prisma
 
-# docs folder (generated documentation and markdown files)
-/docs/*.md
-/docs/*.txt
-/docs/*.png
+# docs folder (all files ignored - local documentation and generated content)
+/docs/
 
 # markdown files in root (except ARCHITECTURE.md and README.md)
 /*.md
