@@ -212,87 +212,89 @@ export default function Navbar() {
     </button>
   );
 
-  const renderMobileMenu = () => (
-    <>
-      {mobileMenuOpen && (
-        <div
-          className={`md:hidden fixed inset-0 top-16 bg-slate-950/95 backdrop-blur-xl border-t border-emerald-500/20 z-[45] overflow-y-auto transition-all duration-200 ${
-            mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
-          }`}
-        >
-          <div className="px-6 py-8 space-y-6">
-            <div className="flex flex-col space-y-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.type === 'route' ? link.href : `#${link.id}`}
-                  onClick={(e) => {
-                    if (link.type === 'scroll') {
-                      handleNavigation(e, link.id);
-                    } else {
-                      setMobileMenuOpen(false);
-                    }
-                  }}
-                  className="text-lg font-medium text-zinc-400 hover:text-emerald-400 transition-colors py-2 border-b border-white/5"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
+  const renderMobileMenu = () => {
+    console.log('renderMobileMenu called, mobileMenuOpen:', mobileMenuOpen);
+    return (
+      <>
+        {mobileMenuOpen && (
+          <div
+            className="md:hidden fixed inset-0 top-16 bg-slate-950/95 backdrop-blur-xl border-t border-emerald-500/20 z-[45] overflow-y-auto"
+            style={{ display: 'block', opacity: 1, visibility: 'visible' }}
+          >
+            <div className="px-6 py-8 space-y-6">
+              <div className="flex flex-col space-y-4">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.label}
+                    href={link.type === 'route' ? link.href : `#${link.id}`}
+                    onClick={(e) => {
+                      if (link.type === 'scroll') {
+                        handleNavigation(e, link.id);
+                      } else {
+                        setMobileMenuOpen(false);
+                      }
+                    }}
+                    className="text-lg font-medium text-zinc-400 hover:text-emerald-400 transition-colors py-2 border-b border-white/5"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
 
-            <div className="pt-6 space-y-4">
-              {!loading && user ? (
-                <>
-                  <Link
-                    href="/dashboard"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2 text-zinc-300 hover:text-emerald-400"
-                  >
-                    <User className="w-5 h-5" />
-                    <span className="font-medium">Dashboard ({firstName ?? user.email?.split('@')[0]})</span>
-                  </Link>
-                  <Link
-                    href="/dashboard/settings"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2 text-zinc-300 hover:text-emerald-400"
-                  >
-                    <Settings className="w-5 h-5" />
-                    <span className="font-medium">Settings</span>
-                  </Link>
-                  <form action="/api/auth/signout" method="POST">
-                    <button
-                      type="submit"
-                      className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-zinc-300 bg-slate-900 border border-slate-800 rounded-lg hover:bg-slate-800 transition-colors"
+              <div className="pt-6 space-y-4">
+                {!loading && user ? (
+                  <>
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-2 text-zinc-300 hover:text-emerald-400"
                     >
-                      <LogOut className="w-4 h-4" />
-                      Sign Out
-                    </button>
-                  </form>
-                </>
-              ) : (
-                <div className="flex flex-col gap-3">
-                  <Link
-                    href="/login"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-full flex items-center justify-center px-4 py-3 text-sm font-medium text-white bg-slate-900 border border-slate-800 rounded-lg hover:bg-slate-800 transition-colors"
-                  >
-                    Sign In
-                  </Link>
-                  <Link
-                    href="/waitlist"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold text-slate-950 bg-emerald-500 rounded-lg hover:bg-emerald-400 transition-colors shadow-[0_0_15px_rgba(16,185,129,0.3)]"
-                  >
-                    Get Early Access <ChevronRight className="w-4 h-4" />
-                  </Link>
-                </div>
-              )}
+                      <User className="w-5 h-5" />
+                      <span className="font-medium">Dashboard ({firstName ?? user.email?.split('@')[0]})</span>
+                    </Link>
+                    <Link
+                      href="/dashboard/settings"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-2 text-zinc-300 hover:text-emerald-400"
+                    >
+                      <Settings className="w-5 h-5" />
+                      <span className="font-medium">Settings</span>
+                    </Link>
+                    <form action="/api/auth/signout" method="POST">
+                      <button
+                        type="submit"
+                        className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-zinc-300 bg-slate-900 border border-slate-800 rounded-lg hover:bg-slate-800 transition-colors"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Sign Out
+                      </button>
+                    </form>
+                  </>
+                ) : (
+                  <div className="flex flex-col gap-3">
+                    <Link
+                      href="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="w-full flex items-center justify-center px-4 py-3 text-sm font-medium text-white bg-slate-900 border border-slate-800 rounded-lg hover:bg-slate-800 transition-colors"
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      href="/waitlist"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold text-slate-950 bg-emerald-500 rounded-lg hover:bg-emerald-400 transition-colors shadow-[0_0_15px_rgba(16,185,129,0.3)]"
+                    >
+                      Get Early Access <ChevronRight className="w-4 h-4" />
+                    </Link>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </>
-  );
+        )}
+      </>
+    );
+  };
 
   const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (window.location.pathname === '/') {
