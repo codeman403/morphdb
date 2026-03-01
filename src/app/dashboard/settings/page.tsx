@@ -44,6 +44,7 @@ export default function SubscriptionSettingsPage() {
     error: '',
   });
   const [successMessage, setSuccessMessage] = useState('');
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   useEffect(() => {
     const fetchSubscription = async () => {
@@ -74,6 +75,25 @@ export default function SubscriptionSettingsPage() {
       error: '',
     });
     setSuccessMessage('');
+  };
+
+  const handleUpgradeClick = async () => {
+    setCheckoutLoading(true);
+    try {
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: 'pro' }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error('Failed to start checkout:', error);
+    } finally {
+      setCheckoutLoading(false);
+    }
   };
 
   const handleCancelSubscription = async () => {
@@ -257,14 +277,22 @@ export default function SubscriptionSettingsPage() {
                     </>
                   )}
 
-                  {!isPaid && (
-                    <Link
-                      href="/login"
-                      className="block w-full px-4 py-3 rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors text-sm font-medium text-center"
-                    >
-                      Upgrade to Pro
-                    </Link>
-                  )}
+                   {!isPaid && (
+                     <button
+                       onClick={handleUpgradeClick}
+                       disabled={checkoutLoading}
+                       className="w-full px-4 py-3 rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+                     >
+                       {checkoutLoading ? (
+                         <>
+                           <Loader2 className="w-4 h-4 animate-spin" />
+                           Loading...
+                         </>
+                       ) : (
+                         'Upgrade to Pro'
+                       )}
+                     </button>
+                   )}
                 </div>
               </>
             )}
