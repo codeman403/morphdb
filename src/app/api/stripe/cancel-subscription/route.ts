@@ -104,6 +104,12 @@ export async function POST(req: NextRequest) {
     const sub = cancelledSub as StripeSubscriptionWithPeriod;
     const periodEnd = typeof sub.current_period_end === 'number' ? sub.current_period_end : Math.floor(Date.now() / 1000);
 
+    // Update subscription status in database to reflect cancellation
+    await prisma.subscription.update({
+      where: { userId: user.id },
+      data: { status: 'canceled' },
+    });
+
     // Log the cancellation in audit log
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 90); // Auto-cleanup after 90 days
