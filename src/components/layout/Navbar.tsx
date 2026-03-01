@@ -198,12 +198,9 @@ export default function Navbar() {
   const renderMobileMenuButton = () => (
     <button
       onClick={() => setMobileMenuOpen((prev) => !prev)}
-      onTouchEnd={(e) => {
-        e.preventDefault();
-        setMobileMenuOpen((prev) => !prev);
-      }}
-      className="md:hidden flex items-center justify-center w-10 h-10 text-zinc-400 hover:text-emerald-400 active:text-emerald-300 transition-colors relative pointer-events-auto z-50 touch-manipulation"
+      className="md:hidden flex items-center justify-center w-10 h-10 text-zinc-400 hover:text-emerald-400 active:text-emerald-300 transition-colors relative pointer-events-auto z-50 touch-manipulation cursor-pointer"
       aria-label="Toggle navigation"
+      type="button"
     >
       {mobileMenuOpen ? (
         <span className="text-2xl font-light">×</span>
@@ -218,13 +215,13 @@ export default function Navbar() {
   const renderMobileMenu = () => (
     <AnimatePresence>
       {mobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.2 }}
-          className="md:hidden fixed inset-0 top-16 bg-slate-950/95 backdrop-blur-xl border-t border-emerald-500/20 z-40 overflow-y-auto"
-        >
+         <motion.div
+           initial={{ opacity: 0, y: -20 }}
+           animate={{ opacity: 1, y: 0 }}
+           exit={{ opacity: 0, y: -20 }}
+           transition={{ duration: 0.2 }}
+           className="md:hidden fixed inset-0 top-16 bg-slate-950/95 backdrop-blur-xl border-t border-emerald-500/20 z-[45] overflow-y-auto"
+         >
         <div className="px-6 py-8 space-y-6">
           <div className="flex flex-col space-y-4">
             {navLinks.map((link) => (
