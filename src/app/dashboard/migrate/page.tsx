@@ -7,7 +7,7 @@ import { PageBackground } from '@/components/ui/backgrounds/PageBackground';
 import {
   Database, Upload, FileText, Zap, Loader2, CheckCircle2,
   AlertTriangle, Download, ArrowLeft, ArrowRight, Copy, Check,
-  X, Trash2, User, LogOut,
+  X, Trash2, User, LogOut, Settings,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -225,6 +225,10 @@ export default function MigratePage() {
                 {profile.firstName}
               </div>
             )}
+            <Link href="/dashboard/settings" className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-zinc-500 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 transition-colors" title="Settings">
+              <Settings className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Settings</span>
+            </Link>
             <form action="/api/auth/signout" method="POST">
               <button type="submit" className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-zinc-500 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 transition-colors">
                 <LogOut className="w-3.5 h-3.5" />

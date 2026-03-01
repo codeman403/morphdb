@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
-import { Database, ArrowLeft, CheckCircle2, AlertTriangle, Zap, User, LogOut } from 'lucide-react';
+import { Database, ArrowLeft, CheckCircle2, AlertTriangle, Zap, User, LogOut, Settings } from 'lucide-react';
 import { PageBackground } from '@/components/ui/backgrounds/PageBackground';
 
 const DIALECT_LABELS: Record<string, string> = {
@@ -55,6 +55,10 @@ export default async function HistoryPage() {
                 {firstName}
               </div>
             )}
+            <Link href="/dashboard/settings" className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-zinc-500 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 backdrop-blur-md transition-colors" title="Settings">
+              <Settings className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Settings</span>
+            </Link>
             <form action="/api/auth/signout" method="POST">
               <button type="submit" className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-zinc-500 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 backdrop-blur-md transition-colors">
                 <LogOut className="w-3.5 h-3.5" /> Sign Out

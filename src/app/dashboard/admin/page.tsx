@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Database, ArrowLeft, Users, LogIn, CreditCard, Clock,
-  Globe, Monitor, Mail, Building2, Shield, RefreshCw, Headphones, RotateCcw, X,
+  Globe, Monitor, Mail, Building2, Shield, RefreshCw, Headphones, RotateCcw, X, Settings, LogOut,
 } from 'lucide-react';
 import { PageBackground } from '@/components/ui/backgrounds/PageBackground';
 import { ToastContainer, useToast } from '@/components/ui/Toast';
@@ -291,6 +291,21 @@ export default function AdminDashboard() {
               >
                 <RefreshCw className="w-4 h-4" /> Refresh
               </button>
+              <Link
+                href="/dashboard/settings"
+                className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-400 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 backdrop-blur-md transition-colors"
+                title="Settings"
+              >
+                <Settings className="w-4 h-4" />
+              </Link>
+              <form action="/api/auth/signout" method="POST">
+                <button
+                  type="submit"
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-400 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 backdrop-blur-md transition-colors"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </form>
             </div>
         </div>
       </nav>
