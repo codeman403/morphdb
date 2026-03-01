@@ -25,15 +25,52 @@ export async function POST(req: NextRequest) {
 
     if (!subscription) {
       return NextResponse.json(
-        { error: 'No active subscription found' },
+        { error: 'No subscription found' },
         { status: 404 }
       );
     }
 
     if (!subscription.stripeSubscriptionId) {
+      // If there's no Stripe subscription ID, just mark it as canceled in the database
+      // This can happen if subscription was granted via admin panel or other means
+      await prisma.subscription.update({
+        where: { userId: user.id },
+        data: { status: 'canceled' },
+      });
+
+      await prisma.auditLog.create({
+        data: {
+          userId: user.id,
+          action: 'subscription_cancelled',
+          resourceType: 'subscription',
+          resourceId: subscription.id,
+          changes: JSON.stringify({
+            plan: subscription.plan,
+            reason: reason || 'User initiated cancellation',
+            feedback: feedback || null,
+            cancelledAt: new Date().toISOString(),
+            note: 'Cancelled without Stripe subscription ID',
+          }),
+          expiresAt: (() => {
+            const date = new Date();
+            date.setDate(date.getDate() + 90);
+            return date;
+          })(),
+        },
+      });
+
       return NextResponse.json(
-        { error: 'Invalid subscription data' },
-        { status: 400 }
+        {
+          success: true,
+          message: 'Subscription cancelled successfully',
+          effectiveDate: new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          }),
+          cancelledAt: new Date().toISOString(),
+        },
+        { status: 200 }
       );
     }
 
