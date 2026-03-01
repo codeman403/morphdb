@@ -144,6 +144,13 @@ export const docContentIndex: Record<string, string> = {
     Run multiple migrations in parallel. The system can handle several concurrent translation batches.`,
   
   'changelog': `Changelog
+    Version 2.2.0 - 2026-03-01
+    Added subscription cancellation feature with email notifications
+    Implemented Settings/Subscription management page for authenticated users
+    Added non-SQL input detection with proper error messaging
+    Fixed subscription status sync issues in database
+    Improved navigation with Settings link across all authenticated pages
+    Enhanced error handling for checkout and migration API
     Version 2.1.0 - 2026-02-27
     Implemented soft delete with 90-day audit retention
     Added batch cancellation with partial results
