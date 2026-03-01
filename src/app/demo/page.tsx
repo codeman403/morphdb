@@ -160,38 +160,44 @@ export default function DemoPage() {
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Link href="/" className="flex items-center gap-2 text-white">
-              <Database className="w-6 h-6 text-emerald-500" />
-              <span className="font-bold text-lg tracking-tight">MorphDB</span>
+              <Database className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500" />
+              <span className="font-bold text-base sm:text-lg tracking-tight">MorphDB</span>
             </Link>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 font-medium">
+            <span className="hidden sm:inline-block text-xs px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 font-medium">
               Demo Mode • GPT-4o Mini
             </span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             {loading ? (
               <div className="w-16 h-6 bg-slate-800 rounded-full animate-pulse" />
             ) : user ? (
               <>
-                <Link href="/dashboard" className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors">
+                <Link href="/dashboard" className="hidden sm:flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors">
                   <User className="w-4 h-4" />
                   {firstName ?? user.email?.split('@')[0]}
                 </Link>
-                <Link href="/dashboard" className="px-3 py-1.5 text-sm font-medium text-white bg-slate-800 border border-slate-700 rounded-full hover:bg-slate-700 transition-all">
+                <Link href="/dashboard" className="px-3 py-1.5 text-xs sm:text-sm font-medium text-white bg-slate-800 border border-slate-700 rounded-full hover:bg-slate-700 transition-all">
                   Dashboard
                 </Link>
                 <form action="/api/auth/signout" method="POST">
-                  <button type="submit" className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-slate-500 hover:text-white border border-slate-800 rounded-full hover:bg-slate-800 transition-colors">
+                  <button type="submit" className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 text-xs sm:text-sm text-slate-500 hover:text-white border border-slate-800 rounded-full hover:bg-slate-800 transition-colors">
                     <LogOut className="w-3.5 h-3.5" />
                   </button>
                 </form>
               </>
             ) : (
-              <Link href="/login" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
-                Sign In
-              </Link>
+              <>
+                <Link href="/login" className="hidden sm:inline-block text-sm font-medium text-slate-400 hover:text-white transition-colors">
+                  Sign In
+                </Link>
+                <Link href="/waitlist" className="px-3 py-1.5 text-xs sm:text-sm font-medium text-black bg-emerald-500 rounded-full hover:bg-emerald-400 transition-colors">
+                  <span className="hidden sm:inline">Get Early Access</span>
+                  <span className="sm:hidden">Early Access</span>
+                </Link>
+              </>
             )}
           </div>
         </div>

@@ -170,7 +170,7 @@ export default function Hero() {
                             }}
                             className="flex items-center gap-3"
                         >
-                            <div className="px-3 py-1.5 rounded-md bg-slate-800 border border-slate-600 shadow-lg whitespace-nowrap z-10">
+                            <div className="px-3 py-1.5 rounded-md bg-slate-800 border border-slate-600 shadow-lg whitespace-nowrap z-10 hidden sm:block">
                                 <span className="text-xs sm:text-sm font-mono text-slate-300 font-medium">
                                   {['Oracle', 'SQL Server', 'MySQL'][i]}
                                 </span>
@@ -182,9 +182,9 @@ export default function Hero() {
               </div>
 
               {/* Central AI Core - "The Engine" */}
-              <div className="relative z-20 mx-4 sm:mx-10 shrink-0">
+              <div className="relative z-20 mx-2 sm:mx-10 shrink-0">
                 {/* Spinning Reactor Rings */}
-                <div className="relative w-32 h-32 sm:w-48 sm:h-48 flex items-center justify-center">
+                <div className="relative w-24 h-24 sm:w-48 sm:h-48 flex items-center justify-center">
                     <motion.div
                       animate={{ rotate: 360 }}
                       transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
@@ -238,7 +238,7 @@ export default function Hero() {
                             className="flex items-center gap-3"
                         >
                             <div className="w-3 h-3 bg-emerald-400 rotate-45 shadow-[0_0_10px_rgba(52,211,153,0.8)] z-10" />
-                            <div className="px-3 py-1.5 rounded-md bg-emerald-950/80 border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.2)] whitespace-nowrap z-10">
+                            <div className="px-3 py-1.5 rounded-md bg-emerald-950/80 border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.2)] whitespace-nowrap z-10 hidden sm:block">
                                 <span className="text-xs sm:text-sm font-mono text-emerald-300 font-bold">
                                   {['Snowflake', 'Redshift', 'BigQuery'][i]}
                                 </span>

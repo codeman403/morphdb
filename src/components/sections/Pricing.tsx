@@ -299,7 +299,7 @@ export default function Pricing() {
                 transition={{ delay: index * 0.15 }}
                 className={`relative flex flex-col p-8 rounded-3xl backdrop-blur-xl transition-transform duration-300 hover:-translate-y-1 ${
                   tier.highlighted 
-                    ? 'bg-gradient-to-b from-emerald-500/10 to-cyan-500/10 border border-emerald-500/30' 
+                    ? 'bg-gradient-to-b from-emerald-500/10 to-cyan-500/10 border border-emerald-500/30 md:scale-105 z-10' 
                     : 'bg-slate-900/50 border border-slate-800'
                 }`}
               >
