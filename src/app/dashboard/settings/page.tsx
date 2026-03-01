@@ -44,7 +44,6 @@ export default function SubscriptionSettingsPage() {
     error: '',
   });
   const [successMessage, setSuccessMessage] = useState('');
-  const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState('');
 
   useEffect(() => {
@@ -76,38 +75,7 @@ export default function SubscriptionSettingsPage() {
       error: '',
     });
     setSuccessMessage('');
-  };
-
-  const handleUpgradeClick = async () => {
-    setCheckoutLoading(true);
     setCheckoutError('');
-    try {
-      const res = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: 'pro' }),
-      });
-      const data = await res.json();
-      console.log('Checkout response:', { status: res.status, data });
-      
-      if (!res.ok) {
-        console.error('Checkout error:', data.error);
-        setCheckoutError(data.error || 'Failed to start checkout');
-        return;
-      }
-      
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        console.error('No checkout URL returned:', data);
-        setCheckoutError('No checkout URL returned from server');
-      }
-    } catch (error) {
-      console.error('Failed to start checkout:', error);
-      setCheckoutError('Network error. Please try again.');
-    } finally {
-      setCheckoutLoading(false);
-    }
   };
 
   const handleCancelSubscription = async () => {
@@ -284,34 +252,26 @@ export default function SubscriptionSettingsPage() {
                     </div>
                   )}
                   {isPaid && (
-                    <>
-                      <button
-                        onClick={handleCancelClick}
-                        className="w-full px-4 py-3 rounded-xl border border-red-500/50 text-red-400 hover:bg-red-500/10 transition-colors text-sm font-medium"
-                      >
-                        Cancel Subscription
-                      </button>
-                      <p className="text-zinc-500 text-xs text-center">
-                        Your access will continue until the end of your billing period
-                      </p>
-                    </>
-                  )}
+                     <>
+                       <button
+                         onClick={handleCancelClick}
+                         className="w-full px-4 py-3 rounded-xl border border-red-500/50 text-red-400 hover:bg-red-500/10 transition-colors text-sm font-medium"
+                       >
+                         Cancel Subscription
+                       </button>
+                       <p className="text-zinc-500 text-xs text-center">
+                         Your access will continue until the end of your billing period
+                       </p>
+                     </>
+                   )}
 
                    {!isPaid && (
-                     <button
-                       onClick={handleUpgradeClick}
-                       disabled={checkoutLoading}
-                       className="w-full px-4 py-3 rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+                     <Link
+                       href="/#pricing"
+                       className="block w-full px-4 py-3 rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors text-sm font-medium text-center"
                      >
-                       {checkoutLoading ? (
-                         <>
-                           <Loader2 className="w-4 h-4 animate-spin" />
-                           Loading...
-                         </>
-                       ) : (
-                         'Upgrade to Pro'
-                       )}
-                     </button>
+                       Upgrade to Pro
+                     </Link>
                    )}
                 </div>
               </>
