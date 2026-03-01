@@ -710,6 +710,41 @@ X-RateLimit-Reset: 1234567890`}</code>
     content: (
       <div className="space-y-8">
         <div>
+          <h3 className="text-xl font-semibold text-white mb-2">Version 2.3.0 - 2026-03-01</h3>
+          <p className="text-sm text-zinc-400 mb-3">Subscription Management & UI Improvements</p>
+          <ul className="space-y-2 text-zinc-300 ml-4">
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>Subscription cancellation feature with modal confirmation</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>Settings/Subscription management page for authenticated users</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>Email notifications with effective cancellation dates</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>Non-SQL input detection with proper error messaging</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>Settings navigation links across all authenticated pages</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>Fixed subscription status database sync on cancellation</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-green-500">✓</span>
+              <span>Enhanced error handling for checkout and migration API</span>
+            </li>
+          </ul>
+        </div>
+
+        <div>
           <h3 className="text-xl font-semibold text-white mb-2">Version 2.2.0 - 2026-02-28</h3>
           <p className="text-sm text-zinc-400 mb-3">Enhanced Admin & Compliance Features</p>
           <ul className="space-y-2 text-zinc-300 ml-4">
