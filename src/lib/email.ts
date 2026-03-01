@@ -408,9 +408,53 @@ export function getAdminSupportNotificationEmailHTML(ticketId: string, subject: 
               <strong>From:</strong> ${userEmail}
             </p>
             <p><a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.ai'}/dashboard/admin">View in Admin Panel</a></p>
+            </div>
+            <div class="footer">
+              <p>© 2026 MorphDB. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+  }
+
+/**
+ * Email template: Password reset email
+ */
+export function getPasswordResetEmailHTML() {
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; border-radius: 8px; text-align: center; }
+          .content { padding: 30px; background: #f9fafb; border-radius: 8px; margin-top: 20px; }
+          .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #666; }
+          .cta-button { display: inline-block; background: #10b981; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin-top: 20px; font-weight: bold; }
+          .warning { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; border-radius: 4px; margin: 20px 0; color: #92400e; font-size: 14px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>MorphDB Password Reset 🔐</h1>
+          </div>
+          <div class="content">
+            <p>Hi,</p>
+            <p>We received a request to reset the password for your MorphDB account. Click the button below to set a new password:</p>
+            <a href="#" class="cta-button">Reset Password</a>
+            <div class="warning">
+              <strong>⚠️ Important:</strong> This password reset link expires in 24 hours. If you didn't request this, you can safely ignore this email.
+            </div>
+            <p style="margin-top: 30px; font-size: 14px;">If the button doesn't work, copy and paste this link into your browser:</p>
+            <p style="word-break: break-all; background: #f0f0f0; padding: 10px; border-radius: 4px; font-size: 12px;"></p>
+            <p style="margin-top: 30px; font-size: 14px;">Questions? <a href="mailto:${SUPPORT_EMAIL}">Contact support</a></p>
           </div>
           <div class="footer">
-            <p>MorphDB Admin Notification</p>
+            <p>© 2026 MorphDB. All rights reserved.</p>
           </div>
         </div>
       </body>

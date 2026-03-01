@@ -111,7 +111,7 @@ export default function LoginPage() {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="block text-sm font-medium text-zinc-300">Password</label>
-                  {tab === 'signin' && <Link href="#" className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors">Forgot password?</Link>}
+                  {tab === 'signin' && <Link href="/forgot-password" className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors">Forgot password?</Link>}
                 </div>
                 <input type="password" placeholder="••••••••" value={form.password} required minLength={8}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
