@@ -54,6 +54,29 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ url: session.url }, { status: 200 });
   } catch (e) {
     console.error('[Stripe Checkout Error]', e);
+    
+    // Log detailed error information
+    if (e instanceof Stripe.errors.StripeError) {
+      console.error('Stripe Error Details:', {
+        type: e.type,
+        message: e.message,
+        statusCode: e.statusCode,
+        requestId: e.requestId,
+      });
+      return NextResponse.json(
+        { error: `Stripe Error: ${e.message}` },
+        { status: e.statusCode || 500 }
+      );
+    }
+    
+    if (e instanceof Error) {
+      console.error('Error Details:', {
+        name: e.name,
+        message: e.message,
+        stack: e.stack,
+      });
+    }
+    
     return NextResponse.json({ error: 'Failed to create checkout session.' }, { status: 500 });
   }
 }
