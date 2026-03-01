@@ -45,7 +45,7 @@ export default async function HistoryPage() {
             </Link>
             <div className="flex items-center gap-2">
               <Database className="w-5 h-5 text-emerald-500" />
-              <span className="font-bold tracking-tight hover:text-emerald-400 transition-colors">MorphDB</span>
+              <span className="font-bold text-lg tracking-tight hover:text-emerald-400 transition-colors">MorphDB</span>
             </div>
           </div>
           <div className="flex items-center gap-3">

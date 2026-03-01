@@ -82,7 +82,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-white hover:text-emerald-400 transition-colors">
             <Database className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500" />
-            <span className="font-bold tracking-tight">MorphDB</span>
+            <span className="font-bold text-lg tracking-tight">MorphDB</span>
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
             <div className="hidden sm:flex items-center gap-2 text-sm text-zinc-400">
