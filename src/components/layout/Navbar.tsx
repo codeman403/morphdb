@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Database, ChevronRight, User, LogOut } from 'lucide-react';
+import { Database, ChevronRight, User, LogOut, Settings } from 'lucide-react';
 import { animate } from 'framer-motion';
 import { createClient } from '@/lib/supabase/client';
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
@@ -153,6 +153,13 @@ export default function Navbar() {
             {firstName ?? user.email?.split('@')[0]}
           </Link>
           <Link
+            href="/dashboard/settings"
+            className="flex items-center gap-1.5 px-3 py-2 text-sm text-zinc-400 hover:text-emerald-400 border border-emerald-500/20 rounded-full hover:bg-emerald-500/10 transition-colors"
+            title="Settings"
+          >
+            <Settings className="w-4 h-4" />
+          </Link>
+          <Link
             href="/dashboard"
             className="group relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-emerald-600/20 border border-emerald-500/30 rounded-full hover:bg-emerald-600/30 hover:shadow-lg hover:shadow-emerald-500/20 transition-all"
           >
@@ -234,6 +241,14 @@ export default function Navbar() {
                 >
                   <User className="w-5 h-5" />
                   <span className="font-medium">Dashboard ({firstName ?? user.email?.split('@')[0]})</span>
+                </Link>
+                <Link
+                  href="/dashboard/settings"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2 text-zinc-300 hover:text-emerald-400"
+                >
+                  <Settings className="w-5 h-5" />
+                  <span className="font-medium">Settings</span>
                 </Link>
                 <form action="/api/auth/signout" method="POST">
                   <button
