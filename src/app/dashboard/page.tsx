@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
-import { Database, LogOut, Sparkles, ArrowRight, User, Zap, Clock } from 'lucide-react';
+import { Database, LogOut, Sparkles, ArrowRight, User, Zap, Clock, Settings } from 'lucide-react';
 import { getUserTier, getTrialStatus, getUserTierLabel } from '@/lib/tier';
 import { getMonthlyUsage } from '@/lib/usage';
 
@@ -89,6 +89,10 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
               <User className="w-4 h-4" />
               {profile?.name?.split(' ')[0] ?? user.email?.split('@')[0]}
             </div>
+            <Link href="/dashboard/settings" className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm text-zinc-400 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 backdrop-blur-md transition-colors">
+              <Settings className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Settings</span>
+            </Link>
             <form action="/api/auth/signout" method="POST">
               <button type="submit" className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm text-zinc-400 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 backdrop-blur-md transition-colors">
                 <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
