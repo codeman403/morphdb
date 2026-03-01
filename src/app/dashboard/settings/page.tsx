@@ -45,6 +45,7 @@ export default function SubscriptionSettingsPage() {
   });
   const [successMessage, setSuccessMessage] = useState('');
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState('');
 
   useEffect(() => {
     const fetchSubscription = async () => {
@@ -79,6 +80,7 @@ export default function SubscriptionSettingsPage() {
 
   const handleUpgradeClick = async () => {
     setCheckoutLoading(true);
+    setCheckoutError('');
     try {
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
@@ -86,11 +88,23 @@ export default function SubscriptionSettingsPage() {
         body: JSON.stringify({ plan: 'pro' }),
       });
       const data = await res.json();
+      console.log('Checkout response:', { status: res.status, data });
+      
+      if (!res.ok) {
+        console.error('Checkout error:', data.error);
+        setCheckoutError(data.error || 'Failed to start checkout');
+        return;
+      }
+      
       if (data.url) {
         window.location.href = data.url;
+      } else {
+        console.error('No checkout URL returned:', data);
+        setCheckoutError('No checkout URL returned from server');
       }
     } catch (error) {
       console.error('Failed to start checkout:', error);
+      setCheckoutError('Network error. Please try again.');
     } finally {
       setCheckoutLoading(false);
     }
@@ -263,6 +277,12 @@ export default function SubscriptionSettingsPage() {
 
                 {/* Actions */}
                 <div className="space-y-3">
+                  {checkoutError && (
+                    <div className="mb-4 flex items-start gap-3 bg-red-400/10 border border-red-400/30 rounded-xl p-4">
+                      <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                      <p className="text-red-400 text-sm">{checkoutError}</p>
+                    </div>
+                  )}
                   {isPaid && (
                     <>
                       <button
