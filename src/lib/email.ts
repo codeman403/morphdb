@@ -14,8 +14,8 @@ function getResendClient(): Resend {
   return resendClient;
 }
 
-const FROM_EMAIL = process.env.NEXT_PUBLIC_FROM_EMAIL || process.env.RESEND_TEST_EMAIL || 'noreply@morphdb.ai';
-const SUPPORT_EMAIL = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'support@morphdb.ai';
+const FROM_EMAIL = process.env.NEXT_PUBLIC_FROM_EMAIL || process.env.RESEND_TEST_EMAIL || 'noreply@morphdb.learnertech.dev';
+const SUPPORT_EMAIL = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'support@morphdb.learnertech.dev';
 
 export interface EmailOptions {
   to: string;
@@ -105,12 +105,12 @@ export function getWelcomeEmailHTML(userName: string | undefined) {
               <li>🛡️ Leverage AI to handle complex translations</li>
             </ul>
             <p><strong>Get started:</strong> You have a free 3-day trial to explore all Pro features.</p>
-            <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.ai'}/dashboard" class="cta-button">Go to Dashboard</a>
-            <p style="margin-top: 30px; font-size: 14px;">Need help? Reply to this email or visit our <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.ai'}/support">support page</a>.</p>
+            <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.learnertech.dev'}/dashboard" class="cta-button">Go to Dashboard</a>
+            <p style="margin-top: 30px; font-size: 14px;">Need help? Visit our <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.learnertech.dev'}/support">support page</a>.</p>
           </div>
           <div class="footer">
             <p>© 2026 MorphDB. All rights reserved.</p>
-            <p><a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.ai'}">Visit MorphDB</a> | <a href="#">Unsubscribe</a></p>
+            <p><a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.learnertech.dev'}">Visit MorphDB</a> | <a href="#">Unsubscribe</a></p>
           </div>
         </div>
       </body>
@@ -158,7 +158,7 @@ export function getTrialStartedEmailHTML(userName: string | undefined) {
               <li>✅ Priority support</li>
             </ul>
             <p>When your trial ends, your account will revert to the Free tier unless you choose to subscribe.</p>
-            <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.ai'}/dashboard" class="cta-button">Start Translating</a>
+            <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.learnertech.dev'}/dashboard" class="cta-button">Start Translating</a>
           </div>
           <div class="footer">
             <p>© 2026 MorphDB. All rights reserved.</p>
@@ -207,7 +207,7 @@ export function getTrialExpiringEmailHTML(userName: string | undefined, hoursRem
               <li>✅ Full history & audit trails</li>
               <li>✅ Priority support</li>
             </ul>
-            <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.ai'}/#pricing" class="cta-button">View Plans & Subscribe</a>
+            <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.learnertech.dev'}/#pricing" class="cta-button">View Plans & Subscribe</a>
           </div>
           <div class="footer">
             <p>© 2026 MorphDB. All rights reserved.</p>
@@ -259,11 +259,11 @@ export function getSubscriptionActivatedEmailHTML(userName: string | undefined, 
               <li>✅ Regular updates</li>
             </ul>
             <p>Your invoice has been sent separately. You'll be charged on the same date each month.</p>
-            <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.ai'}/dashboard" class="cta-button">Go to Dashboard</a>
+            <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.learnertech.dev'}/dashboard" class="cta-button">Go to Dashboard</a>
           </div>
           <div class="footer">
             <p>© 2026 MorphDB. All rights reserved.</p>
-            <p>Questions? <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.ai'}/support">Contact Support</a></p>
+            <p>Questions? <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.learnertech.dev'}/support">Contact Support</a></p>
           </div>
         </div>
       </body>
@@ -306,7 +306,7 @@ export function getSupportTicketEmailHTML(userName: string | undefined, ticketId
               <strong>Status:</strong> Open
             </div>
             <p>We typically respond to support tickets within 24 hours. Keep this email for your records, and reference the ticket ID when following up.</p>
-            <p>In the meantime, check out our <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.ai'}/docs">documentation</a> for helpful guides.</p>
+            <p>In the meantime, check out our <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.learnertech.dev'}/docs">documentation</a> for helpful guides.</p>
           </div>
           <div class="footer">
             <p>© 2026 MorphDB. All rights reserved.</p>
@@ -365,7 +365,7 @@ export function getBatchCompletionEmailHTML(userName: string | undefined, batchI
               <strong>Success Rate: ${successRate}%</strong>
             </p>
             <p>View the detailed results and download your translated SQL in your dashboard.</p>
-            <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.ai'}/dashboard/history" class="cta-button">View Results</a>
+            <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.learnertech.dev'}/dashboard/history" class="cta-button">View Results</a>
           </div>
           <div class="footer">
             <p>© 2026 MorphDB. All rights reserved.</p>
@@ -407,7 +407,7 @@ export function getAdminSupportNotificationEmailHTML(ticketId: string, subject: 
               <strong>Subject:</strong> ${subject}<br>
               <strong>From:</strong> ${userEmail}
             </p>
-            <p><a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.ai'}/dashboard/admin">View in Admin Panel</a></p>
+            <p><a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.learnertech.dev'}/dashboard/admin">View in Admin Panel</a></p>
             </div>
             <div class="footer">
               <p>© 2026 MorphDB. All rights reserved.</p>
@@ -501,8 +501,8 @@ export function getTicketStatusUpdateEmailHTML(userName: string | undefined, tic
               <strong>Ticket ID:</strong> ${ticketId}<br>
               <strong>Status:</strong> <span class="status-badge">${newStatus}</span>
             </div>
-             <p>If you have any questions or need further assistance, please reply to this email or contact our support team.</p>
-             <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.ai'}/dashboard" class="cta">View Your Tickets</a>
+             <p>If you have any questions or need further assistance, please contact through our <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.learnertech.dev'}/support">support page</a>.</p>
+             <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.learnertech.dev'}/dashboard" class="cta">View Your Tickets</a>
            </div>
            <div class="footer">
              <p>© 2025 MorphDB. All rights reserved.</p>
@@ -513,8 +513,12 @@ export function getTicketStatusUpdateEmailHTML(userName: string | undefined, tic
    `;
 }
 
-export function getSubscriptionCancelledEmailHTML(userName: string | undefined) {
+export function getSubscriptionCancelledEmailHTML(userName: string | null | undefined, effectiveDate?: string) {
    const displayName = userName || 'there';
+   const dateText = effectiveDate ? `<div class="date-box">
+               <p><strong>Access ends on:</strong> ${effectiveDate}</p>
+               <p>You can still use all Pro features until this date. After that, your account will automatically downgrade to the Free tier.</p>
+             </div>` : '';
    return `
      <!DOCTYPE html>
      <html>
@@ -527,6 +531,7 @@ export function getSubscriptionCancelledEmailHTML(userName: string | undefined) 
            .header h1 { margin: 0; font-size: 28px; }
            .content { padding: 20px; background: #f9fafb; border-radius: 8px; margin-top: 20px; }
            .info-box { background: white; padding: 15px; border-left: 4px solid #ef4444; border-radius: 4px; margin-top: 15px; }
+           .date-box { background: #fef3c7; padding: 15px; border-left: 4px solid #f59e0b; border-radius: 4px; margin-top: 15px; }
            .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #666; }
            .cta { display: inline-block; margin-top: 20px; padding: 12px 24px; background: #3b82f6; color: white; text-decoration: none; border-radius: 4px; }
            .secondary-cta { display: inline-block; margin-left: 10px; padding: 12px 24px; background: #e5e7eb; color: #333; text-decoration: none; border-radius: 4px; }
@@ -538,14 +543,15 @@ export function getSubscriptionCancelledEmailHTML(userName: string | undefined) 
               <h1>MorphDB Subscription Cancelled</h1>
             </div>
            <div class="content">
-             <p>Hi ${displayName},</p>
-             <p>Your MorphDB subscription has been cancelled. You will lose access to Pro features at the end of your current billing period.</p>
-             <div class="info-box">
+              <p>Hi ${displayName},</p>
+              <p>Your MorphDB subscription has been cancelled. You will lose access to Pro features at the end of your current billing period.</p>
+              ${dateText}
+              <div class="info-box">
                <p><strong>We're sorry to see you go!</strong></p>
                <p>If you cancelled by mistake or have concerns about your account, please don't hesitate to reach out to our support team. We'd love to help!</p>
              </div>
              <p>You can still use the free tier with limited functionality. If you'd like to upgrade again in the future, just visit your dashboard.</p>
-             <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.ai'}/dashboard" class="cta">Back to Dashboard</a>
+             <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.learnertech.dev'}/dashboard" class="cta">Back to Dashboard</a>
               <a href="mailto:${SUPPORT_EMAIL}" class="secondary-cta">Contact Support</a>
             </div>
             <div class="footer">
@@ -609,7 +615,7 @@ export function getTrialEndingReminderEmailHTML(userName: string | undefined) {
                </ul>
              </div>
              <p style="text-align: center;">
-               <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.ai'}/dashboard" class="cta-button">Upgrade to Pro Now</a>
+               <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.learnertech.dev'}/dashboard" class="cta-button">Upgrade to Pro Now</a>
              </p>
              <p style="margin-top: 30px; font-size: 14px; text-align: center; color: #666;">
                Have questions? <a href="mailto:${SUPPORT_EMAIL}">Contact our support team</a>
@@ -659,7 +665,7 @@ export function getTicketClosedEmailHTML(userName: string | undefined, ticketId:
                <strong>Status:</strong> <span style="color: #10b981; font-weight: bold;">Closed</span>
              </div>
              <p>Thank you for using MorphDB support! If you need to open a new ticket or have any questions, feel free to reach out at any time.</p>
-             <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.ai'}/support" class="cta-button">Open New Ticket</a>
+             <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://morphdb.learnertech.dev'}/support" class="cta-button">Open New Ticket</a>
              <p style="margin-top: 30px; font-size: 14px; text-align: center;">
                Questions? <a href="mailto:${SUPPORT_EMAIL}">Contact support</a>
              </p>
