@@ -148,31 +148,34 @@ export default function Navbar() {
         <div className="w-20 h-8 bg-emerald-500/10 rounded-full animate-pulse" />
       ) : user ? (
         <>
-          <Link href="/dashboard" className="flex items-center gap-2 text-sm text-zinc-400 hover:text-emerald-400 transition-colors">
-            <User className="w-4 h-4" />
-            {firstName ?? user.email?.split('@')[0]}
-          </Link>
-          <Link
-            href="/dashboard/settings"
-            className="flex items-center gap-1.5 px-3 py-2 text-sm text-zinc-400 hover:text-emerald-400 border border-emerald-500/20 rounded-full hover:bg-emerald-500/10 transition-colors"
-            title="Settings"
-          >
-            <Settings className="w-4 h-4" />
-          </Link>
           <Link
             href="/dashboard"
-            className="group relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-emerald-600/20 border border-emerald-500/30 rounded-full hover:bg-emerald-600/30 hover:shadow-lg hover:shadow-emerald-500/20 transition-all"
+            className="group relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-emerald-600/20 border border-emerald-500/30 rounded-full hover:bg-emerald-600/30 hover:shadow-lg hover:shadow-emerald-500/20 transition-all mr-2"
           >
             Dashboard <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
           </Link>
-          <form action="/api/auth/signout" method="POST">
-            <button
-              type="submit"
+          <div className="flex items-center gap-2 sm:gap-3 border-l border-emerald-500/20 pl-4">
+            <Link href="/dashboard" className="flex items-center gap-2 text-sm text-zinc-400 hover:text-emerald-400 transition-colors">
+              <User className="w-4 h-4" />
+              <span className="hidden lg:inline">{firstName ?? user.email?.split('@')[0]}</span>
+            </Link>
+            <Link
+              href="/dashboard/settings"
               className="flex items-center gap-1.5 px-3 py-2 text-sm text-zinc-400 hover:text-emerald-400 border border-emerald-500/20 rounded-full hover:bg-emerald-500/10 transition-colors"
+              title="Settings"
             >
-              <LogOut className="w-3.5 h-3.5" />
-            </button>
-          </form>
+              <Settings className="w-4 h-4" />
+            </Link>
+            <form action="/api/auth/signout" method="POST">
+              <button
+                type="submit"
+                className="flex items-center gap-1.5 px-3 py-2 text-sm text-zinc-400 hover:text-emerald-400 border border-emerald-500/20 rounded-full hover:bg-emerald-500/10 transition-colors"
+                title="Sign Out"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </form>
+          </div>
         </>
       ) : (
         <>
