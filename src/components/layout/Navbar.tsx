@@ -213,13 +213,15 @@ export default function Navbar() {
   );
 
   const renderMobileMenu = () => {
-    console.log('renderMobileMenu called, mobileMenuOpen:', mobileMenuOpen);
     return (
       <>
         {mobileMenuOpen && (
           <div
-            className="md:hidden fixed inset-0 top-16 bg-slate-950/95 backdrop-blur-xl border-t border-emerald-500/20 z-[45] overflow-y-auto"
-            style={{ display: 'block', opacity: 1, visibility: 'visible' }}
+            className="md:hidden fixed left-0 right-0 top-16 bottom-0 bg-slate-950/95 backdrop-blur-xl border-t border-emerald-500/20 z-[45] overflow-y-auto"
+            style={{ 
+              WebkitTransform: 'translateZ(0)',
+              transform: 'translateZ(0)',
+            }}
           >
             <div className="px-6 py-8 space-y-6">
               <div className="flex flex-col space-y-4">
@@ -310,19 +312,21 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-emerald-500/20 bg-slate-950/80 backdrop-blur-md shadow-lg shadow-emerald-500/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        <Link href="/" onClick={handleLogoClick} className="flex items-center gap-2 text-white hover:text-emerald-400 transition-colors z-50">
-          <Database className="w-6 h-6 text-emerald-500" />
-          <span className="font-bold text-lg tracking-tight">MorphDB</span>
-        </Link>
+    <>
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-emerald-500/20 bg-slate-950/80 backdrop-blur-md shadow-lg shadow-emerald-500/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          <Link href="/" onClick={handleLogoClick} className="flex items-center gap-2 text-white hover:text-emerald-400 transition-colors z-50">
+            <Database className="w-6 h-6 text-emerald-500" />
+            <span className="font-bold text-lg tracking-tight">MorphDB</span>
+          </Link>
 
-        {renderDesktopLinks()}
-        {renderAuthActions()}
-        {renderMobileMenuButton()}
-      </div>
+          {renderDesktopLinks()}
+          {renderAuthActions()}
+          {renderMobileMenuButton()}
+        </div>
+      </nav>
 
       {renderMobileMenu()}
-    </nav>
+    </>
   );
 }
