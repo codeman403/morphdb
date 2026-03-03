@@ -1,5 +1,6 @@
 import Navbar from '@/components/layout/Navbar';
 import Hero from '@/components/sections/Hero';
+import TrustIndicators from '@/components/sections/TrustIndicators';
 import Features from '@/components/sections/Features';
 import HowItWorks from '@/components/sections/HowItWorks';
 import Pricing from '@/components/sections/Pricing';
@@ -28,6 +29,7 @@ export default function Home() {
       <div className="relative z-10">
         <Navbar />
         <Hero />
+        <TrustIndicators />
         <Features />
         <HowItWorks />
         <Pricing />
