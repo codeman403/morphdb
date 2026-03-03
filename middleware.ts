@@ -51,6 +51,10 @@ export async function middleware(request: NextRequest) {
 
   // Add CORS headers to response
   const response = addCORSHeaders(supabaseResponse, request);
+  
+  // Add security headers to all responses
+  addSecurityHeaders(response);
+  
   return response;
 }
 
@@ -78,6 +82,51 @@ function addCORSHeaders(response: NextResponse, request: NextRequest): NextRespo
   );
   response.headers.set('Access-Control-Max-Age', '86400');
 
+  return response;
+}
+
+function addSecurityHeaders(response: NextResponse): NextResponse {
+  // Prevent clickjacking - only allow framing from same origin
+  response.headers.set('X-Frame-Options', 'SAMEORIGIN');
+  
+  // Prevent MIME type sniffing
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  
+  // Enable XSS filter in older browsers
+  response.headers.set('X-XSS-Protection', '1; mode=block');
+  
+  // Control referrer information sent with requests
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  
+  // Enforce HTTPS (1 year, include subdomains, allow preload)
+  response.headers.set(
+    'Strict-Transport-Security',
+    'max-age=31536000; includeSubDomains; preload'
+  );
+  
+  // Restrict browser features/APIs
+  response.headers.set(
+    'Permissions-Policy',
+    'camera=(), microphone=(), geolocation=(), interest-cohort=()'
+  );
+  
+  // Content Security Policy - restrictive but allows necessary resources
+  const csp = [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://vercel.live",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "img-src 'self' data: blob: https: http:",
+    "font-src 'self' https://fonts.gstatic.com",
+    "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://vercel.live wss://ws-us3.pusher.com",
+    "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://vercel.live",
+    "frame-ancestors 'self'",
+    "form-action 'self'",
+    "base-uri 'self'",
+    "object-src 'none'",
+  ].join('; ');
+  
+  response.headers.set('Content-Security-Policy', csp);
+  
   return response;
 }
 
