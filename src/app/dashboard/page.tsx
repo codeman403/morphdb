@@ -96,7 +96,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col">
+    <div id="main-content" className="min-h-screen bg-slate-950 text-white flex flex-col">
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-emerald-500/20 bg-slate-950/80 shadow-lg shadow-emerald-500/5 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-white hover:text-emerald-400 transition-colors">
@@ -108,13 +108,13 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
               <User className="w-4 h-4" />
               {profile?.name?.split(' ')[0] ?? user.email?.split('@')[0]}
             </div>
-            <Link href="/dashboard/settings" className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm text-zinc-400 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 backdrop-blur-md transition-colors" title="Settings">
-              <Settings className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <Link href="/dashboard/settings" className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm text-zinc-400 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 backdrop-blur-md transition-colors" aria-label="Account settings">
+              <Settings className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
               <span className="hidden sm:inline">Settings</span>
             </Link>
             <form action="/api/auth/signout" method="POST">
-              <button type="submit" className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm text-zinc-400 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 backdrop-blur-md transition-colors">
-                <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <button type="submit" className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm text-zinc-400 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 backdrop-blur-md transition-colors" aria-label="Sign out">
+                <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
                 <span className="hidden sm:inline">Sign Out</span>
               </button>
             </form>

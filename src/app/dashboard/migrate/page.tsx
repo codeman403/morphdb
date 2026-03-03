@@ -195,12 +195,12 @@ export default function MigratePage() {
   const current = response?.results[selectedResult];
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col text-white">
+    <div id="main-content" className="min-h-screen bg-slate-950 flex flex-col text-white">
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-emerald-500/20 bg-slate-950/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/dashboard" className="text-zinc-400 hover:text-white transition-colors">
-              <ArrowLeft className="w-4 h-4" />
+            <Link href="/dashboard" className="text-zinc-400 hover:text-white transition-colors" aria-label="Back to dashboard">
+              <ArrowLeft className="w-4 h-4" aria-hidden="true" />
             </Link>
             <div className="flex items-center gap-2">
               <Database className="w-5 h-5 text-emerald-500" />
@@ -225,13 +225,13 @@ export default function MigratePage() {
                 {profile.firstName}
               </div>
             )}
-            <Link href="/dashboard/settings" className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-zinc-500 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 transition-colors" title="Settings">
-              <Settings className="w-3.5 h-3.5" />
+            <Link href="/dashboard/settings" className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-zinc-500 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 transition-colors" aria-label="Account settings">
+              <Settings className="w-3.5 h-3.5" aria-hidden="true" />
               <span className="hidden sm:inline">Settings</span>
             </Link>
             <form action="/api/auth/signout" method="POST">
-              <button type="submit" className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-zinc-500 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 transition-colors">
-                <LogOut className="w-3.5 h-3.5" />
+              <button type="submit" className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-zinc-500 hover:text-white border border-emerald-500/20 rounded-full hover:bg-slate-900/50 transition-colors" aria-label="Sign out">
+                <LogOut className="w-3.5 h-3.5" aria-hidden="true" />
                 <span className="hidden sm:inline">Sign Out</span>
               </button>
             </form>

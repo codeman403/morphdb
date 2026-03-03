@@ -8,7 +8,7 @@ import GridBeams from '@/components/ui/backgrounds/GridBeams';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-slate-950 text-white selection:bg-blue-500/30 selection:text-blue-200 overflow-x-hidden relative">
+    <main id="main-content" className="min-h-screen bg-slate-950 text-white selection:bg-blue-500/30 selection:text-blue-200 overflow-x-hidden relative">
       {/* Unified background for all sections */}
       <div className="fixed inset-0 -z-50">
         {/* Background Gradients */}

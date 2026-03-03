@@ -135,7 +135,7 @@ export default function SubscriptionSettingsPage() {
   const isPaid = subscription?.tier && subscription.tier !== 'free';
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950">
+    <div id="main-content" className="min-h-screen flex flex-col bg-slate-950">
       <Navbar />
 
       <PageBackground

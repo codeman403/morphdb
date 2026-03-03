@@ -36,12 +36,12 @@ export default async function HistoryPage() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col text-white">
+    <div id="main-content" className="min-h-screen bg-slate-950 flex flex-col text-white">
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-emerald-500/20 bg-slate-950/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/dashboard" className="text-zinc-400 hover:text-white transition-colors">
-              <ArrowLeft className="w-4 h-4" />
+            <Link href="/dashboard" className="text-zinc-400 hover:text-white transition-colors" aria-label="Back to dashboard">
+              <ArrowLeft className="w-4 h-4" aria-hidden="true" />
             </Link>
             <div className="flex items-center gap-2">
               <Database className="w-5 h-5 text-emerald-500" />
