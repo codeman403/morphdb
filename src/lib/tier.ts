@@ -2,6 +2,31 @@ import { prisma } from '@/lib/prisma';
 
 export type UserTier = 'free' | 'pro' | 'design_partner' | 'enterprise';
 
+// Helper to check if a trial has expired
+function isTrialExpired(sub: { trialEndsAt?: Date | null; status?: string | null }): boolean {
+  return !!(
+    sub.trialEndsAt && 
+    new Date(sub.trialEndsAt) <= new Date() && 
+    sub.status === 'trialing'
+  );
+}
+
+// Lazy update: when we detect an expired trial, update the database
+async function updateExpiredTrialStatus(subscriptionId: string): Promise<void> {
+  try {
+    await prisma.subscription.update({
+      where: { id: subscriptionId },
+      data: {
+        status: 'expired',
+        plan: 'free',
+      },
+    });
+  } catch (error) {
+    // Log but don't throw - this is a background cleanup operation
+    console.error('Failed to update expired trial status:', error);
+  }
+}
+
 export interface TierLimits {
   tier: UserTier;
   batchesPerMonth: number;
@@ -51,29 +76,39 @@ export function getTierLimits(tier: UserTier): TierLimits {
   return { tier, ...TIER_CONFIG[tier] };
 }
 
-// New internal helper to compute tier from subscription object
-function getTierFromSubscription(sub: Awaited<ReturnType<typeof prisma.subscription.findUnique>> | null): UserTier {
+// Internal helper to compute tier from subscription object
+// Returns both the tier and whether the trial has expired (for lazy update)
+function getTierFromSubscription(sub: Awaited<ReturnType<typeof prisma.subscription.findUnique>> | null): { tier: UserTier; shouldUpdateExpiredTrial: boolean } {
   // Priority 1: If subscription is active (paid), use the plan
   if (sub?.status === 'active') {
-    if (sub.plan === 'design_partner') return 'design_partner';
-    if (sub.plan === 'enterprise') return 'enterprise';
-    if (sub.plan === 'pro') return 'pro';
+    if (sub.plan === 'design_partner') return { tier: 'design_partner', shouldUpdateExpiredTrial: false };
+    if (sub.plan === 'enterprise') return { tier: 'enterprise', shouldUpdateExpiredTrial: false };
+    if (sub.plan === 'pro') return { tier: 'pro', shouldUpdateExpiredTrial: false };
   }
 
-  // Priority 2: If on trial, use Pro
+  // Priority 2: If on trial (not expired), use Pro
   const isOnTrial = sub?.trialEndsAt && new Date(sub.trialEndsAt) > new Date();
   if (isOnTrial) {
-    return 'pro';
+    return { tier: 'pro', shouldUpdateExpiredTrial: false };
   }
 
+  // Check if trial just expired and needs DB update
+  const shouldUpdate = sub ? isTrialExpired(sub) : false;
+
   // Priority 3: Default to free
-  return 'free';
+  return { tier: 'free', shouldUpdateExpiredTrial: shouldUpdate };
 }
 
 export async function getUserTier(userId: string, subscription?: Awaited<ReturnType<typeof prisma.subscription.findUnique>>): Promise<TierLimits> {
   try {
     const sub = subscription ?? await prisma.subscription.findUnique({ where: { userId } });
-    const tier = getTierFromSubscription(sub);
+    const { tier, shouldUpdateExpiredTrial } = getTierFromSubscription(sub);
+    
+    // Lazy update: if trial expired, update DB in background (fire and forget)
+    if (shouldUpdateExpiredTrial && sub?.id) {
+      updateExpiredTrialStatus(sub.id);
+    }
+    
     return getTierLimits(tier);
   } catch {
     return getTierLimits('free');
@@ -107,6 +142,11 @@ export async function getUserTierLabel(userId: string, subscription?: Awaited<Re
       return 'Pro Trial';
     }
     
+    // Lazy update: if trial expired, update DB in background
+    if (sub && isTrialExpired(sub)) {
+      updateExpiredTrialStatus(sub.id);
+    }
+    
     return 'Free';
   } catch {
     return 'Free';
@@ -122,6 +162,12 @@ export async function getTrialStatus(userId: string, subscription?: Awaited<Retu
       const daysRemaining = Math.ceil((trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
       return { isOnTrial: true, daysRemaining: Math.max(0, daysRemaining) };
     }
+    
+    // Lazy update: if trial expired, update DB in background
+    if (sub && isTrialExpired(sub)) {
+      updateExpiredTrialStatus(sub.id);
+    }
+    
     return { isOnTrial: false, daysRemaining: 0 };
   } catch {
     return { isOnTrial: false, daysRemaining: 0 };
