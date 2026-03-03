@@ -8,6 +8,24 @@ import { getMonthlyUsage } from '@/lib/usage';
 
 import { PageBackground } from '@/components/ui/backgrounds/PageBackground';
 
+// Helper to check and fix expired trial for a single user
+async function ensureTrialStatusUpdated(userId: string) {
+  const sub = await prisma.subscription.findUnique({ where: { userId } });
+  if (sub?.status === 'trialing' && sub.trialEndsAt && new Date(sub.trialEndsAt) <= new Date()) {
+    // Trial has expired, update the database
+    await prisma.subscription.update({
+      where: { userId },
+      data: {
+        status: 'expired',
+        plan: 'free',
+      },
+    });
+    // Return updated subscription
+    return prisma.subscription.findUnique({ where: { userId } });
+  }
+  return sub;
+}
+
 export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ upgraded?: string }> }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -41,7 +59,8 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         return null;
       }
     })(),
-    prisma.subscription.findUnique({ where: { userId: user.id } }),
+    // Fetch subscription and ensure expired trials are updated
+    ensureTrialStatusUpdated(user.id),
     // Fetch recent batches - now that schema is fixed
     (async () => {
       try {

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
+import { cleanupExpiredTrials } from '@/lib/tier';
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? '').split(',').map(e => e.trim()).filter(Boolean);
 
@@ -32,6 +33,9 @@ export async function GET(req: NextRequest) {
     const subscriptionsOffset = Math.min(MAX_OFFSET, Math.max(0, parseInt(url.searchParams.get('subscriptionsOffset') ?? '0', 10)));
     
     const LIMIT = Math.min(MAX_LIMIT, 50);
+
+    // Clean up any expired trials before fetching stats
+    await cleanupExpiredTrials();
 
     const [
       waitlistCount,
