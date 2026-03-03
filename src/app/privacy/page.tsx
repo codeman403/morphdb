@@ -80,7 +80,6 @@ export default function PrivacyPolicy() {
                   <li>SSL/TLS encryption for all data in transit</li>
                   <li>Database encryption at rest</li>
                   <li>Secure authentication via Supabase</li>
-                  <li>Regular security audits and monitoring</li>
                   <li>Strict access controls and security headers</li>
                 </ul>
               </section>

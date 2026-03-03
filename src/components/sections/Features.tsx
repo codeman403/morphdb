@@ -11,8 +11,8 @@ const features = [
     color: 'from-blue-500 to-cyan-400',
   },
   {
-    title: '100% Logic Preservation',
-    description: 'Guaranteed semantic equivalence. We map complex legacy logic with mathematical precision, ensuring zero data loss or behavior drift.',
+    title: 'High-Fidelity Logic Preservation',
+    description: 'Designed for semantic equivalence. We map complex legacy logic with precision, minimizing data loss and behavior drift.',
     icon: ShieldCheck,
     color: 'from-purple-500 to-pink-400',
   },
