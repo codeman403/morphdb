@@ -8,6 +8,7 @@ import { ChevronLeft, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { PageBackground } from '@/components/ui/backgrounds/PageBackground';
+import { trackEvent } from '@/lib/analytics';
 
 interface SubscriptionData {
   tier: string;
@@ -102,6 +103,12 @@ export default function SubscriptionSettingsPage() {
       const data = await res.json();
 
       if (res.ok) {
+        // Track subscription cancellation
+        trackEvent('subscription_cancelled', {
+          plan: subscription?.tier || 'unknown',
+          reason: cancellation.reason,
+        });
+        
         setSuccessMessage(
           `Subscription cancelled successfully. Your access will end on ${data.effectiveDate}.`
         );
