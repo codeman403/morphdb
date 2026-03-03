@@ -63,10 +63,14 @@ export default function HowItWorks() {
           {steps.map((step, index) => (
             <div key={step.title} className="flex items-center gap-4">
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
+                whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
+                transition={{ 
+                  duration: 0.6, 
+                  delay: index * 0.15,
+                  ease: [0.25, 0.4, 0.25, 1]
+                }}
                 className={`flex-1 h-full bg-slate-900/50 backdrop-blur-sm border ${step.borderColor} rounded-2xl p-8 relative group hover:-translate-y-1 transition-all duration-300 shadow-xl`}
               >
                 {/* Glow effect */}
@@ -99,10 +103,14 @@ export default function HowItWorks() {
           {steps.map((step, index) => (
             <div key={step.title} className="flex flex-col items-center w-full">
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
+                whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
+                transition={{ 
+                  duration: 0.6, 
+                  delay: index * 0.15,
+                  ease: [0.25, 0.4, 0.25, 1]
+                }}
                 className={`w-full bg-slate-900/50 backdrop-blur-sm border ${step.borderColor} rounded-2xl p-8 relative group hover:-translate-y-1 transition-all duration-300 shadow-xl`}
               >
                 {/* Glow effect */}
