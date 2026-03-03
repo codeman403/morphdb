@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -9,6 +9,7 @@ import { Loader2 } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { PageBackground } from '@/components/ui/backgrounds/PageBackground';
+import { trackEvent, identifyUser } from '@/lib/analytics';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,6 +17,13 @@ export default function LoginPage() {
   const [form, setForm] = useState({ email: '', password: '', name: '', company: '' });
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
   const [message, setMessage] = useState('');
+
+  // Track when user switches to signup tab
+  useEffect(() => {
+    if (tab === 'signup') {
+      trackEvent('signup_started', { method: 'email' });
+    }
+  }, [tab]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,9 +45,26 @@ export default function LoginPage() {
 
       if (res.ok) {
         if (tab === 'signup') {
+          // Track successful signup
+          trackEvent('signup_completed', { method: 'email' });
+          if (data.user?.id) {
+            identifyUser(data.user.id, {
+              email: form.email,
+              name: form.name || undefined,
+              company: form.company || undefined,
+              created_at: new Date().toISOString(),
+            });
+          }
           setMessage('Account created! Check your email to verify before signing in.');
           setStatus('idle');
         } else {
+          // Track successful login
+          trackEvent('login_completed', { method: 'email' });
+          if (data.user?.id) {
+            identifyUser(data.user.id, {
+              email: form.email,
+            });
+          }
           router.push('/dashboard');
           router.refresh();
         }

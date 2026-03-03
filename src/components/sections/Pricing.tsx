@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Sparkles, X, Loader2, CheckCircle2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { trackEvent } from '@/lib/analytics';
 
 const tiers = [
   {
@@ -93,6 +94,8 @@ function WaitlistModal({ onClose }: { onClose: () => void }) {
       const data = await res.json();
       if (res.ok) {
         setStatus('success');
+        // Track waitlist signup
+        trackEvent('waitlist_joined', { tier: 'design_partner' });
       } else {
         setStatus('error');
         setMessage(data.error || 'Something went wrong.');
@@ -233,6 +236,8 @@ export default function Pricing() {
               const data = await res.json();
               if (res.ok) {
                 setTrialSuccess(true);
+                // Track trial started
+                trackEvent('trial_started', { plan: 'pro' });
                 setTimeout(() => {
                   window.location.href = '/dashboard';
                 }, 2000);
@@ -240,6 +245,8 @@ export default function Pricing() {
                 alert(data.error);
               }
             } else {
+              // Track checkout initiated
+              trackEvent('cta_clicked', { cta_name: `checkout_${plan}`, location: 'pricing' });
               const res = await fetch('/api/stripe/checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

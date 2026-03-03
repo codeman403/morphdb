@@ -4,6 +4,7 @@ import "./globals.css";
 import SessionManager from "@/components/SessionManager";
 import { Toaster } from "sonner";
 import CookieConsent from "@/components/ui/CookieConsent";
+import { PostHogProvider } from "@/components/PostHogProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -149,10 +150,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Toaster position="top-right" richColors theme="dark" />
-        <SessionManager />
-        {children}
-        <CookieConsent />
+        <PostHogProvider>
+          <Toaster position="top-right" richColors theme="dark" />
+          <SessionManager />
+          {children}
+          <CookieConsent />
+        </PostHogProvider>
       </body>
     </html>
   );

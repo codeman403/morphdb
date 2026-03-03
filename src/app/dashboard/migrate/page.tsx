@@ -10,6 +10,7 @@ import {
   X, Trash2, User, LogOut, Settings,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { trackEvent, startTimer, endTimer } from '@/lib/analytics';
 
 type SourceDialect = 'sql_server' | 'oracle' | 'mysql' | 'postgresql';
 type TargetDialect = 'snowflake_dbt' | 'postgresql' | 'bigquery' | 'redshift';
@@ -107,6 +108,15 @@ export default function MigratePage() {
     setFiles(prev => [...prev, ...sqlFiles]);
     setResponse(null);
     setError(null);
+    
+    // Track file upload
+    if (sqlFiles.length > 0) {
+      const totalSize = sqlFiles.reduce((sum, f) => sum + f.size, 0);
+      trackEvent('file_uploaded', { 
+        file_count: sqlFiles.length, 
+        total_size_bytes: totalSize 
+      });
+    }
   }, []);
 
   const removeFile = (idx: number) => {
@@ -126,6 +136,25 @@ export default function MigratePage() {
     setProgress(0);
     setResponse(null);
     setError(null);
+
+    // Track migration started
+    const isBatch = files.length > 1 || (files.length === 1 && pastedSql.trim());
+    if (isBatch) {
+      trackEvent('batch_migration_started', {
+        file_count: files.length + (pastedSql.trim() ? 1 : 0),
+        source_dialect: sourceDialect,
+        target_dialect: targetDialect,
+        model,
+      });
+    } else {
+      trackEvent('migration_started', {
+        source_dialect: sourceDialect,
+        target_dialect: targetDialect,
+        model,
+        input_length: pastedSql.length || undefined,
+      });
+    }
+    startTimer('migration');
 
     const progressInterval = setInterval(() => {
       setProgress(p => Math.min(p + Math.random() * 8, 90));
@@ -150,8 +179,35 @@ export default function MigratePage() {
       setResponse(data);
       setSelectedResult(0);
       toast.success(`Translated ${data.summary.success}/${data.summary.total} statements successfully`);
+
+      // Track migration completed
+      const duration = endTimer('migration');
+      if (isBatch) {
+        trackEvent('batch_migration_completed', {
+          file_count: data.summary.total,
+          success_count: data.summary.success,
+          failure_count: data.summary.failed,
+          duration_ms: duration,
+        });
+      } else {
+        trackEvent('migration_completed', {
+          source_dialect: sourceDialect,
+          target_dialect: targetDialect,
+          model,
+          duration_ms: duration,
+          output_length: data.results[0]?.translatedSql?.length,
+        });
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Something went wrong');
+      
+      // Track migration failed
+      trackEvent('migration_failed', {
+        source_dialect: sourceDialect,
+        target_dialect: targetDialect,
+        model,
+        error_type: e instanceof Error ? e.message : 'unknown',
+      });
     } finally {
       clearInterval(progressInterval);
       setIsProcessing(false);
@@ -174,6 +230,12 @@ export default function MigratePage() {
       a.click();
       URL.revokeObjectURL(url);
       toast.success('Download started');
+      
+      // Track download
+      trackEvent('result_downloaded', { 
+        format: 'zip', 
+        file_count: response.results.length 
+      });
     } catch (e) {
       toast.error('Download failed');
       console.error('Download failed', e);
@@ -188,6 +250,9 @@ export default function MigratePage() {
       setCopied(true);
       toast.success('SQL copied to clipboard');
       setTimeout(() => setCopied(false), 2000);
+      
+      // Track copy
+      trackEvent('result_copied', {});
     }
   };
 
