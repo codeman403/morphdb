@@ -4,11 +4,14 @@ export type UserTier = 'free' | 'pro' | 'design_partner' | 'enterprise';
 
 // Helper to check if a trial has expired
 function isTrialExpired(sub: { trialEndsAt?: Date | null; status?: string | null }): boolean {
-  return !!(
-    sub.trialEndsAt && 
-    new Date(sub.trialEndsAt) <= new Date() && 
-    sub.status === 'trialing'
-  );
+  if (!sub.trialEndsAt || sub.status !== 'trialing') return false;
+  
+  const trialEnd = new Date(sub.trialEndsAt);
+  const now = new Date();
+  
+  console.log('[Trial Debug] trialEndsAt:', trialEnd.toISOString(), 'now:', now.toISOString(), 'expired:', trialEnd <= now);
+  
+  return trialEnd <= now;
 }
 
 // Lazy update: when we detect an expired trial, update the database
@@ -129,6 +132,8 @@ export async function getUserTierLabel(userId: string, subscription?: Awaited<Re
   try {
     const sub = subscription ?? await prisma.subscription.findUnique({ where: { userId } });
     
+    console.log('[getUserTierLabel] sub:', sub ? { status: sub.status, plan: sub.plan, trialEndsAt: sub.trialEndsAt } : null);
+    
     // If subscription is active (either via Stripe or manual admin grant)
     if (sub?.status === 'active') {
       if (sub.plan === 'design_partner') return 'Design Partner';
@@ -137,13 +142,19 @@ export async function getUserTierLabel(userId: string, subscription?: Awaited<Re
     }
     
     // If on trial (trialEndsAt is set and in the future)
-    const isOnTrial = sub?.trialEndsAt && new Date(sub.trialEndsAt) > new Date();
+    const now = new Date();
+    const trialEnd = sub?.trialEndsAt ? new Date(sub.trialEndsAt) : null;
+    const isOnTrial = trialEnd && trialEnd > now;
+    
+    console.log('[getUserTierLabel] trialEnd:', trialEnd?.toISOString(), 'now:', now.toISOString(), 'isOnTrial:', isOnTrial);
+    
     if (isOnTrial) {
       return 'Pro Trial';
     }
     
     // Lazy update: if trial expired, update DB in background
     if (sub && isTrialExpired(sub)) {
+      console.log('[getUserTierLabel] Trial expired, updating DB...');
       updateExpiredTrialStatus(sub.id);
     }
     
