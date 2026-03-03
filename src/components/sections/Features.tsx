@@ -24,33 +24,6 @@ const features = [
   }
 ];
 
-// Container animation - controls staggering of children
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15, // Delay between each card
-    }
-  }
-};
-
-// Individual card animation
-const cardVariants = {
-  hidden: { 
-    opacity: 0, 
-    y: 60 // Start 60px below
-  },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: "easeOut" as const
-    }
-  }
-};
-
 export default function Features() {
   return (
     <section id="features" className="relative py-24 overflow-visible">
@@ -77,18 +50,15 @@ export default function Features() {
           </motion.p>
         </div>
 
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-3 gap-6"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }} // Triggers when 20% of grid is visible
-        >
-          {features.map((feature) => (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {features.map((feature, index) => (
             <motion.div
               key={feature.title}
-              variants={cardVariants}
-              className="bg-slate-900/50 border border-slate-800 rounded-2xl p-8 hover:bg-slate-800/50 hover:border-emerald-500/30 transition-all duration-300 relative group"
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.4, delay: index * 0.1 }}
+              className="bg-slate-900/50 border border-slate-800 rounded-2xl p-8 hover:bg-slate-800/50 hover:border-emerald-500/30 transition-all duration-300 relative group h-full"
             >
               <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} p-0.5 mb-6 opacity-80 group-hover:opacity-100 transition-opacity`}>
                 <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
@@ -101,7 +71,7 @@ export default function Features() {
               </p>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

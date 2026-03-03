@@ -1,8 +1,7 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Database, Sparkles, Cloud, ArrowRight } from 'lucide-react';
-import { useRef } from 'react';
 
 const steps = [
   {
@@ -35,19 +34,8 @@ const steps = [
 ];
 
 export default function HowItWorks() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
-
-  // Parallax for cards - subtle staggered movement
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -20]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -40]);
-  const y3 = useTransform(scrollYProgress, [0, 1], [0, -60]);
-
   return (
-    <section id="how-it-works" className="relative py-24 overflow-visible" ref={containerRef}>
+    <section id="how-it-works" className="relative py-24 overflow-visible">
       {/* No background - inherits from parent */}
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         <div className="text-center mb-20">
@@ -70,69 +58,78 @@ export default function HowItWorks() {
           </motion.h2>
         </div>
 
-        <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
-          {steps.map((step, index) => {
-            // Apply different parallax to each card
-            const y = index === 0 ? y1 : index === 1 ? y2 : y3;
-            
-            return (
-              <div key={step.title} className="flex flex-col md:flex-row items-center w-full md:w-1/3">
-                <motion.div
-                  style={{ y }} // Parallax movement
-                  className="w-full h-full"
-                >
-                  <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.2, duration: 0.5 }}
-                    className={`w-full h-full bg-slate-900/50 backdrop-blur-sm border ${step.borderColor} rounded-2xl p-8 relative group hover:-translate-y-2 transition-all duration-300 shadow-xl`}
-                  >
-                    {/* Glow effect */}
-                    <div className={`absolute -inset-px rounded-2xl ${step.glow} opacity-0 group-hover:opacity-20 transition-opacity duration-500 blur-xl`} />
-                    
-                    <div className="relative z-10">
-                      <div className={`w-14 h-14 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                        <step.icon className={`w-7 h-7 ${step.iconColor} drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]`} />
-                      </div>
-                      <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
-                      <p className="text-xs font-mono font-medium text-slate-500 mb-4 tracking-wide uppercase">{step.subtitle}</p>
-                      <p className="text-slate-400 leading-relaxed text-sm">
-                        {step.description}
-                      </p>
-                    </div>
-                  </motion.div>
-                </motion.div>
+        {/* Desktop: Grid layout for equal heights */}
+        <div className="hidden md:grid md:grid-cols-3 gap-6 items-stretch">
+          {steps.map((step, index) => (
+            <div key={step.title} className="flex items-center gap-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                className={`flex-1 h-full bg-slate-900/50 backdrop-blur-sm border ${step.borderColor} rounded-2xl p-8 relative group hover:-translate-y-1 transition-all duration-300 shadow-xl`}
+              >
+                {/* Glow effect */}
+                <div className={`absolute -inset-px rounded-2xl ${step.glow} opacity-0 group-hover:opacity-20 transition-opacity duration-500 blur-xl`} />
+                
+                <div className="relative z-10 flex flex-col h-full">
+                  <div className={`w-14 h-14 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                    <step.icon className={`w-7 h-7 ${step.iconColor} drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]`} />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
+                  <p className="text-xs font-mono font-medium text-slate-500 mb-4 tracking-wide uppercase">{step.subtitle}</p>
+                  <p className="text-slate-400 leading-relaxed text-sm flex-grow">
+                    {step.description}
+                  </p>
+                </div>
+              </motion.div>
+              
+              {/* Arrow connector (hidden on last item) */}
+              {index < steps.length - 1 && (
+                <div className="flex-shrink-0 text-slate-600">
+                  <ArrowRight className="w-6 h-6" />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
 
-                {/* Arrow connector (hidden on last item) */}
-                {index < steps.length - 1 && (
-                  <motion.div 
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.2 + 0.1 }}
-                    className="hidden md:flex flex-shrink-0 items-center justify-center w-12 h-12 text-slate-600 my-4 md:my-0"
-                  >
-                    <ArrowRight className="w-8 h-8" />
-                  </motion.div>
-                )}
-                {/* Mobile Arrow */}
-                 {index < steps.length - 1 && (
-                  <motion.div 
-                    initial={{ opacity: 0, height: 0 }}
-                    whileInView={{ opacity: 1, height: 'auto' }}
-                    viewport={{ once: true }}
-                    className="md:hidden flex flex-shrink-0 items-center justify-center h-12 text-slate-600 my-2"
-                  >
-                    <ArrowRight className="w-6 h-6 rotate-90" />
-                  </motion.div>
-                )}
-              </div>
-            );
-          })}
+        {/* Mobile: Vertical stack */}
+        <div className="flex md:hidden flex-col items-center gap-4">
+          {steps.map((step, index) => (
+            <div key={step.title} className="flex flex-col items-center w-full">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                className={`w-full bg-slate-900/50 backdrop-blur-sm border ${step.borderColor} rounded-2xl p-8 relative group hover:-translate-y-1 transition-all duration-300 shadow-xl`}
+              >
+                {/* Glow effect */}
+                <div className={`absolute -inset-px rounded-2xl ${step.glow} opacity-0 group-hover:opacity-20 transition-opacity duration-500 blur-xl`} />
+                
+                <div className="relative z-10">
+                  <div className={`w-14 h-14 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                    <step.icon className={`w-7 h-7 ${step.iconColor} drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]`} />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
+                  <p className="text-xs font-mono font-medium text-slate-500 mb-4 tracking-wide uppercase">{step.subtitle}</p>
+                  <p className="text-slate-400 leading-relaxed text-sm">
+                    {step.description}
+                  </p>
+                </div>
+              </motion.div>
+              
+              {/* Mobile Arrow */}
+              {index < steps.length - 1 && (
+                <div className="text-slate-600 my-3">
+                  <ArrowRight className="w-6 h-6 rotate-90" />
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </section>
   );
 }
-
