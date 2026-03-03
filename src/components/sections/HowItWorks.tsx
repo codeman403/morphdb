@@ -16,7 +16,7 @@ const steps = [
   {
     title: 'MorphDB AI',
     subtitle: 'Semantic Translation',
-    description: 'Our deterministic AI engine parses the legacy syntax, maps it to an intermediate AST, and reconstructs it with 100% logic preservation.',
+    description: 'Our deterministic AI engine parses the legacy syntax, maps it to an intermediate AST, and reconstructs it with high-fidelity logic preservation.',
     icon: Sparkles,
     glow: 'bg-purple-500/20',
     iconColor: 'text-purple-400',
