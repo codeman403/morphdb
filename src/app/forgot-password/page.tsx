@@ -42,7 +42,7 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950">
+    <div id="main-content" className="min-h-screen flex flex-col bg-slate-950">
       <Navbar />
 
       <PageBackground

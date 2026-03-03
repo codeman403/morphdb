@@ -162,17 +162,17 @@ export default function Navbar() {
             <Link
               href="/dashboard/settings"
               className="flex items-center gap-1.5 px-3 py-2 text-sm text-zinc-400 hover:text-emerald-400 border border-emerald-500/20 rounded-full hover:bg-emerald-500/10 transition-colors"
-              title="Settings"
+              aria-label="Account settings"
             >
-              <Settings className="w-4 h-4" />
+              <Settings className="w-4 h-4" aria-hidden="true" />
             </Link>
             <form action="/api/auth/signout" method="POST">
               <button
                 type="submit"
                 className="flex items-center gap-1.5 px-3 py-2 text-sm text-zinc-400 hover:text-emerald-400 border border-emerald-500/20 rounded-full hover:bg-emerald-500/10 transition-colors"
-                title="Sign Out"
+                aria-label="Sign out of your account"
               >
-                <LogOut className="w-3.5 h-3.5" />
+                <LogOut className="w-3.5 h-3.5" aria-hidden="true" />
               </button>
             </form>
           </div>
@@ -199,13 +199,15 @@ export default function Navbar() {
     <button
       onClick={() => setMobileMenuOpen((prev) => !prev)}
       className="md:hidden flex items-center justify-center w-10 h-10 text-zinc-400 hover:text-emerald-400 active:text-emerald-300 transition-colors relative pointer-events-auto z-50 touch-manipulation cursor-pointer"
-      aria-label="Toggle navigation"
+      aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+      aria-expanded={mobileMenuOpen}
+      aria-controls="mobile-menu"
       type="button"
     >
       {mobileMenuOpen ? (
-        <span className="text-2xl font-light">×</span>
+        <span className="text-2xl font-light" aria-hidden="true">×</span>
       ) : (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       )}
@@ -217,6 +219,10 @@ export default function Navbar() {
       <>
         {mobileMenuOpen && (
           <div
+            id="mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation menu"
             className="md:hidden fixed left-0 right-0 top-16 bottom-0 bg-slate-950/95 backdrop-blur-xl border-t border-emerald-500/20 z-[45] overflow-y-auto"
             style={{ 
               WebkitTransform: 'translateZ(0)',
@@ -313,7 +319,19 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-emerald-500/20 bg-slate-950/80 backdrop-blur-md shadow-lg shadow-emerald-500/5">
+      {/* Skip to main content link for keyboard accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-emerald-500 focus:text-white focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-950"
+      >
+        Skip to main content
+      </a>
+      
+      <nav 
+        className="fixed top-0 left-0 right-0 z-50 border-b border-emerald-500/20 bg-slate-950/80 backdrop-blur-md shadow-lg shadow-emerald-500/5"
+        role="navigation"
+        aria-label="Main navigation"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/" onClick={handleLogoClick} className="flex items-center gap-2 text-white hover:text-emerald-400 transition-colors z-50">
             <Database className="w-6 h-6 text-emerald-500" />

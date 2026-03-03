@@ -105,11 +105,12 @@ function ResetPasswordForm() {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-300"
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
-                  <EyeOff className="w-5 h-5" />
+                  <EyeOff className="w-5 h-5" aria-hidden="true" />
                 ) : (
-                  <Eye className="w-5 h-5" />
+                  <Eye className="w-5 h-5" aria-hidden="true" />
                 )}
               </button>
             </div>
@@ -137,11 +138,12 @@ function ResetPasswordForm() {
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-300"
+                aria-label={showConfirmPassword ? "Hide password" : "Show password"}
               >
                 {showConfirmPassword ? (
-                  <EyeOff className="w-5 h-5" />
+                  <EyeOff className="w-5 h-5" aria-hidden="true" />
                 ) : (
-                  <Eye className="w-5 h-5" />
+                  <Eye className="w-5 h-5" aria-hidden="true" />
                 )}
               </button>
             </div>
@@ -194,7 +196,7 @@ function ResetPasswordLoading() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950">
+    <div id="main-content" className="min-h-screen flex flex-col bg-slate-950">
       <Navbar />
 
       <PageBackground

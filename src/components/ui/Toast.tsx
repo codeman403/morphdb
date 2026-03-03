@@ -66,8 +66,9 @@ function ToastItem({ toast, onClose }: ToastProps) {
       <button
         onClick={() => onClose(toast.id)}
         className="shrink-0 text-zinc-400 hover:text-white transition-colors"
+        aria-label="Dismiss notification"
       >
-        <X className="w-4 h-4" />
+        <X className="w-4 h-4" aria-hidden="true" />
       </button>
     </motion.div>
   );

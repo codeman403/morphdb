@@ -7,7 +7,7 @@ import { PageBackground } from '@/components/ui/backgrounds/PageBackground';
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col">
+    <div id="main-content" className="min-h-screen bg-slate-950 text-white flex flex-col">
       <Navbar />
 
       <PageBackground variant="default" className="flex-grow pt-16">

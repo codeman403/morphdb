@@ -158,7 +158,7 @@ export default function DemoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
+    <div id="main-content" className="min-h-screen bg-slate-950 text-white">
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -183,8 +183,8 @@ export default function DemoPage() {
                   Dashboard
                 </Link>
                 <form action="/api/auth/signout" method="POST">
-                  <button type="submit" className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 text-xs sm:text-sm text-slate-500 hover:text-white border border-slate-800 rounded-full hover:bg-slate-800 transition-colors">
-                    <LogOut className="w-3.5 h-3.5" />
+                  <button type="submit" aria-label="Sign out" className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 text-xs sm:text-sm text-slate-500 hover:text-white border border-slate-800 rounded-full hover:bg-slate-800 transition-colors">
+                    <LogOut className="w-3.5 h-3.5" aria-hidden="true" />
                   </button>
                 </form>
               </>

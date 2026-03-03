@@ -121,8 +121,9 @@ function WaitlistModal({ onClose }: { onClose: () => void }) {
         <button
           onClick={onClose}
           className="absolute top-4 right-4 p-2 rounded-full text-slate-500 hover:text-white hover:bg-slate-800 transition-colors"
+          aria-label="Close waitlist modal"
         >
-          <X className="w-5 h-5" />
+          <X className="w-5 h-5" aria-hidden="true" />
         </button>
 
         {status === 'success' ? (

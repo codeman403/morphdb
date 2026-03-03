@@ -120,6 +120,7 @@ export function DocsNavigation({ className = '' }: DocsNavigationProps) {
           placeholder="Search docs..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          aria-label="Search documentation"
           className="w-full bg-slate-900/50 border border-emerald-500/20 rounded-xl pl-10 pr-4 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all"
         />
       </div>
@@ -150,10 +151,12 @@ export function DocsNavigation({ className = '' }: DocsNavigationProps) {
                   <button
                     onClick={() => toggleExpanded(item.title)}
                     aria-expanded={isExpanded}
+                    aria-label={isExpanded ? `Collapse ${item.title} section` : `Expand ${item.title} section`}
                     className="px-2 py-2 text-zinc-400 hover:text-zinc-200"
                   >
                     <ChevronDown
                       size={16}
+                      aria-hidden="true"
                       className={`transform transition-transform ${
                         isExpanded ? 'rotate-180' : ''
                       }`}
@@ -195,12 +198,15 @@ export function MobileDocsNavigation() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="md:hidden fixed bottom-6 right-6 z-40 p-3 bg-emerald-600 text-white rounded-full shadow-lg hover:bg-emerald-700"
+        aria-label={isOpen ? "Close documentation menu" : "Open documentation menu"}
+        aria-expanded={isOpen}
+        aria-controls="mobile-docs-menu"
       >
-        {isOpen ? <X size={24} /> : <Menu size={24} />}
+        {isOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
       </button>
 
       {isOpen && (
-        <div className="md:hidden fixed inset-0 top-16 z-30 bg-[#0a0a0a]/95 backdrop-blur-md border-t border-white/10 overflow-y-auto">
+        <div id="mobile-docs-menu" className="md:hidden fixed inset-0 top-16 z-30 bg-[#0a0a0a]/95 backdrop-blur-md border-t border-white/10 overflow-y-auto">
           <div className="p-4">
             <Link 
               href="/"

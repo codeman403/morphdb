@@ -36,7 +36,7 @@ export default function WaitlistPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950">
+    <div id="main-content" className="min-h-screen flex flex-col bg-slate-950">
       <Navbar />
 
       <PageBackground variant="intense" className="flex-grow flex items-center justify-center px-6 py-24 pt-32">
