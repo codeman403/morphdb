@@ -5,8 +5,6 @@ import SessionManager from "@/components/SessionManager";
 import { Toaster } from "sonner";
 import CookieConsent from "@/components/ui/CookieConsent";
 
-export const dynamic = 'force-dynamic';
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
