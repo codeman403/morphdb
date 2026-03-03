@@ -117,7 +117,10 @@ export default function PrivacyPolicy() {
                   <li>Opt out of marketing communications</li>
                 </ul>
                 <p className="leading-relaxed">
-                  To exercise these rights, contact us at <span className="text-emerald-400">support@morphdb.io</span>.
+                  To exercise these rights, visit our{' '}
+                  <Link href="/support" className="text-emerald-400 hover:text-emerald-300 underline">
+                    support page
+                  </Link>.
                 </p>
               </section>
 
@@ -148,8 +151,7 @@ export default function PrivacyPolicy() {
               <section>
                 <h2 className="text-2xl font-bold text-white mb-3">11. Contact Us</h2>
                 <p className="leading-relaxed">
-                  If you have questions about this privacy policy, contact us at{' '}
-                  <span className="text-emerald-400">support@morphdb.io</span> or visit our{' '}
+                  If you have questions about this privacy policy, visit our{' '}
                   <Link href="/support" className="text-emerald-400 hover:text-emerald-300 underline">
                     support page
                   </Link>.

@@ -171,8 +171,7 @@ export default function TermsOfService() {
               <section>
                 <h2 className="text-2xl font-bold text-white mb-3">14. Contact</h2>
                 <p className="leading-relaxed">
-                  For questions about these Terms, contact us at{' '}
-                  <span className="text-emerald-400">support@morphdb.io</span> or visit our{' '}
+                  For questions about these Terms, visit our{' '}
                   <Link href="/support" className="text-emerald-400 hover:text-emerald-300 underline">
                     support page
                   </Link>.
