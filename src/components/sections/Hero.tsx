@@ -143,7 +143,7 @@ export default function Hero() {
                   <div className="absolute top-1/2 right-0 left-0 h-[2px] bg-gradient-to-r from-transparent via-slate-700 to-emerald-900/50" />
                   
                   {/* Incoming Packets */}
-                  {[...Array(3)].map((_, i) => (
+                  {[...Array(4)].map((_, i) => (
                     <motion.div
                         key={`in-${i}`}
                         initial={{ x: '-100%' }}
@@ -151,7 +151,7 @@ export default function Hero() {
                         transition={{ 
                             duration: 3, 
                             repeat: Infinity, 
-                            delay: i * 2, 
+                            delay: i * 1.5, 
                             ease: "linear",
                             repeatDelay: 3 // Wait for others to pass
                         }}
@@ -164,7 +164,7 @@ export default function Hero() {
                                 duration: 3, 
                                 times: [0, 0.1, 0.9, 1], 
                                 repeat: Infinity, 
-                                delay: i * 2, 
+                                delay: i * 1.5, 
                                 ease: "linear",
                                 repeatDelay: 3 
                             }}
@@ -172,7 +172,7 @@ export default function Hero() {
                         >
                             <div className="px-3 py-1.5 rounded-md bg-slate-800 border border-slate-600 shadow-lg whitespace-nowrap z-10 hidden sm:block">
                                 <span className="text-xs sm:text-sm font-mono text-slate-300 font-medium">
-                                  {['Oracle', 'SQL Server', 'MySQL'][i]}
+                                  {['Oracle', 'SQL Server', 'MySQL', 'PostgreSQL'][i]}
                                 </span>
                             </div>
                             <div className="w-3 h-3 bg-slate-400 rotate-45 z-10" />
@@ -210,7 +210,7 @@ export default function Hero() {
                    <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-900/50 via-emerald-500/50 to-transparent" />
 
                    {/* Outgoing Packets */}
-                   {[...Array(3)].map((_, i) => (
+                   {[...Array(4)].map((_, i) => (
                     <motion.div
                         key={`out-${i}`}
                         initial={{ x: '-50%' }}
@@ -218,7 +218,7 @@ export default function Hero() {
                         transition={{ 
                             duration: 3, 
                             repeat: Infinity, 
-                            delay: i * 2, 
+                            delay: i * 1.5, 
                             ease: "linear",
                             repeatDelay: 3 
                         }}
@@ -231,7 +231,7 @@ export default function Hero() {
                                 duration: 3, 
                                 times: [0, 0.1, 0.9, 1], 
                                 repeat: Infinity, 
-                                delay: i * 2, 
+                                delay: i * 1.5, 
                                 ease: "linear",
                                 repeatDelay: 3 
                             }}
@@ -240,7 +240,7 @@ export default function Hero() {
                             <div className="w-3 h-3 bg-emerald-400 rotate-45 shadow-[0_0_10px_rgba(52,211,153,0.8)] z-10" />
                             <div className="px-3 py-1.5 rounded-md bg-emerald-950/80 border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.2)] whitespace-nowrap z-10 hidden sm:block">
                                 <span className="text-xs sm:text-sm font-mono text-emerald-300 font-bold">
-                                  {['Snowflake', 'Redshift', 'BigQuery'][i]}
+                                  {['Snowflake', 'Redshift', 'BigQuery', 'PostgreSQL'][i]}
                                 </span>
                             </div>
                         </motion.div>

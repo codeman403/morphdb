@@ -5,12 +5,15 @@ import { motion } from 'framer-motion';
 const sourceLogos = [
   { name: 'Oracle', color: '#F80000' },
   { name: 'SQL Server', color: '#CC2927' },
+  { name: 'MySQL', color: '#4479A1' },
+  { name: 'PostgreSQL', color: '#336791' },
 ];
 
 const targetLogos = [
   { name: 'Snowflake', color: '#29B5E8' },
   { name: 'BigQuery', color: '#4285F4' },
   { name: 'Redshift', color: '#8C4FFF' },
+  { name: 'PostgreSQL', color: '#336791' },
 ];
 
 function LogoBadge({ name, color }: { name: string; color: string }) {
