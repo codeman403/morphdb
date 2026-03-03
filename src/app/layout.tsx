@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SessionManager from "@/components/SessionManager";
 import { Toaster } from "sonner";
+import CookieConsent from "@/components/ui/CookieConsent";
 
 export const dynamic = 'force-dynamic';
 
@@ -34,6 +35,7 @@ export default function RootLayout({
         <Toaster position="top-right" richColors theme="dark" />
         <SessionManager />
         {children}
+        <CookieConsent />
       </body>
     </html>
   );
