@@ -159,7 +159,15 @@ export default function Navbar() {
   const renderAuthActions = () => (
     <div className="hidden md:flex items-center gap-4">
       {loading ? (
-        <div className="w-20 h-8 bg-emerald-500/10 rounded-full animate-pulse" />
+        // Invisible placeholder that matches logged-in layout to prevent shift
+        <div className="flex items-center gap-4 opacity-0 pointer-events-none" aria-hidden="true">
+          <div className="px-4 py-2 text-sm rounded-full mr-2">Dashboard</div>
+          <div className="flex items-center gap-2 sm:gap-3 border-l border-transparent pl-4">
+            <div className="w-4 h-4" />
+            <div className="px-3 py-2"><Settings className="w-4 h-4" /></div>
+            <div className="px-3 py-2"><LogOut className="w-3.5 h-3.5" /></div>
+          </div>
+        </div>
       ) : user ? (
         <>
           <Link
@@ -264,7 +272,10 @@ export default function Navbar() {
               </div>
 
               <div className="pt-6 space-y-4">
-                {!loading && user ? (
+                {loading ? (
+                  // Show nothing during loading to prevent flash
+                  <div className="h-24" />
+                ) : user ? (
                   <>
                     <Link
                       href="/dashboard"
