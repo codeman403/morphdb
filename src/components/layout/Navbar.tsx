@@ -25,11 +25,17 @@ type NavLink = ScrollNavLink | RouteNavLink;
 export default function Navbar() {
   const [user, setUser] = useState<{ email?: string } | null>(null);
   const [firstName, setFirstName] = useState<string | null>(null);
+  const [profileLoaded, setProfileLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const isHomePage = pathname === '/';
+
+  // Display name: show firstName if loaded, otherwise email prefix, but only after profile is loaded
+  const displayName = profileLoaded 
+    ? (firstName ?? user?.email?.split('@')[0] ?? '') 
+    : '';
 
   useEffect(() => {
     const supabase = createClient();
@@ -37,8 +43,14 @@ export default function Navbar() {
     const hydrateProfile = () =>
       fetch('/api/auth/profile')
         .then((r) => r.json())
-        .then((data: { firstName?: string }) => setFirstName(data.firstName ?? null))
-        .catch(() => setFirstName(null));
+        .then((data: { firstName?: string }) => {
+          setFirstName(data.firstName ?? null);
+          setProfileLoaded(true);
+        })
+        .catch(() => {
+          setFirstName(null);
+          setProfileLoaded(true);
+        });
 
     const initAuth = async () => {
       const {
@@ -70,9 +82,11 @@ export default function Navbar() {
       const _event: AuthChangeEvent = event;
       setUser(session?.user ?? null);
       if (session?.user) {
+        setProfileLoaded(false); // Reset while fetching new profile
         hydrateProfile();
       } else {
         setFirstName(null);
+        setProfileLoaded(false);
       }
     });
 
@@ -157,7 +171,7 @@ export default function Navbar() {
           <div className="flex items-center gap-2 sm:gap-3 border-l border-emerald-500/20 pl-4">
             <Link href="/dashboard" className="flex items-center gap-2 text-sm text-zinc-400 hover:text-emerald-400 transition-colors">
               <User className="w-4 h-4" />
-              <span className="hidden lg:inline">{firstName ?? user.email?.split('@')[0]}</span>
+              <span className="hidden lg:inline">{displayName}</span>
             </Link>
             <Link
               href="/dashboard/settings"
@@ -258,7 +272,7 @@ export default function Navbar() {
                       className="flex items-center gap-2 text-zinc-300 hover:text-emerald-400"
                     >
                       <User className="w-5 h-5" />
-                      <span className="font-medium">Dashboard ({firstName ?? user.email?.split('@')[0]})</span>
+                      <span className="font-medium">Dashboard{displayName ? ` (${displayName})` : ''}</span>
                     </Link>
                     <Link
                       href="/dashboard/settings"
