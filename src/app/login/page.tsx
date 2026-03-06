@@ -1,22 +1,24 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Clock } from 'lucide-react';
 
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { PageBackground } from '@/components/ui/backgrounds/PageBackground';
 import { trackEvent, identifyUser } from '@/lib/analytics';
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [tab, setTab] = useState<'signin' | 'signup'>('signin');
   const [form, setForm] = useState({ email: '', password: '', name: '', company: '' });
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
   const [message, setMessage] = useState('');
+  const sessionExpired = searchParams.get('expired') === '1';
 
   // Track when user switches to signup tab
   useEffect(() => {
@@ -107,6 +109,17 @@ export default function LoginPage() {
               {tab === 'signin' ? 'Sign in to your MorphDB dashboard.' : 'Start your 14-day free trial. No credit card required.'}
             </p>
 
+            {/* Session expired message */}
+            {sessionExpired && (
+              <div className="mb-6 flex items-start gap-3 bg-amber-400/10 border border-amber-400/30 rounded-xl p-4">
+                <Clock className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-amber-400 text-sm font-medium">Session expired</p>
+                  <p className="text-amber-400/70 text-xs mt-1">You were logged out due to inactivity. Please sign in again.</p>
+                </div>
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               {tab === 'signup' && (
                 <>
@@ -167,5 +180,17 @@ export default function LoginPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-slate-950">
+        <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }
