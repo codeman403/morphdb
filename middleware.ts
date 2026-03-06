@@ -7,6 +7,10 @@ const ALLOWED_ORIGINS = [
   'http://localhost:3001',
 ];
 
+// Session inactivity timeout: 15 minutes
+const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000;
+const LAST_ACTIVITY_COOKIE = 'morphdb_last_activity';
+
 export async function middleware(request: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -42,6 +46,44 @@ export async function middleware(request: NextRequest) {
   );
 
   const { data: { user } } = await supabase.auth.getUser();
+
+  // Check for session inactivity timeout
+  if (user) {
+    const lastActivityCookie = request.cookies.get(LAST_ACTIVITY_COOKIE);
+    const now = Date.now();
+    
+    if (lastActivityCookie) {
+      const lastActivity = parseInt(lastActivityCookie.value, 10);
+      const timeSinceActivity = now - lastActivity;
+      
+      // If inactive for more than 15 minutes, sign out and redirect to login
+      if (timeSinceActivity > INACTIVITY_TIMEOUT_MS) {
+        // Sign out the user
+        await supabase.auth.signOut();
+        
+        // Redirect to login with session expired message
+        const url = request.nextUrl.clone();
+        url.pathname = '/login';
+        url.searchParams.set('expired', '1');
+        
+        const response = NextResponse.redirect(url);
+        // Clear the last activity cookie
+        response.cookies.delete(LAST_ACTIVITY_COOKIE);
+        addSecurityHeaders(response);
+        return response;
+      }
+    }
+    
+    // Update last activity timestamp
+    supabaseResponse.cookies.set(LAST_ACTIVITY_COOKIE, now.toString(), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      // Cookie expires in 24 hours (longer than inactivity timeout, cleaned up on next request)
+      maxAge: 24 * 60 * 60,
+    });
+  }
 
   if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
     const url = request.nextUrl.clone();
