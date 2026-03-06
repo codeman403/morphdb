@@ -6,7 +6,7 @@ import { BrainCircuit, ShieldCheck, Database } from 'lucide-react';
 const features = [
   {
     title: 'AI Translation Engine',
-    description: 'Instantly convert legacy Oracle, SQL Server, and Teradata procedures into clean, modern SQL dialects tailored for the cloud.',
+    description: 'Instantly convert legacy Oracle, SQL Server, MySQL, and PostgreSQL procedures into clean, modern SQL dialects tailored for the cloud.',
     icon: BrainCircuit,
     color: 'from-blue-500 to-cyan-400',
   },

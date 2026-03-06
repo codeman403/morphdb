@@ -6,7 +6,7 @@ import { Database, Sparkles, Cloud, ArrowRight } from 'lucide-react';
 const steps = [
   {
     title: 'Legacy DB',
-    subtitle: 'Oracle, SQL Server, Teradata',
+    subtitle: 'Oracle, SQL Server, MySQL, PostgreSQL',
     description: 'Connect your decades-old legacy databases. We extract the raw schemas, stored procedures, and complex business logic.',
     icon: Database,
     glow: 'bg-orange-500/20',

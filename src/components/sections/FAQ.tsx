@@ -7,7 +7,7 @@ import { ChevronDown, HelpCircle } from 'lucide-react';
 const faqs = [
   {
     question: 'What databases does MorphDB support?',
-    answer: 'MorphDB currently supports migrations from Oracle, SQL Server, and Teradata to modern cloud data warehouses including Snowflake, BigQuery, and Redshift. We also generate clean dbt models that work with any dbt-compatible platform.',
+    answer: 'MorphDB currently supports migrations from Oracle, SQL Server, MySQL, and PostgreSQL to modern cloud data warehouses including Snowflake, BigQuery, and Redshift. We also generate clean dbt models that work with any dbt-compatible platform.',
   },
   {
     question: 'How accurate is the AI translation?',
